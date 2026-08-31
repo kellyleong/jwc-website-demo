@@ -64,12 +64,21 @@ html {
 
 body {
   margin: 0;
-  min-width: 20rem;
+  min-width: 0;
   overflow-x: clip;
   background: var(--color-ground);
   color: var(--color-ink);
   font-size: 1rem;
   line-height: 1.55;
+}
+
+@media (max-width: 22rem) {
+  .brand-lockup__type span {
+    max-width: 9.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 body.menu-open {
@@ -487,8 +496,23 @@ p {
 
 @media (max-width: 56rem) {
   :root {
-    --header-height: 4.75rem;
-    --header-height-compact: 4.25rem;
+    --header-height: 4.5rem;
+    --header-height-compact: 4.5rem;
+    --page-gutter: clamp(1.125rem, 5vw, 1.5rem);
+  }
+
+  .site-header,
+  .home-page .site-header,
+  .home-page .site-header.is-compact {
+    position: sticky;
+    border-bottom-color: color-mix(in srgb, var(--color-navy) 14%, transparent);
+    background: color-mix(in srgb, var(--color-ground) 96%, transparent);
+    backdrop-filter: blur(0.75rem);
+    box-shadow: none;
+  }
+
+  .site-header__inner {
+    gap: 0.75rem;
   }
 
   .brand-lockup__type span {
@@ -501,8 +525,28 @@ p {
   }
 
   .menu-toggle {
-    display: grid;
-    place-items: center;
+    min-width: 4.75rem;
+    min-height: 3rem;
+    padding-inline: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    border-left: 1px solid color-mix(in srgb, var(--color-navy) 18%, transparent);
+  }
+
+  .menu-toggle__label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .primary-nav {
@@ -514,9 +558,10 @@ p {
     height: calc(100dvh - var(--header-height));
     clip-path: inset(0 0 0 100%);
     display: grid;
-    align-content: center;
-    justify-items: center;
-    gap: 3rem;
+    align-content: start;
+    justify-items: stretch;
+    gap: 2.5rem;
+    padding: clamp(3rem, 10vh, 5.5rem) var(--page-gutter) max(2rem, env(safe-area-inset-bottom));
     background: var(--color-navy-deep);
     color: white;
     pointer-events: none;
@@ -540,18 +585,29 @@ p {
 
   .primary-nav__links {
     display: grid;
-    justify-items: center;
-    gap: 1.25rem;
+    justify-items: stretch;
+    gap: 0;
   }
 
   .primary-nav__link {
+    min-height: 4.5rem;
+    justify-content: flex-start;
+    border-bottom: 1px solid color-mix(in srgb, white 20%, transparent);
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 10vw, 4rem);
+    font-size: clamp(2.5rem, 12vw, 4rem);
     font-weight: 600;
   }
 
+  .primary-nav__link::after {
+    right: auto;
+    width: 3.25rem;
+  }
+
   .language-switcher {
-    width: 11rem;
+    width: min(100%, 14rem);
+    min-height: 3rem;
+    justify-content: space-between;
+    color: color-mix(in srgb, white 74%, transparent);
   }
 
   .primary-nav .language-switcher .is-active {
@@ -573,25 +629,41 @@ p {
   }
 
   .brand-lockup__mark {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .brand-lockup__type span {
-    font-size: 0.62rem;
-    letter-spacing: 0.07em;
+    font-size: 0.69rem;
+    letter-spacing: 0.055em;
   }
 
   .brand-lockup__type small {
-    max-width: 12rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: none;
   }
 
   .display-heading {
-    font-size: clamp(3rem, 15vw, 4.65rem);
+    font-size: clamp(2.85rem, 13.5vw, 4rem);
   }
 
+  .section-label {
+    margin-bottom: 1.35rem;
+  }
+
+  .button {
+    width: 100%;
+    min-height: 3.5rem;
+    justify-content: space-between;
+  }
+
+}
+
+@media (pointer: coarse) {
+  .primary-nav__link,
+  .language-switcher > span:not([aria-hidden]),
+  .menu-toggle,
+  .button {
+    min-height: 3rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

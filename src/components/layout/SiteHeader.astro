@@ -31,7 +31,7 @@ const navItems = [
       aria-controls="primary-navigation"
       data-menu-toggle
     >
-      <span class="menu-toggle__label">Menu</span>
+      <span class="menu-toggle__label" data-menu-label>Menu</span>
       <span class="menu-toggle__lines" aria-hidden="true"><i></i><i></i></span>
     </button>
 
@@ -63,6 +63,7 @@ const navItems = [
   const sentinel = document.querySelector<HTMLElement>("[data-header-sentinel]");
   const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
   const nav = document.querySelector<HTMLElement>("[data-primary-nav]");
+  const menuLabel = document.querySelector<HTMLElement>("[data-menu-label]");
   const pageRegions = Array.from(document.querySelectorAll<HTMLElement>("main, .site-footer"));
   const desktopNavigation = window.matchMedia("(min-width: 56.01rem)");
 
@@ -75,6 +76,7 @@ const navItems = [
   const closeMenu = () => {
     if (!toggle || !nav) return;
     toggle.setAttribute("aria-expanded", "false");
+    if (menuLabel) menuLabel.textContent = "Menu";
     nav.classList.remove("is-open");
     document.body.classList.remove("menu-open");
     setPageInert(false);
@@ -84,6 +86,7 @@ const navItems = [
     if (!nav) return;
     const willOpen = toggle.getAttribute("aria-expanded") !== "true";
     toggle.setAttribute("aria-expanded", String(willOpen));
+    if (menuLabel) menuLabel.textContent = willOpen ? "Close" : "Menu";
     nav.classList.toggle("is-open", willOpen);
     document.body.classList.toggle("menu-open", willOpen);
     setPageInert(willOpen);

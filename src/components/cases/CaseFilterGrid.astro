@@ -145,11 +145,10 @@ const [titleLead, titleTail = ""] = titleWithoutPunctuation.split(" Across ");
 
   .case-library__label::before {
     content: "";
-    width: 0.65rem;
-    height: 0.65rem;
+    width: 1.75rem;
+    height: 0.125rem;
     flex: 0 0 auto;
     background: var(--color-red);
-    border-radius: 50%;
   }
 
   .case-library h1 {
@@ -283,8 +282,8 @@ const [titleLead, titleTail = ""] = titleWithoutPunctuation.split(" Across ");
 
     .case-library h1 {
       max-width: 10ch;
-      font-size: clamp(3.05rem, 14vw, 4rem);
-      line-height: 0.9;
+      font-size: clamp(2.9rem, 13.2vw, 3.85rem);
+      line-height: 0.94;
     }
 
     .case-library h1 > span {
@@ -301,7 +300,10 @@ const [titleLead, titleTail = ""] = titleWithoutPunctuation.split(" Across ");
       justify-content: flex-start;
       gap: 1.85rem;
       padding-right: var(--page-gutter);
+      scroll-snap-type: x proximity;
     }
+
+    .case-library__filter { min-height: 3rem; scroll-snap-align: start; }
 
     .case-library__grid {
       grid-template-columns: minmax(0, 1fr);

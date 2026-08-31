@@ -432,7 +432,7 @@ const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" whe
 
   @media (max-width: 39rem) {
     .contact-stage__content {
-      padding-block: 2.75rem 3rem;
+      padding-block: 2.5rem 2.75rem;
     }
 
     .contact-stage__label {
@@ -443,8 +443,8 @@ const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" whe
     .contact-stage__copy > h1,
     .contact-stage__copy > h2 {
       max-width: 8.7ch;
-      font-size: clamp(3.05rem, 14.3vw, 3.75rem);
-      line-height: 0.92;
+      font-size: clamp(2.9rem, 13.4vw, 3.6rem);
+      line-height: 0.94;
     }
 
     .contact-stage__introduction {
@@ -467,7 +467,9 @@ const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" whe
     }
 
     .contact-record__body {
-      padding-left: 0.9rem;
+      padding: 0.85rem 0 0;
+      border-top: 0.125rem solid var(--color-red);
+      border-left: 0;
     }
 
     .contact-record__body :is(h2, h3) {
@@ -480,12 +482,18 @@ const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" whe
       font-size: 0.86rem;
     }
 
+    .contact-record__body > a {
+      min-height: 2.75rem;
+      display: flex;
+      align-items: center;
+    }
+
     .contact-record dl div {
       grid-template-columns: 3.55rem minmax(0, 1fr);
     }
 
     .contact-stage__media {
-      height: 20rem;
+      height: 16rem;
     }
 
   }

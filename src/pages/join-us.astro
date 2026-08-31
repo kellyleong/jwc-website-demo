@@ -532,7 +532,7 @@ const contributionAreas = [
   }
 
   @keyframes join-copy-in {
-    from { opacity: 0; transform: translateY(0.9rem); }
+    from { opacity: 1; transform: translateY(0.9rem); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -604,18 +604,23 @@ const contributionAreas = [
   }
 
   @media (max-width: 39rem) {
-    .join-hero__content { min-height: 0; padding-block: 2.75rem 3rem; }
+    .join-hero__content { min-height: 0; padding-block: 2.5rem 2.75rem; }
     .join-hero__measure { height: 1.5rem; margin-bottom: 2.5rem; }
     .join-hero__measure::after { bottom: -2.5rem; height: 4.5rem; }
     .join-hero__eyebrow { margin-bottom: 2.75rem; font-size: 1rem; }
-    .join-hero h1 { max-width: 10.5ch; font-size: clamp(3.35rem, 15.5vw, 4.65rem); }
+    .join-hero h1 { max-width: 10.5ch; font-size: clamp(3.05rem, 13.7vw, 4.2rem); line-height: 0.94; }
     .join-hero h1 span { white-space: normal; }
     .join-hero__copy br { display: none; }
     .join-hero__actions { align-items: stretch; flex-direction: column; gap: 0.75rem; }
     .join-hero__actions .button,
     .join-hero__text-link { width: 100%; }
     .join-hero__text-link { justify-content: center; }
-    .join-hero__image { height: 20rem; }
+    .join-hero__image { height: 16rem; }
+    .join-hero__measure,
+    .join-hero__eyebrow,
+    .join-hero h1,
+    .join-hero__copy,
+    .join-hero__actions { animation: none; }
 
     .contribution-band__grid { grid-template-columns: 1fr; padding-block: 2.5rem; }
     .contribution-band__intro { grid-column: auto; }

@@ -411,12 +411,27 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
     }
 
     .company__main { display: contents; }
-    .company__content { order: 1; padding-block: 4rem 2.5rem; }
+    .company__content { order: 1; padding-block: 3.5rem 2.25rem; }
     .company__commitment { order: 2; }
-    .company__image-wrap { order: 3; height: 20rem; }
-    .company__rail { order: 4; padding: 2.5rem var(--page-gutter); }
-    .company__principles { grid-template-columns: 1fr; gap: 2rem; }
+    .company__image-wrap { order: 3; height: clamp(14rem, 62vw, 19rem); min-height: 0; }
+    .company__rail { order: 4; padding: 1.5rem var(--page-gutter); }
+    .company__heading { margin-bottom: 1.75rem; font-size: clamp(2.9rem, 12.8vw, 3.9rem); }
+    .company__principles { grid-template-columns: 1fr; gap: 1.5rem; }
+    .company__principles h3 { margin-bottom: 0.55rem; font-size: 1.05rem; }
     .company__principles p { max-width: 38ch; }
-    .company__stat { min-height: 6.6rem; }
+    .company__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .company__stat {
+      min-height: 6rem;
+      padding: 0.8rem 0;
+      grid-template-columns: 2.4rem 1fr;
+      gap: 0.55rem;
+    }
+    .company__stat:nth-child(odd) { padding-right: 0.75rem; border-right: 1px solid color-mix(in srgb, white 23%, transparent); }
+    .company__stat:nth-child(even) { padding-left: 0.75rem; }
+    .company__stat > i { font-size: 2rem; }
+    .company__stat strong { font-size: 2.35rem; }
+    .company__stat-label { font-size: 0.72rem; }
+    .company__location { grid-column: 1 / -1; min-height: 3.75rem; font-size: 0.78rem; }
+    .company__location i { font-size: 1.7rem; }
   }
 </style>

@@ -348,29 +348,37 @@ const initialService = servicePayload[0];
   @media (max-width: 47.99rem) {
     .services { height: auto; min-height: 0; display: block; }
     .services__upper { display: flex; flex-direction: column; }
-    .services__intro { min-height: 0; padding-block: 3.5rem 3rem; }
-    .services__heading { font-size: clamp(3.2rem, 14vw, 4.4rem); }
+    .services__intro { min-height: 0; padding-block: 3.5rem 2.5rem; }
+    .services__heading { font-size: clamp(2.9rem, 12.8vw, 4rem); line-height: 0.94; }
     .services__heading > span { white-space: normal; }
     .services__measure { display: none; }
-    .services__media { min-height: clamp(22rem, 90vw, 27rem); clip-path: none; }
-    .services__media img { min-height: clamp(22rem, 90vw, 27rem); }
+    .services__media { min-height: clamp(15rem, 66vw, 20rem); clip-path: none; }
+    .services__media img { min-height: clamp(15rem, 66vw, 20rem); }
     .services__tabs {
       min-height: 0;
-      padding: 2.5rem var(--page-gutter);
+      padding: 1.5rem var(--page-gutter) 1.75rem;
       display: flex;
+      gap: 1rem;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--page-gutter);
+      scrollbar-width: none;
     }
+    .services__tabs::-webkit-scrollbar { display: none; }
     .service-tab {
-      flex: 0 0 min(86vw, 24rem);
-      min-height: 16rem;
-      padding-inline: 1rem;
-      border-right: 1px solid color-mix(in srgb, white 25%, transparent);
+      flex: 0 0 min(82vw, 22rem);
+      min-height: 13rem;
+      padding: 0.75rem 1rem 0.75rem 0;
+      border-right: 0;
+      border-bottom: 1px solid color-mix(in srgb, white 25%, transparent);
       scroll-snap-align: start;
     }
     .service-tab:first-child { padding-left: 0; }
     .service-tab:last-child { padding-right: 0; }
-    .service-tab__body { grid-template-columns: 4.5rem 1fr; }
+    .service-tab__body { margin-top: 1rem; grid-template-columns: 3.5rem 1fr; gap: 1rem; }
+    .service-tab__body > i { font-size: 3.25rem; }
+    .service-tab__body strong { font-size: 1.45rem; }
+    .service-tab__description { font-size: 0.88rem; }
     .service-tab__capabilities { display: flex; }
   }
 </style>

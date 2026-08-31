@@ -178,7 +178,7 @@ const headlineLines = hero.headlineLines.map((line) => ({
   }
 
   @keyframes hero-line-in {
-    from { opacity: 0; transform: translateY(1.5rem); }
+    from { opacity: 1; transform: translateY(1.5rem); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -188,7 +188,7 @@ const headlineLines = hero.headlineLines.map((line) => ({
   }
 
   @keyframes hero-copy-in {
-    from { opacity: 0; transform: translateY(0.75rem); }
+    from { opacity: 1; transform: translateY(0.75rem); }
     to { opacity: 1; transform: translateY(0); }
   }
 
@@ -199,7 +199,7 @@ const headlineLines = hero.headlineLines.map((line) => ({
 
   @media (max-width: 47.99rem) {
     .hero {
-      min-height: auto;
+      min-height: calc(100dvh - var(--header-height));
       padding-bottom: 0;
       display: flex;
       flex-direction: column;
@@ -207,8 +207,9 @@ const headlineLines = hero.headlineLines.map((line) => ({
 
     .hero__content {
       order: 1;
-      min-height: auto;
-      padding-block: 3rem 2.5rem;
+      min-height: min(35rem, calc(100dvh - var(--header-height) - 16rem));
+      padding-block: clamp(1.75rem, 5vh, 2.75rem) 1.75rem;
+      justify-content: flex-start;
     }
 
     .hero__image {
@@ -216,16 +217,73 @@ const headlineLines = hero.headlineLines.map((line) => ({
       position: relative;
       inset: auto;
       width: 100%;
-      height: clamp(19rem, 78vw, 32rem);
+      height: clamp(15.5rem, 41dvh, 19rem);
       margin-top: 0;
       object-position: 60% center;
     }
 
     .hero__wash { display: none; }
-    .hero__measure { width: 100%; }
-    .hero__eyebrow { margin-bottom: 3rem; }
-    .hero__title { width: auto; max-width: 8.7ch; font-size: clamp(3.5rem, 16vw, 5rem); }
+    .hero__measure { width: 100%; height: 1.5rem; margin-bottom: -0.85rem; }
+    .hero__eyebrow { margin: 0 0 1.65rem 0.75rem; font-size: 0.83rem; }
+    .hero__title {
+      width: auto;
+      max-width: 10.5ch;
+      margin-bottom: 1rem;
+      font-size: clamp(3.05rem, 13.8vw, 4.35rem);
+      line-height: 0.91;
+    }
     .hero__line > span { white-space: normal; }
-    .hero__copy { max-width: 32rem; }
+    .hero__rule { margin-bottom: 0.9rem; }
+    .hero__copy { max-width: 34rem; margin-bottom: 1.25rem; font-size: 0.93rem; line-height: 1.42; }
+    .hero__button { min-height: 3.4rem; }
+    .hero__measure,
+    .hero__eyebrow,
+    .hero__line > span,
+    .hero__line b,
+    .hero__rule,
+    .hero__copy,
+    .hero__button { animation: none; }
+  }
+
+  @media (max-width: 22rem) {
+    .hero__content { padding-block: 1.25rem; }
+    .hero__measure { height: 1rem; }
+    .hero__eyebrow { margin-bottom: 1rem; font-size: 0.75rem; }
+    .hero__title { font-size: 2.65rem; }
+    .hero__copy { margin-bottom: 0.9rem; font-size: 0.85rem; line-height: 1.35; }
+    .hero__button { min-height: 3.25rem; }
+  }
+
+  @media (max-width: 56rem) and (max-height: 32rem) {
+    .hero { min-height: calc(100dvh - var(--header-height)); }
+    .hero__content {
+      min-height: calc(100dvh - var(--header-height));
+      padding-block: 1rem;
+      justify-content: center;
+    }
+    .hero__image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-position: 67% center;
+    }
+    .hero__wash {
+      display: block;
+      background: linear-gradient(90deg, var(--color-ground) 0 42%, color-mix(in srgb, var(--color-ground) 90%, transparent) 56%, transparent 78%);
+    }
+    .hero__measure { display: none; }
+    .hero__eyebrow { margin: 0 0 0.75rem; font-size: 0.75rem; }
+    .hero__title { width: 49%; max-width: 15ch; margin-bottom: 0.5rem; font-size: clamp(2.1rem, 4.6vw, 2.65rem); line-height: 0.9; }
+    .hero__line > span { white-space: normal; }
+    .hero__rule { margin-bottom: 0.55rem; }
+    .hero__copy { width: 49%; max-width: 34rem; margin-bottom: 0.6rem; font-size: 0.72rem; line-height: 1.25; }
+    .hero__button { min-height: 3rem; padding-block: 0.55rem; }
+    .hero__eyebrow,
+    .hero__line > span,
+    .hero__line b,
+    .hero__rule,
+    .hero__copy,
+    .hero__button { animation: none; }
   }
 </style>
