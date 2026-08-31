@@ -206,7 +206,7 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 
 - Desktop composition is approximately 28% intro, 54% logo groups, and 18% metric/action rail. Logo groups form a 2×2 matrix; preserve empty space.
 - Official logos are absent. Any interim wordmark treatment is an explicitly replaceable content record, not an official mark. Do not convert logos into cards, a marquee, or individually animated tiles.
-- The secondary action is `Meet Us` and routes to the Join Us page.
+- The secondary action is `Contact Us` and routes to the Contact page.
 
 ### Delivery Process
 

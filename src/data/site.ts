@@ -444,7 +444,7 @@ export const selectedClients = {
   directClientLabel: "Direct Clients",
   returnClientCopy: "Clients return to JWC for new sites, upgrades and ongoing requirements.",
   casesAction: { label: "View Our Cases", href: withBasePath("/cases") },
-  meetUsAction: { label: "Meet Us", href: withBasePath("/join-us") },
+  contactAction: { label: "Contact Us", href: withBasePath("/contact") },
 } as const;
 
 export const deliverySteps: readonly DeliveryStep[] = [
