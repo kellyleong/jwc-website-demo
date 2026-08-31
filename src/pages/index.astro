@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSection from "../components/sections/HeroSection.astro";
+import CompanyIntroduction from "../components/sections/CompanyIntroduction.astro";
+import ServicesSection from "../components/sections/ServicesSection.astro";
+import HighlightedCases from "../components/sections/HighlightedCases.astro";
+import SelectedClients from "../components/sections/SelectedClients.astro";
+import DeliverySection from "../components/sections/DeliverySection.astro";
+import RepeatClients from "../components/sections/RepeatClients.astro";
+import JoinUsCta from "../components/sections/JoinUsCta.astro";
+---
+
+<BaseLayout
+  title="Joint Win Construction & Engineering Company Limited"
+  description="JWC delivers fit-out, renovation, E&M engineering and maintenance works across Macau, Hong Kong and Zhuhai."
+  activeNav="main"
+  bodyClass="home-page"
+>
+  <HeroSection />
+  <CompanyIntroduction />
+  <ServicesSection />
+  <HighlightedCases />
+  <SelectedClients />
+  <DeliverySection />
+  <RepeatClients />
+  <JoinUsCta />
+</BaseLayout>

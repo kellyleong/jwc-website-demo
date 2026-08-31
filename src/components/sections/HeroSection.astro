@@ -1,0 +1,231 @@
+---
+import { hero } from "../../data/site";
+
+const headlineLines = hero.headlineLines.map((line) => ({
+  text: line.replace(/\.$/, ""),
+  hasPeriod: line.endsWith("."),
+}));
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <img class="hero__image" src={hero.image.src} alt={hero.image.alt} fetchpriority="high" />
+  <div class="hero__wash" aria-hidden="true"></div>
+  <div class="hero__content section-shell">
+    <div class="measure-mark hero__measure" aria-hidden="true"><i></i><i></i></div>
+    <p class="hero__eyebrow">{hero.eyebrow}</p>
+    <h1 id="hero-title" class="hero__title">
+      {headlineLines.map((line, index) => (
+        <span class="hero__line" style={`--line-index:${index}`}>
+          <span>{line.text}{line.hasPeriod && <b>.</b>}</span>
+        </span>
+      ))}
+    </h1>
+    <div class="hero__rule" aria-hidden="true"></div>
+    <p class="hero__copy">
+      Since 2006, JWC has delivered <strong>fit-out, renovation, E&amp;M engineering and maintenance works</strong> for demanding commercial and operational environments across <strong>Macau, Hong Kong and Zhuhai.</strong>
+    </p>
+    <a class="button hero__button" href={hero.primaryAction.href}>
+      {hero.primaryAction.label}<i class="ph ph-arrow-right" aria-hidden="true"></i>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--color-ground);
+  }
+
+  .hero__image {
+    position: absolute;
+    z-index: -3;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    animation: hero-focus 900ms var(--ease-build) both;
+  }
+
+  .hero__wash {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      var(--color-ground) 0%,
+      var(--color-ground) 29%,
+      color-mix(in srgb, var(--color-ground) 98%, transparent) 37%,
+      color-mix(in srgb, var(--color-ground) 72%, transparent) 49%,
+      color-mix(in srgb, var(--color-ground) 24%, transparent) 61%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .hero__content {
+    min-height: 100dvh;
+    padding-block: calc(var(--header-height) + clamp(2rem, 4vh, 3.5rem)) 3rem;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero__measure {
+    position: relative;
+    width: min(38vw, 39rem);
+    height: 2.2rem;
+    margin-bottom: -1.5rem;
+    border-bottom: 1px dashed color-mix(in srgb, var(--color-navy) 25%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--color-navy) 25%, transparent);
+    transform-origin: left;
+    animation: measure-build var(--duration-entrance) var(--ease-build) 80ms both;
+  }
+
+  .hero__measure::before,
+  .hero__measure::after {
+    content: "+";
+    position: absolute;
+    color: var(--color-red);
+    font-weight: 600;
+  }
+
+  .hero__measure::before {
+    top: -0.65rem;
+    left: -0.22rem;
+  }
+
+  .hero__measure::after {
+    right: 0;
+    bottom: -0.72rem;
+    color: color-mix(in srgb, var(--color-navy) 25%, transparent);
+  }
+
+  .hero__eyebrow {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 clamp(4.4rem, 7vh, 5.6rem) 1rem;
+    color: var(--color-red-dark);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    animation: hero-copy-in var(--duration-content) var(--ease-build) 180ms both;
+  }
+
+  .hero__title {
+    width: min(42rem, 48vw);
+    max-width: none;
+    margin-bottom: 1.8rem;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 6vw, 5.9rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 0.98;
+    text-transform: uppercase;
+  }
+
+  .hero__line {
+    display: block;
+    overflow: hidden;
+  }
+
+  .hero__line > span {
+    display: block;
+    white-space: nowrap;
+    animation: hero-line-in 680ms var(--ease-build) calc(260ms + var(--line-index) * 80ms) both;
+  }
+
+  .hero__line b {
+    color: var(--color-red);
+    font-weight: inherit;
+    animation: punctuation-in 300ms var(--ease-build) calc(610ms + var(--line-index) * 80ms) both;
+  }
+
+  .hero__rule {
+    width: 5rem;
+    height: 0.125rem;
+    margin-bottom: 1.35rem;
+    transform-origin: left;
+    background: var(--color-red);
+    animation: measure-build var(--duration-content) var(--ease-build) 620ms both;
+  }
+
+  .hero__copy {
+    max-width: 34rem;
+    margin-bottom: 1.8rem;
+    font-size: clamp(1rem, 1.25vw, 1.22rem);
+    line-height: 1.5;
+    animation: hero-copy-in var(--duration-content) var(--ease-build) 680ms both;
+  }
+
+  .hero__button {
+    animation: hero-copy-in var(--duration-content) var(--ease-build) 760ms both;
+  }
+
+  @keyframes hero-focus {
+    from { clip-path: inset(0 0 0 100%); transform: scale(1.035); }
+    to { clip-path: inset(0); transform: scale(1); }
+  }
+
+  @keyframes measure-build {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+  }
+
+  @keyframes hero-line-in {
+    from { opacity: 0; transform: translateY(1.5rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes punctuation-in {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes hero-copy-in {
+    from { opacity: 0; transform: translateY(0.75rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 72rem) {
+    .hero__title { font-size: clamp(3.75rem, 7.6vw, 5.25rem); }
+    .hero__copy { max-width: 29rem; }
+  }
+
+  @media (max-width: 47.99rem) {
+    .hero {
+      min-height: auto;
+      padding-bottom: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero__content {
+      order: 1;
+      min-height: auto;
+      padding-block: 3rem 2.5rem;
+    }
+
+    .hero__image {
+      order: 2;
+      position: relative;
+      inset: auto;
+      width: 100%;
+      height: clamp(19rem, 78vw, 32rem);
+      margin-top: 0;
+      object-position: 60% center;
+    }
+
+    .hero__wash { display: none; }
+    .hero__measure { width: 100%; }
+    .hero__eyebrow { margin-bottom: 3rem; }
+    .hero__title { width: auto; max-width: 8.7ch; font-size: clamp(3.5rem, 16vw, 5rem); }
+    .hero__line > span { white-space: normal; }
+    .hero__copy { max-width: 32rem; }
+  }
+</style>

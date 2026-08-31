@@ -1,0 +1,653 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contact } from "../data/site";
+import { withBasePath } from "../utils/withBasePath";
+
+const contributionAreas = [
+  { icon: "ph-buildings", label: "Site & Construction" },
+  { icon: "ph-gauge", label: "E&M Engineering" },
+  { icon: "ph-clipboard-text", label: "Project Support" },
+] as const;
+---
+
+<BaseLayout
+  title="Join Us | Joint Win Construction & Engineering"
+  description="Explore career opportunities with Joint Win Construction & Engineering across site construction, E&M engineering and project support."
+  bodyClass="join-us-page"
+>
+  <section class="join-hero" aria-labelledby="join-hero-title">
+    <div class="join-hero__stage">
+      <div class="join-hero__media">
+        <picture>
+          <source media="(min-width: 60rem)" srcset={withBasePath("/assets/reference/join-us-page.png")} />
+          <img
+            class="join-hero__image"
+            src={withBasePath("/assets/process/understand-plan.png")}
+            alt="JWC construction and engineering team reviewing project plans together"
+            fetchpriority="high"
+          />
+        </picture>
+      </div>
+      <div class="join-hero__wash" aria-hidden="true"></div>
+
+      <div class="join-hero__content section-shell">
+        <div class="join-hero__measure" aria-hidden="true"><span>+</span></div>
+        <p class="join-hero__eyebrow">Join Us</p>
+        <h1 id="join-hero-title">
+          <span>Build your career<b aria-hidden="true">.</b></span>
+          <span>Build with purpose<b aria-hidden="true">.</b></span>
+        </h1>
+        <p class="join-hero__copy">
+          Join a practical, accountable team delivering<br />
+          construction and engineering work across<br />
+          <strong>Macau, Hong Kong and Zhuhai.</strong>
+        </p>
+        <div class="join-hero__actions">
+          <a class="button" href="#opportunities">
+            View Opportunities<i class="ph ph-arrow-right" aria-hidden="true"></i>
+          </a>
+          <a class="join-hero__text-link" href="#how-to-apply">How to Apply</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="contribution-band" aria-labelledby="contribution-title">
+      <div class="contribution-band__grid section-shell">
+        <div class="contribution-band__intro">
+          <p id="contribution-title">Where you could contribute</p>
+          <span aria-hidden="true"></span>
+        </div>
+        {contributionAreas.map((area) => (
+          <div class="contribution-band__item">
+            <i class={`ph ${area.icon}`} aria-hidden="true"></i>
+            <h2>{area.label}</h2>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="opportunities" class="opportunities" aria-labelledby="opportunities-title">
+    <div class="opportunities__shell section-shell">
+      <header class="opportunities__header" data-reveal>
+        <p class="section-label">Current Opportunities</p>
+        <h2 id="opportunities-title" class="display-heading">
+          Find your place on the team<span class="punctuation">.</span>
+        </h2>
+        <p class="body-copy">
+          We publish confirmed vacancies here as they become available.
+        </p>
+      </header>
+
+      <article class="vacancy-state" data-reveal>
+        <div class="vacancy-state__index" aria-hidden="true">00</div>
+        <div class="vacancy-state__content">
+          <i class="ph ph-hard-hat" aria-hidden="true"></i>
+          <div>
+            <p class="vacancy-state__status">Recruitment update</p>
+            <h3>No current openings</h3>
+            <p>
+              We are not recruiting for a specific position at the moment. You can still introduce
+              yourself to our team for future consideration.
+            </p>
+          </div>
+        </div>
+        <a href={`mailto:${contact.company.email}?subject=Career%20enquiry%20%E2%80%94%20JWC`}>
+          Send an introduction<i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <section id="how-to-apply" class="application" aria-labelledby="application-title">
+    <div class="application__blueprint" aria-hidden="true"></div>
+    <div class="application__shell section-shell">
+      <div class="application__heading" data-reveal>
+        <p class="section-label">How to Apply</p>
+        <h2 id="application-title" class="display-heading">
+          Start with a clear introduction<span class="punctuation">.</span>
+        </h2>
+      </div>
+      <div class="application__body" data-reveal>
+        <p>
+          Tell us which area of the business interests you, the experience you would bring and the
+          kind of work you are looking for. Attach your current CV and any relevant project record.
+        </p>
+        <a class="button button--outline" href={`mailto:${contact.company.email}?subject=Career%20enquiry%20%E2%80%94%20JWC`}>
+          Email Your CV<i class="ph ph-arrow-right" aria-hidden="true"></i>
+        </a>
+        <p class="application__email">{contact.company.email}</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .join-hero {
+    background: var(--color-ground);
+  }
+
+  .join-hero__stage {
+    position: relative;
+    min-height: clamp(36rem, 64vh, 43rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .join-hero__media {
+    position: absolute;
+    z-index: -3;
+    inset: 0 0 0 39%;
+    overflow: hidden;
+  }
+
+  .join-hero__media picture {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .join-hero__image {
+    position: absolute;
+    top: -15.28%;
+    right: 0;
+    width: auto;
+    max-width: none;
+    height: 150%;
+    animation: join-image-in 900ms var(--ease-build) both;
+  }
+
+  .join-hero__wash {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--color-ground) 0%, var(--color-ground) 30%, color-mix(in srgb, var(--color-ground) 96%, transparent) 39%, color-mix(in srgb, var(--color-ground) 73%, transparent) 51%, transparent 70%),
+      linear-gradient(0deg, color-mix(in srgb, var(--color-ground) 20%, transparent), transparent 42%);
+    pointer-events: none;
+  }
+
+  .join-hero__content {
+    min-height: inherit;
+    padding-block: clamp(3.5rem, 7vh, 5.5rem) 3.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .join-hero__measure {
+    position: relative;
+    width: min(40rem, 43vw);
+    height: 1.9rem;
+    margin-bottom: clamp(3.25rem, 6vh, 5rem);
+    border-bottom: 1px dashed color-mix(in srgb, var(--color-navy) 26%, transparent);
+    border-left: 1px solid color-mix(in srgb, var(--color-navy) 25%, transparent);
+    transform-origin: left;
+    animation: join-measure-in 720ms var(--ease-build) 100ms both;
+  }
+
+  .join-hero__measure::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -3rem;
+    width: 1px;
+    height: 5.5rem;
+    background: color-mix(in srgb, var(--color-navy) 22%, transparent);
+  }
+
+  .join-hero__measure span {
+    position: absolute;
+    top: -0.8rem;
+    left: -0.35rem;
+    color: var(--color-red);
+    font-size: 1.45rem;
+  }
+
+  .join-hero__eyebrow {
+    margin: 0 0 clamp(3.5rem, 6vh, 5.1rem) 1rem;
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    animation: join-copy-in 520ms var(--ease-build) 180ms both;
+  }
+
+  .join-hero h1 {
+    max-width: 9ch;
+    margin-bottom: 1.7rem;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(4.5rem, 6.2vw, 6.4rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+    text-transform: uppercase;
+    animation: join-copy-in 620ms var(--ease-build) 260ms both;
+  }
+
+  .join-hero h1 span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .join-hero h1 b {
+    color: var(--color-red);
+    font-weight: inherit;
+  }
+
+  .join-hero__copy {
+    max-width: 35rem;
+    margin-bottom: 1.85rem;
+    color: var(--color-ink);
+    font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+    line-height: 1.45;
+    animation: join-copy-in 620ms var(--ease-build) 340ms both;
+  }
+
+  .join-hero__copy strong { font-weight: 600; }
+
+  .join-hero__actions {
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    animation: join-copy-in 620ms var(--ease-build) 420ms both;
+  }
+
+  .join-hero__text-link {
+    position: relative;
+    min-height: 3.75rem;
+    padding-inline: 0.15rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-ink);
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .join-hero__text-link::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0.25rem;
+    left: 0;
+    height: 0.125rem;
+    transform-origin: left;
+    background: var(--color-red);
+    transition: transform var(--duration-control) var(--ease-build);
+  }
+
+  .join-hero__text-link:hover::after { transform: scaleX(0.45); }
+
+  .contribution-band {
+    position: relative;
+    border-top: 2px solid var(--color-red);
+    overflow: hidden;
+    background: var(--color-navy-deep);
+    color: white;
+  }
+
+  .contribution-band::before {
+    content: "";
+    position: absolute;
+    inset: 0 82% 0 0;
+    background:
+      linear-gradient(color-mix(in srgb, #79a3cb 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, #79a3cb 10%, transparent) 1px, transparent 1px);
+    background-size: 1.2rem 1.2rem;
+    opacity: 0.85;
+  }
+
+  .contribution-band__grid {
+    position: relative;
+    min-height: 12rem;
+    padding-block: 2.8rem;
+    display: grid;
+    grid-template-columns: 1.15fr repeat(3, 1fr);
+    align-items: stretch;
+  }
+
+  .contribution-band__intro {
+    padding-right: 2.25rem;
+  }
+
+  .contribution-band__intro p {
+    margin-bottom: 0.65rem;
+    color: #ff3931;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .contribution-band__intro span {
+    width: 2.35rem;
+    height: 0.125rem;
+    display: block;
+    background: var(--color-red);
+  }
+
+  .contribution-band__item {
+    padding-inline: clamp(2rem, 4vw, 4.5rem);
+    display: grid;
+    grid-template-columns: 4.9rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1.5rem;
+    border-left: 1px solid color-mix(in srgb, white 45%, transparent);
+  }
+
+  .contribution-band__item i {
+    color: white;
+    font-size: 4.3rem;
+  }
+
+  .contribution-band__item h2 {
+    margin: 0;
+    color: white;
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 2vw, 2rem);
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .opportunities {
+    padding-block: clamp(5.5rem, 10vw, 9rem);
+    background: var(--color-surface);
+  }
+
+  .opportunities__shell {
+    display: grid;
+    grid-template-columns: minmax(17rem, 0.75fr) minmax(30rem, 1.25fr);
+    gap: clamp(4rem, 9vw, 9rem);
+    align-items: start;
+  }
+
+  .opportunities__header .section-label::after,
+  .application .section-label::after {
+    content: "";
+    width: 2.75rem;
+    height: 0.125rem;
+    display: block;
+    background: currentColor;
+  }
+
+  .opportunities__header .display-heading,
+  .application .display-heading {
+    max-width: 10ch;
+    font-size: clamp(3.8rem, 5.2vw, 5.6rem);
+  }
+
+  .vacancy-state {
+    position: relative;
+    min-height: 25rem;
+    padding: clamp(2rem, 4vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-top: 3px solid var(--color-red);
+    border-bottom: 1px solid var(--color-rule);
+    background: var(--color-ground);
+  }
+
+  .vacancy-state__index {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    color: color-mix(in srgb, var(--color-navy) 25%, transparent);
+    font-family: var(--font-display);
+    font-size: 3.2rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .vacancy-state__content {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .vacancy-state__content > i {
+    width: 4.5rem;
+    height: 4.5rem;
+    display: grid;
+    place-items: center;
+    background: var(--color-navy);
+    color: white;
+    font-size: 2.5rem;
+  }
+
+  .vacancy-state__status {
+    margin-bottom: 0.75rem;
+    color: var(--color-red-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .vacancy-state h3 {
+    margin-bottom: 0.9rem;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 4.2vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .vacancy-state__content p:last-child {
+    max-width: 34rem;
+    margin-bottom: 0;
+    color: var(--color-muted);
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+
+  .vacancy-state > a {
+    width: fit-content;
+    min-height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-ink);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .vacancy-state > a i {
+    color: var(--color-red);
+    font-size: 1.35rem;
+    transition: transform var(--duration-hover) var(--ease-build);
+  }
+
+  .vacancy-state > a:hover { color: var(--color-red-dark); }
+  .vacancy-state > a:hover i { transform: translate(0.2rem, -0.2rem); }
+
+  .application {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-ground);
+  }
+
+  .application__shell {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(5.5rem, 9vw, 8rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(4rem, 9vw, 10rem);
+  }
+
+  .application__body {
+    padding-top: 3.8rem;
+  }
+
+  .application__body > p:first-child {
+    max-width: 38rem;
+    margin-bottom: 2rem;
+    color: var(--color-ink);
+    font-size: clamp(1.08rem, 1.5vw, 1.3rem);
+    line-height: 1.6;
+  }
+
+  .application__email {
+    margin: 1rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+
+  .application__blueprint {
+    position: absolute;
+    right: -8rem;
+    bottom: -11rem;
+    width: 34rem;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--color-navy) 11%, transparent);
+    border-radius: 50%;
+  }
+
+  .application__blueprint::before,
+  .application__blueprint::after {
+    content: "";
+    position: absolute;
+    background: color-mix(in srgb, var(--color-navy) 11%, transparent);
+  }
+
+  .application__blueprint::before { inset: 50% -10rem auto; height: 1px; }
+  .application__blueprint::after { inset: -10rem auto -10rem 50%; width: 1px; }
+
+  @keyframes join-image-in {
+    from { clip-path: inset(0 0 0 100%); transform: scale(1.035); }
+    to { clip-path: inset(0); transform: scale(1); }
+  }
+
+  @keyframes join-measure-in {
+    from { opacity: 0; transform: scaleX(0); }
+    to { opacity: 1; transform: scaleX(1); }
+  }
+
+  @keyframes join-copy-in {
+    from { opacity: 0; transform: translateY(0.9rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 78rem) {
+    .join-hero h1 { font-size: clamp(4.15rem, 6.5vw, 5.5rem); }
+    .contribution-band__grid { grid-template-columns: 0.9fr repeat(3, 1fr); }
+    .contribution-band__item { padding-inline: 1.5rem; grid-template-columns: 3.5rem minmax(0, 1fr); gap: 1rem; }
+    .contribution-band__item i { font-size: 3.3rem; }
+  }
+
+  @media (max-width: 59.99rem) {
+    .join-hero__stage { display: flex; flex-direction: column; }
+
+    .join-hero__content {
+      order: 1;
+      width: 100%;
+      min-height: 38rem;
+      padding-block: 3.5rem;
+    }
+
+    .join-hero__media {
+      order: 2;
+      position: relative;
+      inset: auto;
+      width: 100%;
+      height: clamp(23rem, 62vw, 35rem);
+    }
+
+    .join-hero__image {
+      top: 0;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .join-hero__wash { display: none; }
+    .join-hero__measure { width: 82%; margin-bottom: 3.5rem; }
+    .join-hero__eyebrow { margin-bottom: 3.5rem; }
+    .join-hero h1 { font-size: clamp(4.25rem, 11vw, 6rem); }
+
+    .contribution-band__grid {
+      grid-template-columns: repeat(3, 1fr);
+      row-gap: 2rem;
+    }
+
+    .contribution-band__intro { grid-column: 1 / -1; }
+
+    .contribution-band__item {
+      padding: 1.5rem 1.5rem 0;
+      grid-template-columns: 3rem minmax(0, 1fr);
+      border-left: 0;
+      border-top: 1px solid color-mix(in srgb, white 40%, transparent);
+    }
+
+    .contribution-band__item + .contribution-band__item { border-left: 1px solid color-mix(in srgb, white 30%, transparent); }
+    .contribution-band__item i { font-size: 2.9rem; }
+
+    .opportunities__shell,
+    .application__shell {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .opportunities__header .display-heading,
+    .application .display-heading { max-width: 12ch; }
+    .application__body { padding-top: 0; }
+  }
+
+  @media (max-width: 39rem) {
+    .join-hero__content { min-height: 0; padding-block: 2.75rem 3rem; }
+    .join-hero__measure { height: 1.5rem; margin-bottom: 2.5rem; }
+    .join-hero__measure::after { bottom: -2.5rem; height: 4.5rem; }
+    .join-hero__eyebrow { margin-bottom: 2.75rem; font-size: 1rem; }
+    .join-hero h1 { max-width: 10.5ch; font-size: clamp(3.35rem, 15.5vw, 4.65rem); }
+    .join-hero h1 span { white-space: normal; }
+    .join-hero__copy br { display: none; }
+    .join-hero__actions { align-items: stretch; flex-direction: column; gap: 0.75rem; }
+    .join-hero__actions .button,
+    .join-hero__text-link { width: 100%; }
+    .join-hero__text-link { justify-content: center; }
+    .join-hero__image { height: 20rem; }
+
+    .contribution-band__grid { grid-template-columns: 1fr; padding-block: 2.5rem; }
+    .contribution-band__intro { grid-column: auto; }
+    .contribution-band__item,
+    .contribution-band__item + .contribution-band__item {
+      min-height: 6.25rem;
+      padding-inline: 0;
+      border-left: 0;
+    }
+
+    .contribution-band__item h2 { font-size: 1.55rem; }
+    .opportunities { padding-block: 4.5rem; }
+    .opportunities__header .display-heading,
+    .application .display-heading { font-size: clamp(3.25rem, 14vw, 4.3rem); }
+
+    .vacancy-state { min-height: 27rem; padding: 1.5rem; }
+    .vacancy-state__content { grid-template-columns: 1fr; padding-top: 2.25rem; }
+    .vacancy-state__content > i { width: 3.75rem; height: 3.75rem; font-size: 2.1rem; }
+    .vacancy-state h3 { font-size: 2.65rem; }
+    .application__shell { padding-block: 4.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .join-hero__image,
+    .join-hero__measure,
+    .join-hero__eyebrow,
+    .join-hero h1,
+    .join-hero__copy,
+    .join-hero__actions { animation: none; }
+
+    .join-hero__text-link::after,
+    .vacancy-state > a i { transition: none; }
+    .vacancy-state > a:hover i { transform: none; }
+  }
+</style>

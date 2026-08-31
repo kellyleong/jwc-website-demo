@@ -1,0 +1,161 @@
+---
+import type { CaseRecord } from "../../data/site";
+import { withBasePath } from "../../utils/withBasePath";
+
+interface Props {
+  caseRecord: CaseRecord;
+  eager?: boolean;
+  headingLevel?: "h2" | "h3";
+  hidden?: boolean;
+  featured?: boolean;
+}
+
+const {
+  caseRecord,
+  eager = false,
+  headingLevel = "h3",
+  hidden = false,
+  featured = false,
+} = Astro.props;
+const CardHeading = headingLevel;
+
+const categoryIcons: Record<CaseRecord["category"], string> = {
+  "Airports & Facilities": "ph-airplane-tilt",
+  Office: "ph-buildings",
+  Retail: "ph-shopping-bag",
+  "Food & Beverage": "ph-fork-knife",
+  Exhibition: "ph-presentation-chart",
+  Residential: "ph-house-line",
+  "E&M": "ph-gear-six",
+};
+---
+
+<article
+  class="case-card"
+  data-case-category={caseRecord.category}
+  data-case-featured={featured ? "true" : "false"}
+  hidden={hidden}
+>
+  <a class="case-card__link" href={withBasePath(`/cases/${caseRecord.slug}`)} aria-label={`View ${caseRecord.name} case`}>
+    <span class="case-card__media">
+      <img
+        src={caseRecord.image.src}
+        alt={caseRecord.image.alt}
+        loading={eager ? "eager" : "lazy"}
+      />
+    </span>
+    <span class="case-card__content">
+      <span class="case-card__category">
+        <i class={`ph ${categoryIcons[caseRecord.category]}`} aria-hidden="true"></i>
+        {caseRecord.category}
+      </span>
+      <CardHeading>{caseRecord.name}</CardHeading>
+      <span class="case-card__meta">{caseRecord.location} <span aria-hidden="true">·</span> {caseRecord.year}</span>
+      <span class="case-card__scope">{caseRecord.scope}</span>
+      <span class="case-card__rule" aria-hidden="true"></span>
+    </span>
+  </a>
+</article>
+
+<style>
+  .case-card {
+    min-width: 0;
+    border: 1px solid color-mix(in srgb, var(--color-navy) 11%, transparent);
+    border-radius: 0.125rem;
+    background: var(--color-surface-raised);
+    box-shadow: 0 0.25rem 0.45rem color-mix(in srgb, var(--color-navy) 8%, transparent);
+    transition:
+      border-color var(--duration-hover) var(--ease-build),
+      transform var(--duration-hover) var(--ease-build);
+  }
+
+  .case-card:hover {
+    border-color: color-mix(in srgb, var(--color-red) 55%, transparent);
+    transform: translateY(-0.2rem);
+  }
+
+  .case-card__link {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .case-card__media {
+    position: relative;
+    aspect-ratio: 1.47;
+    display: block;
+    overflow: hidden;
+    background: var(--color-navy-deep);
+  }
+
+  .case-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-content) var(--ease-build);
+  }
+
+  .case-card:hover .case-card__media img {
+    transform: scale(1.025);
+  }
+
+  .case-card__content {
+    min-height: 12rem;
+    padding: 1rem 1.25rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .case-card__category {
+    margin-bottom: 0.55rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  .case-card__category i {
+    color: var(--color-red);
+    font-size: 1.25rem;
+  }
+
+  .case-card__content :is(h2, h3) {
+    margin-top: 0;
+    margin-bottom: 0.85rem;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.16;
+    text-transform: uppercase;
+  }
+
+  .case-card__meta,
+  .case-card__scope {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  .case-card__rule {
+    width: 2.4rem;
+    height: 0.125rem;
+    margin-top: auto;
+    transform-origin: left;
+    background: var(--color-red);
+    transition: transform var(--duration-control) var(--ease-build);
+  }
+
+  .case-card:hover .case-card__rule {
+    transform: scaleX(1.6);
+  }
+
+  @media (max-width: 47.99rem) {
+    .case-card__media { aspect-ratio: 1.5; }
+    .case-card__content { min-height: 11rem; }
+  }
+</style>

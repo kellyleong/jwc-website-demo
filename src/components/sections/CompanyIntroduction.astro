@@ -1,0 +1,422 @@
+---
+import { companyIntroduction } from "../../data/site";
+import { withBasePath } from "../../utils/withBasePath";
+
+const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-users-three"];
+---
+
+<section id="who-we-are" class="company" aria-labelledby="company-title">
+  <div class="company__main">
+    <div class="company__content section-shell" data-reveal>
+      <p class="section-label">{companyIntroduction.eyebrow}</p>
+      <h2 id="company-title" class="display-heading company__heading">
+        Experience that delivers<span class="punctuation">.</span><br />People who stay accountable<span class="punctuation">.</span>
+      </h2>
+      <div class="company__principles">
+        {[companyIntroduction.vision, companyIntroduction.mission].map((principle) => (
+          <article>
+            <h3>{principle.title}</h3>
+            <p>{principle.copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+    <div class="company__image-wrap" data-reveal>
+      <picture>
+        <source
+          media="(min-width: 68.01rem) and (min-aspect-ratio: 3/2)"
+          srcset={withBasePath("/assets/reference/company-introduction.png")}
+        />
+        <img
+          src={companyIntroduction.image.src}
+          alt="China Taiping reception interior overlooking the airport apron"
+          loading="lazy"
+        />
+      </picture>
+    </div>
+    <div class="company__commitment">
+      <span>{companyIntroduction.commitment}</span>
+    </div>
+  </div>
+
+  <aside class="company__rail" aria-label="Company statistics" data-statistics data-reveal>
+    <div class="company__stats">
+      {companyIntroduction.statistics.map((statistic, index) => (
+        <div class:list={["company__stat", { "company__stat--prefix": index === 0 }]}>
+          <i class={`ph ${statisticIcons[index]}`} aria-hidden="true"></i>
+          <p>
+            <span class="company__stat-label">{statistic.label}</span>
+            <strong
+              data-count={statistic.value}
+              data-suffix={statistic.suffix}
+              aria-label={`${statistic.value}${statistic.suffix} ${statistic.label}`}
+            >0{statistic.suffix}</strong>
+          </p>
+        </div>
+      ))}
+      <div class="company__location">
+        <i class="ph ph-map-pin" aria-hidden="true"></i>
+        <span>{companyIntroduction.locationLine}</span>
+      </div>
+    </div>
+  </aside>
+</section>
+
+<script>
+  const statistics = document.querySelector<HTMLElement>("[data-statistics]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const showFinalValues = () => {
+    statistics?.querySelectorAll<HTMLElement>("[data-count]").forEach((counter) => {
+      counter.textContent = `${counter.dataset.count ?? "0"}${counter.dataset.suffix ?? ""}`;
+    });
+  };
+
+  if (!statistics || reduceMotion) {
+    showFinalValues();
+  } else {
+    const observer = new IntersectionObserver(
+      ([entry], currentObserver) => {
+        if (!entry?.isIntersecting) return;
+        statistics.querySelectorAll<HTMLElement>("[data-count]").forEach((counter, index) => {
+          const target = Number(counter.dataset.count ?? 0);
+          const suffix = counter.dataset.suffix ?? "";
+          const start = performance.now() + index * 90;
+          const duration = 720;
+          const update = (now: number) => {
+            const progress = Math.min(1, Math.max(0, (now - start) / duration));
+            const eased = 1 - Math.pow(1 - progress, 4);
+            counter.textContent = `${Math.round(target * eased)}${suffix}`;
+            if (progress < 1) requestAnimationFrame(update);
+          };
+          requestAnimationFrame(update);
+        });
+        currentObserver.disconnect();
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(statistics);
+  }
+</script>
+
+<style>
+  .company {
+    height: auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 3.13fr) minmax(19rem, 1fr);
+    background: var(--color-ground);
+  }
+
+  .company__main {
+    position: relative;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4.5rem;
+    grid-template-rows: auto clamp(18rem, 20vw, 20.5rem);
+    overflow: hidden;
+  }
+
+  .company__content {
+    position: relative;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    padding-block: clamp(2.75rem, 4vw, 3.5rem) clamp(1.5rem, 2vw, 2rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .company__content::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 8% 4% 0 18%;
+    background:
+      linear-gradient(90deg, transparent 49.8%, color-mix(in srgb, var(--color-navy) 8%, transparent) 50%, transparent 50.2%),
+      linear-gradient(0deg, transparent 49.8%, color-mix(in srgb, var(--color-navy) 8%, transparent) 50%, transparent 50.2%),
+      repeating-linear-gradient(90deg, transparent 0 5rem, color-mix(in srgb, var(--color-navy) 4%, transparent) 5.04rem 5.08rem),
+      repeating-linear-gradient(0deg, transparent 0 4rem, color-mix(in srgb, var(--color-navy) 4%, transparent) 4.04rem 4.08rem);
+    pointer-events: none;
+  }
+
+  .company__heading {
+    max-width: 27ch;
+    margin-bottom: clamp(1.75rem, 2.5vw, 2.5rem);
+    font-size: clamp(3.25rem, 4.05vw, 4.5rem);
+    line-height: 0.96;
+  }
+
+  .company__principles {
+    max-width: 55rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .company__principles h3 {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .company__principles h3::after {
+    content: "";
+    flex: 1;
+    height: 0.125rem;
+    background: var(--color-red);
+  }
+
+  .company__principles p {
+    max-width: 30ch;
+    margin-bottom: 0;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  .company__image-wrap {
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 20rem;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .company__image-wrap::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: -18rem;
+    left: -12%;
+    width: 128%;
+    height: 24rem;
+    border-radius: 50%;
+    transform: rotate(-3deg);
+    background: var(--color-ground);
+    pointer-events: none;
+  }
+
+  .company__image-wrap picture {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+  }
+
+  .company__image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  @media (min-width: 68.01rem) and (min-aspect-ratio: 3 / 2) {
+    .company__image-wrap img {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: auto;
+      max-width: none;
+      height: 286%;
+      object-fit: fill;
+    }
+  }
+
+  .company__commitment {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    min-width: 0;
+    display: grid;
+    place-items: center;
+    background: var(--color-ground);
+    color: var(--color-red-dark);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  .company__commitment::before,
+  .company__commitment::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 1px;
+    background: var(--color-red);
+  }
+
+  .company__commitment::before {
+    top: 3.1rem;
+    height: calc(30% - 12rem);
+  }
+
+  .company__commitment::after {
+    bottom: 0;
+    height: calc(70% - 9.5rem);
+  }
+
+  .company__commitment span {
+    position: absolute;
+    z-index: 1;
+    top: 30%;
+    left: 0;
+    padding-block: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+    transform: translate(-50%, -50%) rotate(180deg);
+    background: var(--color-ground);
+  }
+
+  .company__commitment span::after {
+    content: "+";
+    font-size: 1rem;
+  }
+
+  .company__rail {
+    min-width: 0;
+    padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.8rem, 3vw, 3rem);
+    display: flex;
+    align-items: stretch;
+    background:
+      radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-blueprint) 48%, transparent), transparent 38%),
+      linear-gradient(135deg, var(--color-navy), var(--color-navy-deep));
+    color: var(--color-on-dark);
+  }
+
+  .company__stats {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .company__stat {
+    flex: 1;
+    min-height: 6.2rem;
+    display: grid;
+    grid-template-columns: 4.4rem 1fr;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, white 23%, transparent);
+  }
+
+  .company__stat > i {
+    color: white;
+    font-size: 3.2rem;
+    font-weight: 300;
+  }
+
+  .company__stat p {
+    margin-bottom: 0;
+    display: grid;
+  }
+
+  .company__stat-label {
+    order: 2;
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+
+  .company__stat--prefix .company__stat-label {
+    order: 0;
+  }
+
+  .company__stat strong {
+    font-family: var(--font-display);
+    font-size: 3.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .company__location {
+    min-height: 5.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .company__location i {
+    font-size: 2.35rem;
+  }
+
+  @media (max-width: 68rem) {
+    .company { grid-template-columns: minmax(0, 2.6fr) minmax(17rem, 1fr); }
+    .company__main {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto minmax(18rem, 1fr) 3.25rem;
+    }
+    .company__content { grid-column: 1; }
+    .company__image-wrap { grid-column: 1; }
+    .company__commitment {
+      grid-column: 1;
+      grid-row: 3;
+      min-height: 3.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-inline: var(--page-gutter);
+      border-top: 1px solid var(--color-red);
+    }
+    .company__commitment::before,
+    .company__commitment::after { display: none; }
+    .company__commitment span {
+      position: static;
+      padding: 0;
+      writing-mode: horizontal-tb;
+      transform: none;
+      background: transparent;
+    }
+    .company__image-wrap::after { display: none; }
+    .company__content { padding-right: var(--page-gutter); }
+    .company__heading { font-size: clamp(3.1rem, 5.7vw, 4.7rem); }
+  }
+
+  @media (min-width: 48rem) and (max-width: 68rem) and (max-height: 52rem) {
+    .company {
+      height: auto;
+      min-height: 0;
+    }
+
+    .company__main {
+      grid-template-rows: auto minmax(18rem, 34vw) 3.25rem;
+    }
+
+    .company__rail {
+      padding-block: 2rem;
+    }
+
+    .company__stat { min-height: 5.8rem; }
+    .company__location { min-height: 5rem; }
+  }
+
+  @media (max-width: 47.99rem) {
+    .company {
+      height: auto;
+      display: flex;
+      min-height: 0;
+      flex-direction: column;
+    }
+
+    .company__main { display: contents; }
+    .company__content { order: 1; padding-block: 4rem 2.5rem; }
+    .company__commitment { order: 2; }
+    .company__image-wrap { order: 3; height: 20rem; }
+    .company__rail { order: 4; padding: 2.5rem var(--page-gutter); }
+    .company__principles { grid-template-columns: 1fr; gap: 2rem; }
+    .company__principles p { max-width: 38ch; }
+    .company__stat { min-height: 6.6rem; }
+  }
+</style>

@@ -1,0 +1,376 @@
+---
+import { casesById, services } from "../../data/site";
+
+const serviceIcons = ["ph-blueprint", "ph-gauge", "ph-wrench"];
+const servicePayload = services.map((service) => {
+  const highlightedCase = casesById.get(service.highlightedCaseId);
+  if (!highlightedCase) throw new Error(`Missing highlighted case for ${service.id}`);
+  return { id: service.id, case: { image: highlightedCase.image } };
+});
+const initialService = servicePayload[0];
+---
+
+<section id="services" class="services" aria-labelledby="services-title" data-services>
+  <div class="services__upper">
+    <div class="services__intro" data-reveal>
+      <p class="section-label">What We Do</p>
+      <h2 id="services-title" class="display-heading services__heading">
+        <span>Integrated services<b aria-hidden="true">.</b></span>
+        <span>Specialist capabilities<b aria-hidden="true">.</b></span>
+      </h2>
+      <span class="services__measure" aria-hidden="true"></span>
+    </div>
+
+    <div
+      id="service-highlight-panel"
+      class="services__media"
+      role="tabpanel"
+      aria-labelledby={`service-tab-${initialService.id}`}
+      data-service-media
+      data-reveal
+    >
+      <img
+        src={initialService.case.image.src}
+        alt={initialService.case.image.alt}
+        loading="lazy"
+        data-service-image
+      />
+    </div>
+  </div>
+
+  <div class="services__tabs" role="tablist" aria-label="Services">
+    {services.map((service, index) => (
+      <button
+        class:list={["service-tab", { "is-selected": index === 0 }]}
+        id={`service-tab-${service.id}`}
+        type="button"
+        role="tab"
+        aria-selected={index === 0 ? "true" : "false"}
+        aria-controls="service-highlight-panel"
+        aria-label={service.name}
+        tabindex={index === 0 ? 0 : -1}
+        data-service-id={service.id}
+      >
+        <span class="service-tab__number">{service.number}</span>
+        <span class="service-tab__rule" aria-hidden="true"></span>
+        <span class="service-tab__body">
+          <i class={`ph ${serviceIcons[index]}`} aria-hidden="true"></i>
+          <span>
+            <strong>{service.name}</strong>
+            <span class="service-tab__description">{service.description}</span>
+            <span class="service-tab__capabilities">
+              {service.capabilities.map((capability) => <span>{capability}</span>)}
+            </span>
+          </span>
+        </span>
+      </button>
+    ))}
+  </div>
+  <script type="application/json" data-services-json set:html={JSON.stringify(servicePayload)}></script>
+</section>
+
+<script>
+  type ServicePayload = {
+    id: string;
+    case: {
+      image: { src: string; alt: string };
+    };
+  };
+
+  const servicesRoot = document.querySelector<HTMLElement>("[data-services]");
+  const jsonNode = servicesRoot?.querySelector<HTMLScriptElement>("[data-services-json]");
+  const serviceData: ServicePayload[] = jsonNode?.textContent ? JSON.parse(jsonNode.textContent) : [];
+  const tabs = Array.from(servicesRoot?.querySelectorAll<HTMLButtonElement>("[role='tab']") ?? []);
+  const media = servicesRoot?.querySelector<HTMLElement>("[data-service-media]");
+  const image = servicesRoot?.querySelector<HTMLImageElement>("[data-service-image]");
+  const panel = servicesRoot?.querySelector<HTMLElement>("[role='tabpanel']");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let transitionTimer: number | undefined;
+
+  for (const service of serviceData) {
+    const preload = new Image();
+    preload.src = service.case.image.src;
+  }
+
+  const selectService = (nextIndex: number, shouldFocus = true) => {
+    const nextTab = tabs[nextIndex];
+    const service = serviceData.find((item) => item.id === nextTab?.dataset.serviceId);
+    if (!nextTab || !service || !image) return;
+
+    tabs.forEach((tab, index) => {
+      const isSelected = index === nextIndex;
+      tab.classList.toggle("is-selected", isSelected);
+      tab.setAttribute("aria-selected", String(isSelected));
+      tab.tabIndex = isSelected ? 0 : -1;
+    });
+
+    if (transitionTimer !== undefined) window.clearTimeout(transitionTimer);
+    if (!reduceMotion) media?.classList.add("is-changing");
+    transitionTimer = window.setTimeout(() => {
+      image.src = service.case.image.src;
+      image.alt = service.case.image.alt;
+      panel?.setAttribute("aria-labelledby", nextTab.id);
+      media?.classList.remove("is-changing");
+      transitionTimer = undefined;
+    }, reduceMotion ? 0 : 180);
+
+    if (shouldFocus) nextTab.focus();
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => selectService(index, false));
+    tab.addEventListener("keydown", (event) => {
+      let nextIndex = index;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % tabs.length;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + tabs.length) % tabs.length;
+      else if (event.key === "Home") nextIndex = 0;
+      else if (event.key === "End") nextIndex = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      selectService(nextIndex);
+    });
+  });
+</script>
+
+<style>
+  .services {
+    height: auto;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: clamp(24rem, 28vw, 28rem) auto;
+    background: var(--color-ground);
+  }
+
+  .services__upper {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+  }
+
+  .services__intro {
+    position: relative;
+    z-index: 1;
+    padding: clamp(4.25rem, 8vh, 4.75rem) var(--page-gutter) 2rem;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .services__heading {
+    max-width: none;
+    margin-bottom: 0;
+    font-size: clamp(3.8rem, 5.15vw, 5.3rem);
+  }
+
+  .services__heading > span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .services__heading b {
+    color: var(--color-red);
+    font: inherit;
+  }
+
+  .services__measure {
+    position: absolute;
+    right: clamp(2.5rem, 6vw, 6rem);
+    bottom: clamp(2rem, 4vw, 3.5rem);
+    width: clamp(10rem, 17vw, 17rem);
+    height: clamp(5.5rem, 9vw, 8rem);
+    border-right: 1px solid color-mix(in srgb, var(--color-navy) 20%, transparent);
+    border-bottom: 1px dashed color-mix(in srgb, var(--color-navy) 20%, transparent);
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  .services__measure::before,
+  .services__measure::after {
+    content: "+";
+    position: absolute;
+    color: color-mix(in srgb, var(--color-navy) 42%, transparent);
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .services__measure::before {
+    right: -0.34rem;
+    top: -0.45rem;
+  }
+
+  .services__measure::after {
+    right: -0.34rem;
+    bottom: -0.48rem;
+    color: var(--color-red);
+  }
+
+  .services .section-label {
+    display: block;
+  }
+
+  .services .section-label::after {
+    content: "";
+    width: 2.5rem;
+    height: 0.125rem;
+    margin-top: 0.9rem;
+    display: block;
+    background: var(--color-rule-strong);
+  }
+
+  .services__media {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+    background: var(--color-navy-deep);
+  }
+
+  .services__media img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+    transition:
+      opacity 180ms var(--ease-exit),
+      transform var(--duration-content) var(--ease-build),
+      clip-path var(--duration-content) var(--ease-build);
+  }
+
+  .services__media.is-changing img {
+    opacity: 0;
+    transform: translateX(-1rem) scale(1.025);
+    clip-path: inset(0 10% 0 0);
+  }
+
+  .services__tabs {
+    min-height: 0;
+    padding: 2.5rem var(--page-gutter) 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: var(--color-navy);
+    color: white;
+  }
+
+  .service-tab {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    padding: 0 clamp(1.5rem, 3vw, 4rem);
+    border: 0;
+    border-right: 1px solid color-mix(in srgb, white 25%, transparent);
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color var(--duration-control) var(--ease-build);
+  }
+
+  .service-tab:first-child { padding-left: 0; }
+  .service-tab:last-child { border-right: 0; padding-right: 0; }
+  .service-tab:hover,
+  .service-tab.is-selected { background: color-mix(in srgb, white 4%, transparent); }
+
+  .service-tab__number {
+    display: inline-block;
+    color: #ff4138;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+  }
+
+  .service-tab__rule {
+    display: inline-block;
+    width: calc(100% - 3.4rem);
+    height: 0.125rem;
+    margin: 0 0 0.45rem 0.75rem;
+    transform: scaleX(0.78);
+    transform-origin: left;
+    background: var(--color-red);
+    transition: transform var(--duration-control) var(--ease-build);
+  }
+
+  .service-tab.is-selected .service-tab__rule { transform: scaleX(1); }
+
+  .service-tab__body {
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1.35rem;
+  }
+
+  .service-tab__body > i {
+    font-size: 5.7rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .service-tab__body strong {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 2vw, 2.05rem);
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .service-tab__description {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .service-tab__capabilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.55rem;
+    color: #dbe3ec;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .service-tab__capabilities span:not(:last-child)::after {
+    content: "·";
+    margin-left: 0.55rem;
+    color: #ff4138;
+  }
+
+  @media (max-width: 70rem) {
+    .service-tab { padding-inline: 1.5rem; }
+    .service-tab__body { grid-template-columns: 4rem 1fr; }
+    .service-tab__body > i { font-size: 3.9rem; }
+    .service-tab__capabilities { display: none; }
+  }
+
+  @media (max-width: 47.99rem) {
+    .services { height: auto; min-height: 0; display: block; }
+    .services__upper { display: flex; flex-direction: column; }
+    .services__intro { min-height: 0; padding-block: 3.5rem 3rem; }
+    .services__heading { font-size: clamp(3.2rem, 14vw, 4.4rem); }
+    .services__heading > span { white-space: normal; }
+    .services__measure { display: none; }
+    .services__media { min-height: clamp(22rem, 90vw, 27rem); clip-path: none; }
+    .services__media img { min-height: clamp(22rem, 90vw, 27rem); }
+    .services__tabs {
+      min-height: 0;
+      padding: 2.5rem var(--page-gutter);
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .service-tab {
+      flex: 0 0 min(86vw, 24rem);
+      min-height: 16rem;
+      padding-inline: 1rem;
+      border-right: 1px solid color-mix(in srgb, white 25%, transparent);
+      scroll-snap-align: start;
+    }
+    .service-tab:first-child { padding-left: 0; }
+    .service-tab:last-child { padding-right: 0; }
+    .service-tab__body { grid-template-columns: 4.5rem 1fr; }
+    .service-tab__capabilities { display: flex; }
+  }
+</style>

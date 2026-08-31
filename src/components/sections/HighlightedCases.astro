@@ -1,0 +1,264 @@
+---
+import CaseCard from "../cases/CaseCard.astro";
+import { caseCategories, cases, casesSection } from "../../data/site";
+
+const featuredCases = cases.filter((caseRecord) => caseRecord.featured).slice(0, 4);
+const featuredCaseCount = featuredCases.length;
+---
+
+<section class="case-showcase" aria-labelledby="case-showcase-title" data-highlighted-case-filter>
+  <div class="section-shell" data-reveal>
+    <p class="case-showcase__label"><span aria-hidden="true"></span>{casesSection.eyebrow}</p>
+    <h2 id="case-showcase-title" class="display-heading case-showcase__heading">
+      <span>Highlighted cases</span>
+      <span>across sectors<b aria-hidden="true">.</b></span>
+    </h2>
+
+    <div class="case-showcase__filters" role="group" aria-label="Filter highlighted cases by sector">
+      {caseCategories.map((category, index) => (
+        <button
+          class:list={["case-showcase__filter", { "is-active": index === 0 }]}
+          type="button"
+          data-highlighted-case-filter-control={category}
+          aria-controls="case-showcase-grid"
+          aria-pressed={index === 0 ? "true" : "false"}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+
+    <p class="visually-hidden" role="status" aria-live="polite" data-highlighted-filter-status>
+      {featuredCaseCount} highlighted cases shown.
+    </p>
+
+    <div id="case-showcase-grid" class="case-showcase__grid">
+      {cases.map((caseRecord, index) => (
+        <CaseCard
+          caseRecord={caseRecord}
+          eager={index < 2}
+          headingLevel="h3"
+          hidden={!featuredCases.includes(caseRecord)}
+          featured={featuredCases.includes(caseRecord)}
+        />
+      ))}
+    </div>
+
+    <div class="case-showcase__action">
+      <a class="button" href={casesSection.action.href}>
+        {casesSection.action.label}<i class="ph ph-arrow-right" aria-hidden="true"></i>
+      </a>
+      <p>{casesSection.supportingCopy}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-highlighted-case-filter]").forEach((showcase) => {
+    const controls = Array.from(
+      showcase.querySelectorAll<HTMLButtonElement>("[data-highlighted-case-filter-control]"),
+    );
+    const cards = Array.from(showcase.querySelectorAll<HTMLElement>("[data-case-category]"));
+    const status = showcase.querySelector<HTMLElement>("[data-highlighted-filter-status]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const selectFilter = (selectedControl: HTMLButtonElement) => {
+      const category = selectedControl.dataset.highlightedCaseFilterControl ?? "All";
+      const previousPositions = new Map(
+        cards.filter((card) => !card.hidden).map((card) => [card, card.getBoundingClientRect()]),
+      );
+
+      controls.forEach((control) => {
+        const selected = control === selectedControl;
+        control.classList.toggle("is-active", selected);
+        control.setAttribute("aria-pressed", String(selected));
+      });
+
+      cards.forEach((card) => {
+        card.hidden = category === "All"
+          ? card.dataset.caseFeatured !== "true"
+          : card.dataset.caseCategory !== category;
+      });
+
+      const visibleCards = cards.filter((card) => !card.hidden);
+
+      if (!reducedMotion.matches) {
+        visibleCards.forEach((card) => {
+          const previous = previousPositions.get(card);
+          const current = card.getBoundingClientRect();
+
+          if (previous) {
+            const horizontalTravel = previous.left - current.left;
+            const verticalTravel = previous.top - current.top;
+            if (horizontalTravel !== 0 || verticalTravel !== 0) {
+              card.animate(
+                [
+                  { transform: `translate(${horizontalTravel}px, ${verticalTravel}px)` },
+                  { transform: "translate(0, 0)" },
+                ],
+                { duration: 360, easing: "cubic-bezier(.22, 1, .36, 1)" },
+              );
+            }
+          } else {
+            card.animate(
+              [
+                { opacity: 0, transform: "translateY(12px) scale(.99)" },
+                { opacity: 1, transform: "translateY(0) scale(1)" },
+              ],
+              { duration: 360, easing: "cubic-bezier(.22, 1, .36, 1)" },
+            );
+          }
+        });
+      }
+
+      if (status) {
+        const sectorLabel = category === "All" ? "highlighted sectors" : category;
+        status.textContent = `${visibleCards.length} ${visibleCards.length === 1 ? "case" : "cases"} shown for ${sectorLabel}.`;
+      }
+    };
+
+    controls.forEach((control) => {
+      control.addEventListener("click", () => selectFilter(control));
+    });
+  });
+</script>
+
+<style>
+  .case-showcase {
+    min-height: 0;
+    padding-block: clamp(3.5rem, 5vw, 4.5rem) clamp(2.5rem, 3.5vw, 3.5rem);
+    display: flex;
+    align-items: center;
+    background: var(--color-ground);
+  }
+
+  .case-showcase__label {
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--color-red-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .case-showcase__label span {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--color-red);
+  }
+
+  .case-showcase__heading {
+    max-width: none;
+    margin-bottom: 1.5rem;
+    font-size: clamp(3.1rem, 3.8vw, 4rem);
+  }
+
+  .case-showcase__heading > span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .case-showcase__heading b {
+    color: var(--color-red);
+    font: inherit;
+  }
+
+  .case-showcase__filters {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .case-showcase__filters::-webkit-scrollbar { display: none; }
+
+  .case-showcase__filter {
+    position: relative;
+    flex: 0 0 auto;
+    min-height: 3rem;
+    padding: 0.65rem 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color var(--duration-control) var(--ease-build);
+  }
+
+  .case-showcase__filter:hover,
+  .case-showcase__filter.is-active {
+    color: var(--color-red-dark);
+  }
+
+  .case-showcase__filter::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0.125rem;
+    transform: scaleX(0);
+    transform-origin: right;
+    background: var(--color-red);
+    transition: transform var(--duration-control) var(--ease-build);
+  }
+
+  .case-showcase__filter:hover::after,
+  .case-showcase__filter.is-active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .case-showcase__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  :global(.case-showcase .case-card[hidden]) {
+    display: none;
+  }
+
+  .case-showcase__action {
+    margin-top: 1.65rem;
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+  }
+
+  .case-showcase__action p {
+    margin-bottom: 0;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 64rem) {
+    .case-showcase__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .case-showcase__filters { justify-content: flex-start; }
+  }
+
+  @media (max-width: 39rem) {
+    .case-showcase { min-height: 0; padding-block: 4rem; }
+    .case-showcase__heading { font-size: clamp(3rem, 13vw, 4.4rem); }
+    .case-showcase__heading > span { white-space: normal; }
+    .case-showcase__grid { grid-template-columns: 1fr; gap: 1rem; }
+    .case-showcase__action p { max-width: 26rem; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-showcase__filter,
+    .case-showcase__filter::after {
+      transition: none;
+    }
+  }
+</style>

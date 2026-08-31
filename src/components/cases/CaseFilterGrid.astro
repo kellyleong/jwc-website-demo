@@ -1,0 +1,318 @@
+---
+import CaseCard from "./CaseCard.astro";
+import { caseCategories, cases, casesSection } from "../../data/site";
+
+const titleWithoutPunctuation = casesSection.headline.replace(/\.$/, "");
+const [titleLead, titleTail = ""] = titleWithoutPunctuation.split(" Across ");
+---
+
+<section class="case-library" aria-labelledby="cases-title" data-case-filter-grid>
+  <div class="section-shell">
+    <header class="case-library__header" data-reveal>
+      <p class="case-library__label">{casesSection.eyebrow}</p>
+      <h1 id="cases-title">
+        <span>{titleLead}</span>
+        <span>Across {titleTail}<b aria-hidden="true">.</b></span>
+      </h1>
+    </header>
+
+    <div class="case-library__filter-scroll">
+      <div class="case-library__filters" role="group" aria-label="Filter cases by sector">
+        {caseCategories.map((category, index) => (
+          <button
+            class:list={["case-library__filter", { "is-active": index === 0 }]}
+            type="button"
+            data-case-filter={category}
+            aria-controls="case-library-grid"
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <p class="visually-hidden" role="status" aria-live="polite" data-filter-status>
+      {cases.length} cases shown.
+    </p>
+
+    <div id="case-library-grid" class="case-library__grid" data-reveal>
+      {cases.map((caseRecord, index) => (
+        <CaseCard caseRecord={caseRecord} eager={index < 4} headingLevel="h2" />
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-case-filter-grid]").forEach((library) => {
+    const controls = Array.from(
+      library.querySelectorAll<HTMLButtonElement>("[data-case-filter]"),
+    );
+    const cards = Array.from(library.querySelectorAll<HTMLElement>("[data-case-category]"));
+    const status = library.querySelector<HTMLElement>("[data-filter-status]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const selectFilter = (selectedControl: HTMLButtonElement) => {
+      const category = selectedControl.dataset.caseFilter ?? "All";
+      const previousPositions = new Map(
+        cards.filter((card) => !card.hidden).map((card) => [card, card.getBoundingClientRect()]),
+      );
+
+      controls.forEach((control) => {
+        const selected = control === selectedControl;
+        control.classList.toggle("is-active", selected);
+        control.setAttribute("aria-pressed", String(selected));
+      });
+
+      cards.forEach((card) => {
+        card.hidden = category !== "All" && card.dataset.caseCategory !== category;
+      });
+
+      const visibleCards = cards.filter((card) => !card.hidden);
+
+      if (!reducedMotion.matches) {
+        visibleCards.forEach((card) => {
+          const previous = previousPositions.get(card);
+          const current = card.getBoundingClientRect();
+
+          if (previous) {
+            const horizontalTravel = previous.left - current.left;
+            const verticalTravel = previous.top - current.top;
+
+            if (horizontalTravel !== 0 || verticalTravel !== 0) {
+              card.animate(
+                [
+                  { transform: `translate(${horizontalTravel}px, ${verticalTravel}px)` },
+                  { transform: "translate(0, 0)" },
+                ],
+                {
+                  duration: 360,
+                  easing: "cubic-bezier(.22, 1, .36, 1)",
+                },
+              );
+            }
+          } else {
+            card.animate(
+              [
+                { opacity: 0, transform: "translateY(12px) scale(.99)" },
+                { opacity: 1, transform: "translateY(0) scale(1)" },
+              ],
+              {
+                duration: 360,
+                easing: "cubic-bezier(.22, 1, .36, 1)",
+              },
+            );
+          }
+        });
+      }
+
+      if (status) {
+        const sectorLabel = category === "All" ? "all sectors" : category;
+        status.textContent = `${visibleCards.length} ${visibleCards.length === 1 ? "case" : "cases"} shown for ${sectorLabel}.`;
+      }
+    };
+
+    controls.forEach((control) => {
+      control.addEventListener("click", () => selectFilter(control));
+    });
+  });
+</script>
+
+<style>
+  .case-library {
+    min-height: calc(100dvh - var(--header-height));
+    padding-block: clamp(2.4rem, 4.5vw, 4.5rem) clamp(5rem, 9vw, 8.5rem);
+    background: var(--color-ground);
+  }
+
+  .case-library__header {
+    margin-bottom: clamp(1.8rem, 3vw, 3rem);
+  }
+
+  .case-library__label {
+    margin-bottom: clamp(1rem, 1.7vw, 1.45rem);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  .case-library__label::before {
+    content: "";
+    width: 0.65rem;
+    height: 0.65rem;
+    flex: 0 0 auto;
+    background: var(--color-red);
+    border-radius: 50%;
+  }
+
+  .case-library h1 {
+    max-width: 18ch;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(3.3rem, 3.8vw, 4rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 0.87;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .case-library h1 > span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .case-library h1 b {
+    color: var(--color-red);
+    font: inherit;
+  }
+
+  .case-library__filter-scroll {
+    max-width: 100%;
+    margin-bottom: 1.35rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-color: var(--color-rule) transparent;
+    scrollbar-width: thin;
+  }
+
+  .case-library__filters {
+    width: max-content;
+    min-width: min(100%, 68rem);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: clamp(1.6rem, 3vw, 3.75rem);
+  }
+
+  .case-library__filter {
+    position: relative;
+    min-height: 3rem;
+    padding: 0 0.25rem 0.8rem;
+    border: 0;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color var(--duration-control) var(--ease-build);
+  }
+
+  .case-library__filter::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 0.125rem;
+    transform: scaleX(0);
+    transform-origin: right;
+    background: var(--color-red);
+    transition: transform var(--duration-control) var(--ease-build);
+  }
+
+  .case-library__filter:hover,
+  .case-library__filter.is-active {
+    color: var(--color-red-dark);
+  }
+
+  .case-library__filter:hover::after,
+  .case-library__filter.is-active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .case-library__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1vw, 1.15rem);
+  }
+
+  :global(.case-library .case-card[hidden]) {
+    display: none;
+  }
+
+  :global(.case-library .case-card) {
+    border-radius: 0;
+  }
+
+  :global(.case-library .case-card__media) {
+    aspect-ratio: 1.48;
+  }
+
+  @media (max-width: 63.99rem) {
+    .case-library {
+      padding-top: 3rem;
+    }
+
+    .case-library h1 {
+      font-size: clamp(3.25rem, 7.2vw, 4.5rem);
+    }
+
+    .case-library__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .case-library {
+      padding-block: 2.5rem 5rem;
+    }
+
+    .case-library__header {
+      margin-bottom: 1.55rem;
+    }
+
+    .case-library__label {
+      margin-bottom: 1.1rem;
+      font-size: 0.9rem;
+    }
+
+    .case-library h1 {
+      max-width: 10ch;
+      font-size: clamp(3.05rem, 14vw, 4rem);
+      line-height: 0.9;
+    }
+
+    .case-library h1 > span {
+      white-space: normal;
+    }
+
+    .case-library__filter-scroll {
+      margin-inline: calc(var(--page-gutter) * -1);
+      padding-inline: var(--page-gutter);
+    }
+
+    .case-library__filters {
+      min-width: max-content;
+      justify-content: flex-start;
+      gap: 1.85rem;
+      padding-right: var(--page-gutter);
+    }
+
+    .case-library__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-library__filter,
+    .case-library__filter::after {
+      transition: none;
+    }
+  }
+</style>

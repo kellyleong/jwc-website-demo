@@ -1,0 +1,502 @@
+---
+import { contact } from "../../data/site";
+
+interface Props {
+  embedded?: boolean;
+}
+
+const { embedded = false } = Astro.props;
+const RecordHeading = embedded ? "h3" : "h2";
+const headlineWithoutPunctuation = contact.headline.replace(/\.$/, "");
+const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" when ");
+---
+
+<section
+  class:list={["contact-section", { "contact-section--embedded": embedded }]}
+  aria-labelledby={embedded ? "contact-section-title" : "contact-page-title"}
+>
+  <div class="contact-stage">
+    <div class="contact-stage__content" data-reveal>
+      <span class="contact-stage__blueprint" aria-hidden="true"></span>
+
+      <div class="contact-stage__copy">
+        <p class="contact-stage__label">{contact.eyebrow}</p>
+
+        {embedded ? (
+          <h2 id="contact-section-title">
+            <span>{headlineLead}</span>
+            <span>when {headlineTail}<b aria-hidden="true">.</b></span>
+          </h2>
+        ) : (
+          <h1 id="contact-page-title">
+            <span>{headlineLead}</span>
+            <span>when {headlineTail}<b aria-hidden="true">.</b></span>
+          </h1>
+        )}
+
+        <span class="contact-stage__measure" aria-hidden="true"></span>
+        <p class="contact-stage__introduction">{contact.introduction}</p>
+
+        <div class="contact-record contact-record--company">
+          <div class="contact-record__symbol" aria-hidden="true">
+            <i class="ph ph-buildings"></i>
+          </div>
+          <address class="contact-record__body">
+            <RecordHeading>Company Contact</RecordHeading>
+            <a href={`tel:${contact.company.phone.replace(/\s/g, "")}`}>
+              <i class="ph ph-phone" aria-hidden="true"></i>
+              <span>{contact.company.phone}</span>
+            </a>
+            <a href={`mailto:${contact.company.email}`}>
+              <i class="ph ph-envelope-simple" aria-hidden="true"></i>
+              <span>{contact.company.email}</span>
+            </a>
+            <p>
+              <i class="ph ph-map-pin" aria-hidden="true"></i>
+              <span>
+                <strong>{contact.company.location}</strong>
+                {contact.company.addressLines.map((line) => <span>{line}</span>)}
+              </span>
+            </p>
+          </address>
+        </div>
+
+        <div class="contact-stage__divider" aria-hidden="true"></div>
+
+        <div class="contact-record contact-record--manager">
+          <div class="contact-record__symbol" aria-hidden="true">
+            <i class="ph ph-user"></i>
+          </div>
+          <div class="contact-record__body">
+            <RecordHeading>{contact.generalManager.title}</RecordHeading>
+            <dl>
+              {contact.generalManager.fields.map((field) => (
+                <div>
+                  <dt>{field.label}:</dt>
+                  <dd>{field.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-stage__media" data-reveal>
+      <img src={contact.image.src} alt={contact.image.alt} loading="eager" />
+    </div>
+  </div>
+
+</section>
+
+<style>
+  .contact-section {
+    height: calc(100dvh - var(--header-height));
+    min-height: 46rem;
+    display: block;
+    overflow: hidden;
+    background: var(--color-ground);
+  }
+
+  .contact-stage {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .contact-section--embedded .contact-stage {
+    min-height: 0;
+  }
+
+  .contact-stage__content {
+    position: relative;
+    z-index: 2;
+    width: 46%;
+    height: 100%;
+    min-height: 0;
+    padding: 1.75rem clamp(2rem, 4.2vw, 4.75rem) 1.5rem var(--page-gutter);
+    display: flex;
+    align-items: center;
+    background: var(--color-ground);
+  }
+
+  .contact-stage__copy {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 35rem);
+  }
+
+  .contact-stage__blueprint {
+    position: absolute;
+    right: 4%;
+    bottom: 4%;
+    width: clamp(14rem, 25vw, 25rem);
+    aspect-ratio: 1.35;
+    border: 1px solid var(--color-navy);
+    background:
+      linear-gradient(55deg, transparent 48.7%, currentColor 49%, currentColor 49.6%, transparent 50%),
+      linear-gradient(125deg, transparent 49%, currentColor 49.3%, currentColor 49.9%, transparent 50.2%),
+      repeating-linear-gradient(90deg, transparent 0 2.95rem, currentColor 3rem 3.04rem),
+      repeating-linear-gradient(0deg, transparent 0 2.45rem, currentColor 2.5rem 2.54rem);
+    color: var(--color-navy);
+    opacity: 0.055;
+    pointer-events: none;
+    transform: skewY(-3deg);
+  }
+
+  .contact-stage__blueprint::before,
+  .contact-stage__blueprint::after {
+    content: "";
+    position: absolute;
+    border: 1px solid currentColor;
+  }
+
+  .contact-stage__blueprint::before {
+    inset: 16% 12% 12% 18%;
+  }
+
+  .contact-stage__blueprint::after {
+    inset: 33% 27% 27% 6%;
+  }
+
+  .contact-stage__label {
+    margin-bottom: 1rem;
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+
+  .contact-stage__label::after {
+    content: "";
+    width: 2.7rem;
+    height: 0.125rem;
+    margin-top: 0.6rem;
+    display: block;
+    background: currentColor;
+  }
+
+  .contact-stage__copy > h1,
+  .contact-stage__copy > h2 {
+    max-width: 8.6ch;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(3.55rem, 4.35vw, 4.65rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 0.94;
+    text-transform: uppercase;
+  }
+
+  .contact-stage__copy > h1 span,
+  .contact-stage__copy > h2 span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .contact-stage__copy > h1 b,
+  .contact-stage__copy > h2 b {
+    color: var(--color-red);
+    font-weight: inherit;
+  }
+
+  .contact-stage__measure {
+    width: 5rem;
+    height: 0.125rem;
+    margin-block: 1.1rem 0.65rem;
+    display: block;
+    background: var(--color-red);
+  }
+
+  .contact-stage__introduction {
+    max-width: 35rem;
+    margin-bottom: 1rem;
+    color: var(--color-ink);
+    font-size: clamp(1rem, 1.25vw, 1.15rem);
+    line-height: 1.55;
+  }
+
+  .contact-record {
+    display: grid;
+    grid-template-columns: 4.8rem minmax(0, 1fr);
+    align-items: start;
+    gap: 1.45rem;
+  }
+
+  .contact-record__symbol {
+    width: 4.2rem;
+    height: 4.2rem;
+    margin-top: 0.15rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-navy);
+    color: white;
+  }
+
+  .contact-record__symbol i {
+    font-size: 2.2rem;
+  }
+
+  .contact-record__body {
+    margin: 0;
+    padding-left: 1.55rem;
+    border-left: 0.125rem solid var(--color-red);
+    color: var(--color-ink);
+    font-style: normal;
+  }
+
+  .contact-record__body :is(h2, h3) {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .contact-record__body > a,
+  .contact-record__body > p {
+    margin: 0.2rem 0 0;
+    display: grid;
+    grid-template-columns: 1.35rem minmax(0, 1fr);
+    align-items: start;
+    gap: 0.6rem;
+    color: var(--color-ink);
+    font-size: 0.95rem;
+    line-height: 1.38;
+  }
+
+  .contact-record__body > a {
+    width: fit-content;
+    min-height: 2.75rem;
+    align-items: center;
+  }
+
+  .contact-record__body > a:hover {
+    color: var(--color-red-dark);
+  }
+
+  .contact-record__body > a i,
+  .contact-record__body > p i {
+    color: var(--color-red);
+    font-size: 1.2rem;
+    line-height: 1.25;
+  }
+
+  .contact-record__body > p > span {
+    display: grid;
+  }
+
+  .contact-record__body > p strong {
+    margin-bottom: 0.15rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .contact-stage__divider {
+    width: calc(100% - 1rem);
+    height: 1px;
+    margin-block: 0.75rem;
+    background: color-mix(in srgb, var(--color-navy) 34%, transparent);
+  }
+
+  .contact-record dl {
+    margin: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .contact-record dl div {
+    display: grid;
+    grid-template-columns: 3.75rem minmax(0, 1fr);
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .contact-record dt {
+    font-weight: 600;
+  }
+
+  .contact-record dd {
+    margin: 0;
+  }
+
+  .contact-stage__media {
+    position: absolute;
+    z-index: 3;
+    inset: 0 0 0 38%;
+    overflow: hidden;
+    background: var(--color-red);
+    clip-path: polygon(13% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .contact-stage__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    clip-path: polygon(13.22% 0, 100% 0, 100% 100%, 0.22% 100%);
+    transition: transform 900ms var(--ease-build);
+  }
+
+  .contact-stage__media:hover img {
+    transform: scale(1.025);
+  }
+
+  @media (max-width: 72rem) {
+    .contact-stage__content {
+      padding-right: 2rem;
+    }
+
+    .contact-stage__copy > h1,
+    .contact-stage__copy > h2 {
+      font-size: clamp(3.35rem, 5.4vw, 4.35rem);
+    }
+
+    .contact-record {
+      grid-template-columns: 4rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .contact-record__symbol {
+      width: 3.75rem;
+      height: 3.75rem;
+    }
+
+    .contact-record__body {
+      padding-left: 1rem;
+    }
+  }
+
+  @media (max-width: 55.99rem) {
+    .contact-section,
+    .contact-stage,
+    .contact-section--embedded .contact-stage {
+      height: auto;
+      min-height: 0;
+    }
+
+    .contact-section {
+      display: block;
+    }
+
+    .contact-stage {
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+    }
+
+    .contact-stage__content {
+      width: 100%;
+      min-height: 0;
+      padding: clamp(3rem, 8vw, 5rem) var(--page-gutter) 3.5rem;
+    }
+
+    .contact-stage__copy {
+      width: min(100%, 39rem);
+    }
+
+    .contact-stage__copy > h1,
+    .contact-stage__copy > h2 {
+      max-width: 9.5ch;
+      font-size: clamp(3.5rem, 9vw, 4.6rem);
+    }
+
+    .contact-stage__copy > h1 span,
+    .contact-stage__copy > h2 span {
+      white-space: normal;
+    }
+
+    .contact-stage__media {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      height: clamp(22rem, 64vw, 34rem);
+      flex: 0 0 auto;
+      clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .contact-stage__media img {
+      clip-path: polygon(0 10.6%, 100% 0.6%, 100% 100%, 0 100%);
+    }
+  }
+
+  @media (max-width: 39rem) {
+    .contact-stage__content {
+      padding-block: 2.75rem 3rem;
+    }
+
+    .contact-stage__label {
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+    }
+
+    .contact-stage__copy > h1,
+    .contact-stage__copy > h2 {
+      max-width: 8.7ch;
+      font-size: clamp(3.05rem, 14.3vw, 3.75rem);
+      line-height: 0.92;
+    }
+
+    .contact-stage__introduction {
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    .contact-record {
+      grid-template-columns: 3.45rem minmax(0, 1fr);
+      gap: 0.8rem;
+    }
+
+    .contact-record__symbol {
+      width: 3.2rem;
+      height: 3.2rem;
+    }
+
+    .contact-record__symbol i {
+      font-size: 1.7rem;
+    }
+
+    .contact-record__body {
+      padding-left: 0.9rem;
+    }
+
+    .contact-record__body :is(h2, h3) {
+      font-size: 0.98rem;
+    }
+
+    .contact-record__body > a,
+    .contact-record__body > p,
+    .contact-record dl div {
+      font-size: 0.86rem;
+    }
+
+    .contact-record dl div {
+      grid-template-columns: 3.55rem minmax(0, 1fr);
+    }
+
+    .contact-stage__media {
+      height: 20rem;
+    }
+
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-stage__media img {
+      transition: none;
+    }
+
+    .contact-stage__media:hover img {
+      transform: none;
+    }
+  }
+</style>

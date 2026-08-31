@@ -1,0 +1,450 @@
+---
+import {
+  clientsById,
+  repeatClientRelationships,
+  repeatClients,
+} from "../../data/site";
+
+// Interim typographic wordmarks remain replaceable through each client's logo record.
+const interimWordmarks = new Map<string, { label: string; treatment: string }>([
+  ["relationship-macau-international-airport", { label: "CAM", treatment: "airport" }],
+  ["relationship-aia", { label: "AIA", treatment: "aia" }],
+  ["relationship-huawei", { label: "HUAWEI", treatment: "huawei" }],
+  ["relationship-hk-jebn", { label: "樓上", treatment: "hk-jebn" }],
+  ["relationship-macau-pass", { label: "mp  MACAU PASS", treatment: "macau-pass" }],
+  ["relationship-maxims-caterers", { label: "Maxim's", treatment: "maxims" }],
+]);
+
+const relationships = repeatClientRelationships.map((relationship) => {
+  const client = clientsById.get(relationship.clientId);
+  if (!client) throw new Error(`Missing client record for ${relationship.id}`);
+
+  return {
+    ...relationship,
+    logo: client.logo,
+    wordmark:
+      interimWordmarks.get(relationship.id) ?? {
+        label: relationship.clientName,
+        treatment: "default",
+      },
+  };
+});
+
+const headlineBreakAt = repeatClients.headline.toLowerCase().indexOf(" the start");
+const headlineLines = headlineBreakAt > 0
+  ? [
+      repeatClients.headline.slice(0, headlineBreakAt),
+      repeatClients.headline.slice(headlineBreakAt + 1),
+    ]
+  : [repeatClients.headline];
+
+const supportingBreakAt = repeatClients.supportingCopy.indexOf("We earn");
+const supportingLines = supportingBreakAt > 0
+  ? [
+      repeatClients.supportingCopy.slice(0, supportingBreakAt).trim(),
+      repeatClients.supportingCopy.slice(supportingBreakAt),
+    ]
+  : [repeatClients.supportingCopy];
+---
+
+<section id="repeat-clients" class="repeat-clients" aria-labelledby="repeat-clients-title">
+  <div class="repeat-clients__upper">
+    <div class="repeat-clients__copy" data-reveal>
+      <div class="repeat-clients__copy-inner">
+        <p class="repeat-clients__eyebrow">{repeatClients.eyebrow}</p>
+        <h2 id="repeat-clients-title" class="repeat-clients__heading">
+          {headlineLines.map((line) => <span>{line}</span>)}
+        </h2>
+        <p class="repeat-clients__supporting">
+          {supportingLines.map((line) => <span>{line}</span>)}
+        </p>
+      </div>
+    </div>
+
+    <div class="repeat-clients__relationships" data-reveal>
+      <div class="repeat-clients__grid" role="list" aria-label="Repeat client relationships">
+        {relationships.map((relationship) => (
+          <article class="repeat-client" role="listitem">
+            <div class="repeat-client__wordmark">
+              {relationship.logo ? (
+                <img
+                  src={relationship.logo.src}
+                  alt={relationship.logo.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <span
+                  class={`repeat-client__wordmark-text repeat-client__wordmark-text--${relationship.wordmark.treatment}`}
+                  aria-hidden="true"
+                >
+                  {relationship.wordmark.label}
+                </span>
+              )}
+            </div>
+            <h3>{relationship.clientName}</h3>
+            <p>{relationship.period}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .repeat-clients {
+    --repeat-gutter: var(--page-gutter);
+    overflow: hidden;
+    background: var(--color-navy-deep);
+  }
+
+  .repeat-clients__upper {
+    min-height: clamp(29rem, 34vw, 33rem);
+    display: grid;
+    grid-template-columns: minmax(0, 49%) minmax(0, 51%);
+    background: var(--color-ground);
+  }
+
+  .repeat-clients__copy {
+    min-width: 0;
+    padding: clamp(3rem, 4.5vw, 4rem) clamp(1.5rem, 2.5vw, 2.5rem) clamp(2.75rem, 4vw, 3.5rem) var(--repeat-gutter);
+    display: flex;
+    align-items: center;
+  }
+
+  .repeat-clients__copy-inner {
+    min-height: 0;
+    padding: 0.45rem 0 0.35rem clamp(1.5rem, 2.2vw, 2.2rem);
+    border-left: 0.125rem solid var(--color-red);
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .repeat-clients__eyebrow {
+    margin: 0 0 clamp(1.45rem, 2.1vw, 2rem);
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .repeat-clients__heading {
+    margin: 0 0 clamp(1.1rem, 1.8vw, 1.55rem);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 3.5vw, 3.65rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.03;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .repeat-clients__heading span,
+  .repeat-clients__supporting span {
+    display: block;
+  }
+
+  .repeat-clients__supporting {
+    max-width: 38rem;
+    margin: 0;
+    color: var(--color-ink);
+    font-size: clamp(1rem, 1.25vw, 1.2rem);
+    line-height: 1.46;
+  }
+
+  .repeat-clients__relationships {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    padding: clamp(2.25rem, 3vw, 3rem) clamp(1.25rem, 2.5vw, 2.5rem) clamp(2.25rem, 3vw, 3rem) clamp(4.5rem, 7vw, 7rem);
+    display: flex;
+    background-color: var(--color-navy-deep);
+    background-image:
+      linear-gradient(color-mix(in srgb, white 4.5%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, white 4.5%, transparent) 1px, transparent 1px),
+      linear-gradient(color-mix(in srgb, white 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, white 8%, transparent) 1px, transparent 1px);
+    background-position: 0 0;
+    background-size: 0.75rem 0.75rem, 0.75rem 0.75rem, 5rem 5rem, 5rem 5rem;
+    transition-delay: 80ms;
+  }
+
+  .repeat-clients__relationships::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    inset: 0 auto 0 0;
+    width: 12%;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    background: var(--color-ground);
+    pointer-events: none;
+  }
+
+  .repeat-clients__relationships::after {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    top: -2%;
+    bottom: -2%;
+    left: 6%;
+    width: 0.125rem;
+    transform: rotate(6.8deg);
+    background: var(--color-red);
+    pointer-events: none;
+  }
+
+  .repeat-clients__grid {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .repeat-client {
+    position: relative;
+    min-width: 0;
+    min-height: 10.5rem;
+    padding: 0.75rem clamp(0.75rem, 1.2vw, 1.2rem);
+    display: grid;
+    grid-template-rows: 4.75rem auto auto;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .repeat-client:nth-child(n + 4) {
+    border-top: 1px solid color-mix(in srgb, white 22%, transparent);
+  }
+
+  .repeat-client::before {
+    content: "";
+    position: absolute;
+    top: 0.65rem;
+    bottom: 0.65rem;
+    left: 0;
+    width: 1px;
+    display: none;
+    background: color-mix(in srgb, white 22%, transparent);
+  }
+
+  .repeat-client:not(:nth-child(3n + 1))::before {
+    display: block;
+  }
+
+  .repeat-client__wordmark {
+    width: min(100%, 12rem);
+    height: 4.5rem;
+    display: grid;
+    place-items: center;
+    color: white;
+  }
+
+  .repeat-client__wordmark img {
+    width: auto;
+    max-width: 100%;
+    max-height: 4.25rem;
+    object-fit: contain;
+  }
+
+  .repeat-client__wordmark-text {
+    display: inline-block;
+    color: inherit;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 2.4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+    white-space: nowrap;
+  }
+
+  .repeat-client__wordmark-text--airport {
+    font-size: clamp(2.25rem, 2.9vw, 3.2rem);
+    font-style: italic;
+    letter-spacing: -0.08em;
+  }
+
+  .repeat-client__wordmark-text--aia {
+    font-size: clamp(2.3rem, 2.9vw, 3.2rem);
+    letter-spacing: -0.07em;
+  }
+
+  .repeat-client__wordmark-text--huawei {
+    font-family: var(--font-body);
+    font-size: clamp(1.35rem, 1.8vw, 1.9rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .repeat-client__wordmark-text--hk-jebn {
+    padding: 0.15rem 0.65rem 0.3rem;
+    border: 2px solid currentColor;
+    font-family: "PMingLiU", "Noto Serif TC", serif;
+    font-size: clamp(1.8rem, 2.2vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .repeat-client__wordmark-text--macau-pass {
+    font-size: clamp(1.25rem, 1.7vw, 1.75rem);
+    font-style: italic;
+    letter-spacing: -0.04em;
+  }
+
+  .repeat-client__wordmark-text--maxims {
+    font-family: "Segoe Script", "Brush Script MT", cursive;
+    font-size: clamp(1.75rem, 2.2vw, 2.45rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+  }
+
+  .repeat-client h3 {
+    margin: 0.15rem 0 0;
+    color: white;
+    font-family: var(--font-body);
+    font-size: clamp(0.76rem, 0.82vw, 0.9rem);
+    font-weight: 500;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .repeat-client p {
+    margin: 0.48rem 0 0;
+    color: #ff3a31;
+    font-size: clamp(0.86rem, 0.92vw, 1rem);
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  @media (max-width: 64rem) {
+    .repeat-clients__upper {
+      min-height: 34rem;
+      grid-template-columns: minmax(0, 44%) minmax(0, 56%);
+    }
+
+    .repeat-clients__heading {
+      font-size: clamp(3rem, 5.5vw, 3.55rem);
+    }
+
+    .repeat-client {
+      padding-inline: 1rem;
+    }
+
+    .repeat-clients__relationships {
+      padding-left: clamp(3.75rem, 6vw, 4.75rem);
+    }
+
+    .repeat-clients__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+    }
+
+    .repeat-client:nth-child(n) {
+      border-top: 0;
+    }
+
+    .repeat-client:nth-child(n + 3) {
+      border-top: 1px solid color-mix(in srgb, white 22%, transparent);
+    }
+
+    .repeat-clients__grid .repeat-client::before {
+      display: none;
+    }
+
+    .repeat-clients__grid .repeat-client:nth-child(even)::before {
+      display: block;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .repeat-clients__upper {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .repeat-clients__copy {
+      padding-block: 4rem 3.25rem;
+      padding-right: var(--repeat-gutter);
+    }
+
+    .repeat-clients__copy-inner {
+      min-height: 0;
+      padding-left: 1.25rem;
+    }
+
+    .repeat-clients__eyebrow {
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .repeat-clients__heading {
+      font-size: clamp(2.85rem, 12.5vw, 3.65rem);
+    }
+
+    .repeat-clients__supporting {
+      font-size: 1rem;
+    }
+
+    .repeat-clients__relationships {
+      min-height: 31rem;
+      padding: 4.25rem var(--repeat-gutter) 2.5rem;
+    }
+
+    .repeat-clients__relationships::before {
+      inset: 0 0 auto;
+      width: 100%;
+      height: 3.25rem;
+      clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+
+    .repeat-clients__relationships::after {
+      top: 1.55rem;
+      right: -5%;
+      bottom: auto;
+      left: -5%;
+      width: 110%;
+      height: 0.125rem;
+      transform: rotate(-2.7deg);
+    }
+
+    .repeat-client {
+      min-height: 8rem;
+      padding: 0.75rem 0.55rem;
+      grid-template-rows: 4.25rem auto auto;
+    }
+
+    .repeat-client__wordmark-text {
+      max-width: 100%;
+      font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+
+    .repeat-client__wordmark-text--huawei,
+    .repeat-client__wordmark-text--macau-pass {
+      font-size: clamp(1.15rem, 5vw, 1.65rem);
+      white-space: normal;
+    }
+
+    .repeat-client h3 {
+      max-width: 15ch;
+      font-size: 0.9rem;
+    }
+
+    .repeat-client p {
+      font-size: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .repeat-clients__relationships[data-reveal] {
+      transition-delay: 0ms;
+    }
+  }
+</style>

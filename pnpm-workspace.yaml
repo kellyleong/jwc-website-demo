@@ -1,0 +1,6 @@
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
+overrides:
+  esbuild: npm:esbuild-wasm@0.27.7
+  rollup: npm:@rollup/wasm-node@4.63.1

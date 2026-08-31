@@ -1,0 +1,109 @@
+---
+import { withBasePath } from "../../utils/withBasePath";
+
+interface Props {
+  activeNav?: "main" | "cases" | "contact";
+}
+
+const { activeNav } = Astro.props;
+const navItems = [
+  { id: "main", label: "Main", href: withBasePath("/") },
+  { id: "cases", label: "Cases", href: withBasePath("/cases") },
+  { id: "contact", label: "Contact", href: withBasePath("/contact") },
+] as const;
+---
+
+<span class="header-sentinel" data-header-sentinel aria-hidden="true"></span>
+<header class="site-header" data-site-header>
+  <div class="site-header__inner">
+    <a class="brand-lockup" href={withBasePath("/")} aria-label="Joint Win Construction and Engineering Company Limited, home">
+      <span class="brand-lockup__mark" aria-hidden="true"><b>J</b><b>W</b></span>
+      <span class="brand-lockup__type">
+        <span lang="zh-Hant">駿 旺 建 築 工 程 有 限 公 司</span>
+        <small>Joint Win Construction &amp; Engineering Company Limited</small>
+      </span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      data-menu-toggle
+    >
+      <span class="menu-toggle__label">Menu</span>
+      <span class="menu-toggle__lines" aria-hidden="true"><i></i><i></i></span>
+    </button>
+
+    <nav id="primary-navigation" class="primary-nav" aria-label="Primary" data-primary-nav>
+      <div class="primary-nav__links">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={["primary-nav__link", { "is-active": activeNav === item.id }]}
+            aria-current={activeNav === item.id ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+      <div class="language-switcher" aria-label="Language options">
+        <span class="is-active" lang="en" aria-current="true">EN</span>
+        <span aria-hidden="true">|</span>
+        <span lang="zh-Hant" aria-label="Traditional Chinese, translation not yet supplied">繁</span>
+        <span aria-hidden="true">|</span>
+        <span lang="zh-Hans" aria-label="Simplified Chinese, translation not yet supplied">简</span>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+  const sentinel = document.querySelector<HTMLElement>("[data-header-sentinel]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const nav = document.querySelector<HTMLElement>("[data-primary-nav]");
+  const pageRegions = Array.from(document.querySelectorAll<HTMLElement>("main, .site-footer"));
+  const desktopNavigation = window.matchMedia("(min-width: 56.01rem)");
+
+  const setPageInert = (isInert: boolean) => {
+    pageRegions.forEach((region) => {
+      region.inert = isInert;
+    });
+  };
+
+  const closeMenu = () => {
+    if (!toggle || !nav) return;
+    toggle.setAttribute("aria-expanded", "false");
+    nav.classList.remove("is-open");
+    document.body.classList.remove("menu-open");
+    setPageInert(false);
+  };
+
+  toggle?.addEventListener("click", () => {
+    if (!nav) return;
+    const willOpen = toggle.getAttribute("aria-expanded") !== "true";
+    toggle.setAttribute("aria-expanded", String(willOpen));
+    nav.classList.toggle("is-open", willOpen);
+    document.body.classList.toggle("menu-open", willOpen);
+    setPageInert(willOpen);
+  });
+
+  nav?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  desktopNavigation.addEventListener("change", (event) => {
+    if (event.matches) closeMenu();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+      closeMenu();
+      toggle?.focus();
+    }
+  });
+
+  if (header && sentinel) {
+    const headerObserver = new IntersectionObserver(([entry]) => {
+      header.classList.toggle("is-compact", !entry?.isIntersecting);
+    });
+    headerObserver.observe(sentinel);
+  }
+</script>

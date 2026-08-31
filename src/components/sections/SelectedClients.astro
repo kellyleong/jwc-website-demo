@@ -1,0 +1,787 @@
+---
+import type { ClientRecord } from "../../data/site";
+import {
+  clientGroups,
+  clientsById,
+  selectedClients,
+} from "../../data/site";
+
+const groupIconById = {
+  "aviation-facilities": "ph-airplane-tilt",
+  "finance-corporate": "ph-briefcase",
+  "hospitality-retail": "ph-handbag",
+  technology: "ph-desktop",
+} as const;
+
+const groupedClients = clientGroups.map((group) => ({
+  ...group,
+  icon: groupIconById[group.id],
+  clients: group.clientIds
+    .map((clientId) => clientsById.get(clientId))
+    .filter((client): client is ClientRecord => Boolean(client))
+    .map((client) => ({
+      ...client,
+      initials: client.name
+        .split(/\s+/)
+        .filter((word) => !["of", "and"].includes(word.toLowerCase()))
+        .map((word) => word[0])
+        .join("")
+        .slice(0, 4),
+    })),
+}));
+
+const headlineWords = selectedClients.headline.replace(/\.$/, "").split(" ");
+const headlineLines = [
+  headlineWords.slice(0, 2).join(" "),
+  headlineWords[2],
+  headlineWords.slice(3).join(" "),
+];
+---
+
+<section
+  id="selected-clients"
+  class="selected-clients"
+  aria-labelledby="selected-clients-title"
+>
+  <div class="selected-clients__map" aria-hidden="true">
+    <span class="selected-clients__continent selected-clients__continent--north-america"></span>
+    <span class="selected-clients__continent selected-clients__continent--south-america"></span>
+    <span class="selected-clients__continent selected-clients__continent--eurasia"></span>
+    <span class="selected-clients__continent selected-clients__continent--africa"></span>
+    <span class="selected-clients__continent selected-clients__continent--australia"></span>
+  </div>
+  <div class="selected-clients__corner" aria-hidden="true"></div>
+
+  <div class="section-shell selected-clients__inner">
+    <header class="selected-clients__intro" data-reveal>
+      <p class="selected-clients__label">{selectedClients.eyebrow}</p>
+      <h2 id="selected-clients-title" class="selected-clients__heading">
+        {headlineLines.map((line, index) => (
+          <span>
+            {line}{index === headlineLines.length - 1 && (
+              <b aria-hidden="true">.</b>
+            )}
+          </span>
+        ))}
+      </h2>
+      <p class="selected-clients__copy">{selectedClients.supportingCopy}</p>
+    </header>
+
+    <div class="selected-clients__groups" aria-label="Client sectors" data-reveal>
+      {groupedClients.map((group) => (
+        <section
+          class={`client-group client-group--${group.id}`}
+          aria-labelledby={`client-group-${group.id}`}
+        >
+          <h3 id={`client-group-${group.id}`} class="client-group__heading">
+            <i class={`ph ${group.icon}`} aria-hidden="true"></i>
+            <span>{group.name}</span>
+            <span class="client-group__rule" aria-hidden="true"></span>
+          </h3>
+
+          <div class="client-group__logos">
+            {group.clients.map((client) => (
+              client.logo ? (
+                <img
+                  class="client-wordmark client-wordmark--asset"
+                  src={client.logo.src}
+                  alt={client.logo.alt}
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  class="client-wordmark client-wordmark--placeholder"
+                  data-client-id={client.id}
+                  data-logo-record="replaceable"
+                  role="img"
+                  aria-label={`${client.name}; replaceable client logo treatment`}
+                >
+                  <span class="client-wordmark__initials" aria-hidden="true">{client.initials}</span>
+                  <span class="client-wordmark__name" aria-hidden="true">{client.name}</span>
+                </span>
+              )
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <aside class="selected-clients__rail" aria-label="Client summary and links" data-reveal>
+      <div class="selected-clients__metric">
+        <strong>{selectedClients.directClientCount}</strong>
+        <span>{selectedClients.directClientLabel}</span>
+      </div>
+
+      <div class="selected-clients__return">
+        <span class="selected-clients__return-rule" aria-hidden="true"></span>
+        <i class="ph ph-users-three" aria-hidden="true"></i>
+        <p>{selectedClients.returnClientCopy}</p>
+      </div>
+
+      <div class="selected-clients__actions">
+        <a class="button" href={selectedClients.casesAction.href}>
+          {selectedClients.casesAction.label}
+          <i class="ph ph-arrow-right" aria-hidden="true"></i>
+        </a>
+        <a class="button button--outline" href={selectedClients.meetUsAction.href}>
+          {selectedClients.meetUsAction.label}
+          <i class="ph ph-arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .selected-clients {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--color-ground);
+  }
+
+  .selected-clients__inner {
+    position: relative;
+    z-index: 2;
+    min-height: clamp(42rem, 55vw, 46rem);
+    display: grid;
+    grid-template-columns: minmax(0, 28fr) minmax(0, 54fr) minmax(15rem, 18fr);
+  }
+
+  .selected-clients__intro,
+  .selected-clients__groups,
+  .selected-clients__rail {
+    padding-block: clamp(3.25rem, 6vh, 4.9rem) clamp(2.5rem, 5vh, 4rem);
+  }
+
+  .selected-clients__intro {
+    position: relative;
+    z-index: 2;
+    padding-right: clamp(1.5rem, 2vw, 2.75rem);
+  }
+
+  .selected-clients__label {
+    margin-bottom: 1.55rem;
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  .selected-clients__heading {
+    max-width: 8.2ch;
+    margin-bottom: 1.7rem;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(3.3rem, 3.9vw, 4.15rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+
+  .selected-clients__heading span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .selected-clients__heading b {
+    color: var(--color-red);
+    font: inherit;
+  }
+
+  .selected-clients__copy {
+    max-width: 24rem;
+    margin-bottom: 0;
+    color: #20252d;
+    font-size: clamp(1rem, 1.15vw, 1.16rem);
+    line-height: 1.5;
+  }
+
+  .selected-clients__groups {
+    min-width: 0;
+    padding-right: clamp(1.5rem, 2.4vw, 2.9rem);
+    display: grid;
+    grid-template-columns: minmax(0, 44fr) minmax(0, 56fr);
+    grid-template-rows: minmax(0, 46fr) minmax(0, 54fr);
+    gap: clamp(1.35rem, 2.3vh, 2rem) clamp(1.4rem, 2vw, 2.25rem);
+  }
+
+  .client-group {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .client-group__heading {
+    min-width: 0;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-ink);
+    font-size: clamp(0.83rem, 1vw, 1rem);
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .client-group__heading > i {
+    flex: 0 0 auto;
+    color: var(--color-red);
+    font-size: 1.75rem;
+  }
+
+  .client-group__rule {
+    position: relative;
+    min-width: 1.6rem;
+    height: 1px;
+    flex: 1 1 auto;
+    margin-left: 0.15rem;
+    background: var(--color-red);
+  }
+
+  .client-group__rule::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 0.55rem;
+    height: 0.55rem;
+    transform: translate(50%, -50%);
+    border-radius: 50%;
+    background: var(--color-red);
+  }
+
+  .client-group__logos {
+    min-height: 0;
+    flex: 1;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    gap: 0.7rem 1rem;
+    padding-top: clamp(1rem, 2.3vh, 1.75rem);
+  }
+
+  .client-group--aviation-facilities .client-group__logos {
+    grid-template-columns: 1fr;
+  }
+
+  .client-group--finance-corporate .client-group__logos,
+  .client-group--hospitality-retail .client-group__logos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .client-group--technology .client-group__logos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .client-wordmark {
+    max-width: 100%;
+    max-height: 4.8rem;
+  }
+
+  .client-wordmark--asset {
+    width: auto;
+    object-fit: contain;
+  }
+
+  .client-wordmark--placeholder {
+    min-width: 0;
+    min-height: 2.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    color: #22272c;
+    font-size: clamp(0.78rem, 0.86vw, 0.96rem);
+    font-weight: 700;
+    line-height: 1.08;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .client-wordmark__initials {
+    display: none;
+    flex: 0 0 auto;
+    color: currentColor;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  .client-wordmark__name {
+    display: block;
+  }
+
+  [data-client-id="client-macau-international-airport"] {
+    max-width: 13rem;
+    min-height: 7.5rem;
+    flex-direction: column;
+    color: #3b3d40;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  [data-client-id="client-macau-international-airport"] .client-wordmark__initials {
+    display: block;
+    font-size: clamp(3.3rem, 4.8vw, 5rem);
+    line-height: 0.7;
+  }
+
+  [data-client-id="client-aia"] {
+    color: #e2211c;
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    letter-spacing: -0.03em;
+  }
+
+  [data-client-id="client-china-taiping"] {
+    color: #0876cf;
+    font-size: 1.08rem;
+  }
+
+  [data-client-id="client-manulife"] {
+    color: #008f58;
+    font-size: 1.08rem;
+  }
+
+  [data-client-id="client-china-construction-bank"],
+  [data-client-id="client-bank-of-china"],
+  [data-client-id="client-bank-of-communications"] {
+    color: var(--color-blueprint);
+    font-size: clamp(0.65rem, 0.72vw, 0.78rem);
+    font-weight: 600;
+  }
+
+  [data-client-id="client-bank-of-china"] {
+    color: #a7191f;
+  }
+
+  [data-client-id="client-sands-macao"],
+  [data-client-id="client-galaxy-macau"] {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.55vw, 1.6rem);
+    font-weight: 600;
+  }
+
+  [data-client-id="client-louis-vuitton"],
+  [data-client-id="client-gucci"],
+  [data-client-id="client-chanel"],
+  [data-client-id="client-cartier"],
+  [data-client-id="client-omega"],
+  [data-client-id="client-bally"] {
+    font-family: var(--font-display);
+    font-size: clamp(0.9rem, 1.08vw, 1.12rem);
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+  }
+
+  [data-client-id="client-huawei"],
+  [data-client-id="client-canon"] {
+    color: #d92d22;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.65vw, 1.75rem);
+  }
+
+  [data-client-id="client-alibaba"] {
+    color: #e94e16;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.55vw, 1.6rem);
+  }
+
+  [data-client-id="client-macau-pass"] {
+    color: #4b4f52;
+    font-size: 1rem;
+  }
+
+  .selected-clients__rail {
+    position: relative;
+    min-width: 0;
+    padding-top: clamp(3.25rem, 6vh, 4.9rem);
+    padding-left: clamp(1.9rem, 2.7vw, 3rem);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .selected-clients__rail::before {
+    content: "";
+    position: absolute;
+    top: clamp(3.25rem, 6vh, 4.9rem);
+    bottom: clamp(2.5rem, 5vh, 4rem);
+    left: 0;
+    width: 1px;
+    background: color-mix(in srgb, var(--color-ink) 22%, transparent);
+  }
+
+  .selected-clients__metric {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .selected-clients__metric strong {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(4.8rem, 6.25vw, 6.75rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 0.82;
+  }
+
+  .selected-clients__metric span {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .selected-clients__return {
+    margin-top: clamp(1.9rem, 4vh, 3rem);
+  }
+
+  .selected-clients__return-rule {
+    width: 2.5rem;
+    height: 0.125rem;
+    display: block;
+    margin-bottom: 2.15rem;
+    background: var(--color-red);
+  }
+
+  .selected-clients__return > i {
+    display: block;
+    margin-bottom: 0.85rem;
+    color: var(--color-red);
+    font-size: 2.5rem;
+  }
+
+  .selected-clients__return p {
+    max-width: 14rem;
+    margin-bottom: 0;
+    color: #1f242b;
+    font-size: clamp(1rem, 1.1vw, 1.12rem);
+    line-height: 1.42;
+  }
+
+  .selected-clients__actions {
+    margin-top: clamp(2rem, 3vw, 3rem);
+    display: grid;
+    gap: 1rem;
+  }
+
+  .selected-clients__actions .button {
+    width: 100%;
+    min-height: 3.45rem;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-inline: 1.3rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  .selected-clients__map {
+    position: absolute;
+    z-index: 0;
+    bottom: -1.75rem;
+    left: clamp(2.25rem, 5vw, 5rem);
+    width: clamp(22rem, 30vw, 31rem);
+    aspect-ratio: 1.3;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .selected-clients__continent {
+    position: absolute;
+    display: block;
+    background-image: radial-gradient(circle, rgba(8, 36, 75, 0.18) 0 0.14rem, transparent 0.16rem);
+    background-size: 0.57rem 0.57rem;
+  }
+
+  .selected-clients__continent--north-america {
+    top: 0;
+    left: 0;
+    width: 43%;
+    height: 37%;
+    clip-path: polygon(4% 19%, 24% 3%, 52% 8%, 63% 0, 98% 19%, 77% 39%, 78% 61%, 51% 79%, 36% 100%, 23% 70%, 0 64%);
+  }
+
+  .selected-clients__continent--south-america {
+    top: 32%;
+    left: 28%;
+    width: 22%;
+    height: 58%;
+    clip-path: polygon(12% 0, 73% 7%, 100% 30%, 76% 52%, 67% 74%, 45% 100%, 28% 70%, 25% 45%, 0 20%);
+  }
+
+  .selected-clients__continent--eurasia {
+    top: 8%;
+    right: 0;
+    width: 55%;
+    height: 39%;
+    clip-path: polygon(0 17%, 22% 0, 47% 9%, 61% 1%, 100% 19%, 86% 49%, 59% 50%, 49% 82%, 19% 100%, 5% 63%);
+  }
+
+  .selected-clients__continent--africa {
+    top: 40%;
+    left: 51%;
+    width: 22%;
+    height: 47%;
+    clip-path: polygon(6% 0, 72% 3%, 100% 31%, 79% 68%, 51% 100%, 27% 72%, 16% 38%, 0 18%);
+  }
+
+  .selected-clients__continent--australia {
+    right: 0;
+    bottom: 15%;
+    width: 19%;
+    height: 19%;
+    clip-path: polygon(12% 13%, 71% 0, 100% 39%, 72% 82%, 28% 100%, 0 61%);
+  }
+
+  .selected-clients__corner {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    width: clamp(12rem, 18vw, 18rem);
+    height: clamp(12rem, 18vw, 18rem);
+    pointer-events: none;
+  }
+
+  .selected-clients__corner::before,
+  .selected-clients__corner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .selected-clients__corner::before {
+    clip-path: polygon(0 0, 100% 80%, 100% 100%, 0 100%);
+    background: var(--color-red);
+  }
+
+  .selected-clients__corner::after {
+    clip-path: polygon(0 5%, 96% 81%, 96% 100%, 0 100%);
+    background: var(--color-navy);
+  }
+
+  @media (max-width: 72rem) {
+    .selected-clients__inner {
+      grid-template-columns: minmax(0, 29fr) minmax(0, 51fr) minmax(14.5rem, 20fr);
+    }
+
+    .selected-clients__heading {
+      font-size: clamp(3.1rem, 4.7vw, 4rem);
+    }
+
+    .selected-clients__groups {
+      padding-right: 1.5rem;
+      gap: 1.5rem 1.25rem;
+    }
+
+    .client-group__heading {
+      gap: 0.5rem;
+      font-size: 0.78rem;
+    }
+
+    .client-group__heading > i {
+      font-size: 1.5rem;
+    }
+
+    .selected-clients__rail {
+      padding-left: 1.5rem;
+    }
+  }
+
+  @media (max-width: 64rem) {
+    .selected-clients__inner {
+      grid-template-columns: minmax(16rem, 34fr) minmax(0, 66fr);
+    }
+
+    .selected-clients__intro,
+    .selected-clients__groups {
+      padding-bottom: 2.5rem;
+    }
+
+    .selected-clients__groups {
+      padding-right: 0;
+    }
+
+    .selected-clients__rail {
+      grid-column: 1 / -1;
+      padding-block: 2rem 2.5rem;
+      padding-left: 0;
+      display: grid;
+      grid-template-columns: auto minmax(14rem, 1fr) minmax(17rem, auto);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 4rem);
+      border-top: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+      border-left: 0;
+    }
+
+    .selected-clients__rail::before {
+      display: none;
+    }
+
+    .selected-clients__metric strong {
+      font-size: 5.25rem;
+    }
+
+    .selected-clients__return {
+      margin-top: 0;
+      padding-left: 2rem;
+      border-left: 1px solid color-mix(in srgb, var(--color-ink) 20%, transparent);
+    }
+
+    .selected-clients__return-rule {
+      margin-bottom: 1rem;
+    }
+
+    .selected-clients__return > i {
+      float: left;
+      margin: 0.1rem 1rem 0 0;
+    }
+
+    .selected-clients__actions {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .selected-clients {
+      min-height: 0;
+    }
+
+    .selected-clients__inner {
+      min-height: 0;
+      display: block;
+      padding-block: 3.75rem 4rem;
+    }
+
+    .selected-clients__intro,
+    .selected-clients__groups,
+    .selected-clients__rail {
+      padding-block: 0;
+    }
+
+    .selected-clients__intro {
+      max-width: 34rem;
+      padding-right: 0;
+    }
+
+    .selected-clients__heading {
+      max-width: none;
+      font-size: clamp(3rem, 11vw, 4.2rem);
+    }
+
+    .selected-clients__copy {
+      max-width: 31rem;
+    }
+
+    .selected-clients__groups {
+      margin-top: 3rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: auto auto;
+      gap: 2.75rem 1.5rem;
+    }
+
+    .client-group {
+      min-height: 15rem;
+    }
+
+    .client-group__heading {
+      font-size: 0.8rem;
+    }
+
+    .client-group__logos {
+      padding-top: 1.25rem;
+    }
+
+    .client-group--finance-corporate .client-group__logos,
+    .client-group--hospitality-retail .client-group__logos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .selected-clients__rail {
+      margin-top: 3.25rem;
+      padding-top: 2.5rem;
+      display: grid;
+      grid-template-columns: minmax(10rem, 0.65fr) minmax(0, 1fr);
+      gap: 2rem;
+      border-top: 1px solid color-mix(in srgb, var(--color-ink) 22%, transparent);
+    }
+
+    .selected-clients__return {
+      padding-left: 1.5rem;
+    }
+
+    .selected-clients__return > i {
+      float: none;
+    }
+
+    .selected-clients__actions {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .selected-clients__map {
+      bottom: 1rem;
+      left: 0;
+      width: 18rem;
+      opacity: 0.32;
+    }
+
+    .selected-clients__corner {
+      width: 9rem;
+      height: 9rem;
+    }
+  }
+
+  @media (max-width: 39rem) {
+    .selected-clients__heading span {
+      white-space: normal;
+    }
+
+    .selected-clients__groups {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .client-group {
+      min-height: 13.5rem;
+    }
+
+    .client-group--aviation-facilities {
+      min-height: 11rem;
+    }
+
+    .client-group--finance-corporate .client-group__logos,
+    .client-group--hospitality-retail .client-group__logos {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .selected-clients__rail {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding-bottom: 7rem;
+    }
+
+    .selected-clients__return {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .selected-clients__return p {
+      max-width: 23rem;
+    }
+
+    .selected-clients__actions {
+      grid-column: auto;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

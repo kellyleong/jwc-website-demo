@@ -1,0 +1,272 @@
+---
+import type { CaseRecord } from "../../data/site";
+import { cases } from "../../data/site";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBasePath } from "../../utils/withBasePath";
+
+export function getStaticPaths() {
+  return cases.map((caseRecord) => ({
+    params: { slug: caseRecord.slug },
+    props: { caseRecord },
+  }));
+}
+
+interface Props {
+  caseRecord: CaseRecord;
+}
+
+const { caseRecord } = Astro.props;
+---
+
+<BaseLayout
+  title={`${caseRecord.name} | JWC Cases`}
+  description={caseRecord.summary}
+  activeNav="cases"
+>
+  <article class="case-detail">
+    <div class="case-detail__lead section-shell">
+      <header class="case-detail__heading" data-reveal>
+        <a class="case-detail__back" href={withBasePath("/cases")}>
+          <i class="ph ph-arrow-left" aria-hidden="true"></i>
+          Cases
+        </a>
+        <p class="case-detail__category">{caseRecord.category}</p>
+        <h1>{caseRecord.name}</h1>
+        <p class="case-detail__summary">{caseRecord.summary}</p>
+      </header>
+
+      <dl class="case-detail__facts" data-reveal>
+        <div>
+          <dt>Location</dt>
+          <dd>{caseRecord.location}</dd>
+        </div>
+        <div>
+          <dt>Year</dt>
+          <dd>{caseRecord.year}</dd>
+        </div>
+        <div>
+          <dt>Scope</dt>
+          <dd>{caseRecord.scope}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="case-detail__media-frame" data-reveal>
+      <div class="case-detail__media">
+        <img
+          src={caseRecord.image.src}
+          alt={caseRecord.image.alt}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .case-detail {
+    padding-block: clamp(3rem, 6.5vw, 6.75rem) clamp(4.5rem, 8vw, 8rem);
+    background: var(--color-ground);
+  }
+
+  .case-detail__lead {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(16rem, 3fr);
+    align-items: end;
+    gap: clamp(3rem, 8vw, 9rem);
+  }
+
+  .case-detail__heading {
+    min-width: 0;
+  }
+
+  .case-detail__back {
+    width: fit-content;
+    min-height: 2.75rem;
+    margin-bottom: clamp(2rem, 4vw, 3.75rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--color-ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .case-detail__back i {
+    color: var(--color-red);
+    font-size: 1.2rem;
+    transition: transform var(--duration-hover) var(--ease-build);
+  }
+
+  .case-detail__back:hover i {
+    transform: translateX(-0.35rem);
+  }
+
+  .case-detail__category {
+    margin-bottom: 1.15rem;
+    color: var(--color-red-dark);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .case-detail__category::after {
+    content: "";
+    width: 3.5rem;
+    height: 0.125rem;
+    margin-top: 0.85rem;
+    display: block;
+    background: currentColor;
+  }
+
+  .case-detail h1 {
+    max-width: 14ch;
+    margin: 0 0 1.6rem;
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 6.5vw, 6rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 0.92;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .case-detail__summary {
+    max-width: 60ch;
+    margin-bottom: 0;
+    color: var(--color-ink);
+    font-size: clamp(1.05rem, 1.35vw, 1.28rem);
+    line-height: 1.58;
+  }
+
+  .case-detail__facts {
+    margin: 0;
+    border-top: 0.125rem solid var(--color-red);
+  }
+
+  .case-detail__facts div {
+    padding-block: 1.2rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-navy) 24%, transparent);
+  }
+
+  .case-detail__facts dt {
+    margin-bottom: 0.25rem;
+    color: var(--color-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .case-detail__facts dd {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: 1.08rem;
+    font-weight: 500;
+  }
+
+  .case-detail__media-frame {
+    position: relative;
+    width: min(calc(100% - var(--page-gutter)), calc(var(--max-width) + var(--page-gutter)));
+    margin: clamp(3.5rem, 6vw, 6rem) 0 0 auto;
+    padding-top: 0.2rem;
+    background: var(--color-red);
+    clip-path: polygon(3.8% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .case-detail__media {
+    height: clamp(29rem, 48vw, 47rem);
+    overflow: hidden;
+    clip-path: polygon(calc(3.8% + 0.15rem) 0, 100% 0, 100% 100%, 0.15rem 100%);
+    background: var(--color-navy-deep);
+  }
+
+  .case-detail__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 900ms var(--ease-build);
+  }
+
+  .case-detail__media:hover img {
+    transform: scale(1.025);
+  }
+
+  @media (max-width: 63.99rem) {
+    .case-detail__lead {
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.42fr);
+      gap: 3rem;
+    }
+
+    .case-detail h1 {
+      font-size: clamp(3.8rem, 8vw, 5.2rem);
+    }
+
+    .case-detail__media {
+      height: clamp(25rem, 56vw, 36rem);
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .case-detail {
+      padding-block: 2.5rem 4.5rem;
+    }
+
+    .case-detail__lead {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+
+    .case-detail__back {
+      margin-bottom: 2rem;
+    }
+
+    .case-detail h1 {
+      max-width: 11ch;
+      font-size: clamp(3.25rem, 15vw, 4.25rem);
+      line-height: 0.9;
+    }
+
+    .case-detail__summary {
+      font-size: 1.05rem;
+    }
+
+    .case-detail__facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .case-detail__facts div:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .case-detail__media-frame {
+      width: 100%;
+      margin-top: 3rem;
+      clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .case-detail__media {
+      height: auto;
+      aspect-ratio: 4 / 3;
+      clip-path: polygon(0 5.5%, 100% 0.5%, 100% 100%, 0 100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-detail__back i,
+    .case-detail__media img {
+      transition: none;
+    }
+
+    .case-detail__media:hover img {
+      transform: none;
+    }
+  }
+</style>
