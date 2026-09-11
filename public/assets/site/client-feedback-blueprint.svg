@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 971 1619" fill="none" shape-rendering="geometricPrecision">
+  <defs>
+    <pattern id="minor-grid" width="41" height="41" patternUnits="userSpaceOnUse">
+      <path d="M41 0H0V41" stroke="#7FA1C1" stroke-width="1" opacity="0.22"/>
+    </pattern>
+    <pattern id="major-grid" width="164" height="164" patternUnits="userSpaceOnUse">
+      <rect width="164" height="164" fill="url(#minor-grid)"/>
+      <path d="M164 0H0V164" stroke="#9AB6D0" stroke-width="1.5" opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <rect width="971" height="1619" fill="url(#major-grid)"/>
+
+  <g stroke="#B6CBE0" stroke-width="2" opacity="0.62" vector-effect="non-scaling-stroke">
+    <path d="M12 730L946 0"/>
+    <path d="M356 1594L971 1031"/>
+    <path d="M190 181H971"/>
+    <path d="M190 656H971"/>
+    <path d="M190 1028H971" stroke-dasharray="12 10"/>
+    <path d="M190 1418H971" stroke-dasharray="12 10"/>
+    <path d="M500 0V804"/>
+    <path d="M454 0V1456" stroke-dasharray="12 10"/>
+    <path d="M734 0V1619"/>
+    <path d="M918 0V1619" stroke-dasharray="12 10"/>
+
+    <rect x="347" y="181" width="596" height="476"/>
+    <rect x="580" y="1268" width="363" height="151"/>
+    <circle cx="735" cy="181" r="181"/>
+    <circle cx="674" cy="181" r="61"/>
+    <circle cx="454" cy="1028" r="247"/>
+    <path d="M674 120V242M613 181H735"/>
+    <path d="M454 781V1275M207 1028H701"/>
+    <path d="M522 420H642M582 360V480"/>
+  </g>
+
+  <g stroke="#D8E4EF" stroke-width="3" opacity="0.72" vector-effect="non-scaling-stroke">
+    <path d="M500 0V804"/>
+    <path d="M734 0V1619"/>
+    <path d="M347 181H943V657"/>
+  </g>
+</svg>
