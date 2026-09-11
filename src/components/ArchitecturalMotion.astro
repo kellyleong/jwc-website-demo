@@ -1,0 +1,233 @@
+---
+import { withBasePath } from "../utils/withBasePath";
+---
+
+<aside class="motion-review" aria-label="Design review">
+  <span><b>V2</b> Motion review</span>
+  <a href={withBasePath("/")}>Original <span aria-hidden="true">↗</span></a>
+  <button type="button" data-replay-motion>Replay intro <span aria-hidden="true">↺</span></button>
+</aside>
+
+<script>
+  const review = document.querySelector<HTMLElement>(".architectural-motion");
+  if (review) {
+    const home = import.meta.env.BASE_URL.replace(/\/$/, "") + "/";
+    review.querySelectorAll<HTMLAnchorElement>(".site-header a").forEach((link) => {
+      if (link.getAttribute("href") === home) link.href = home + "v2/";
+    });
+
+    const hero = review.querySelector<HTMLElement>(".hero");
+    review.querySelector("[data-replay-motion]")?.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        hero?.getAnimations({ subtree: true }).forEach((animation) => {
+          animation.currentTime = 0;
+          animation.play();
+        });
+      }
+    });
+
+    const track = review.querySelector<HTMLElement>(".delivery-scroll");
+    const delivery = track?.querySelector<HTMLElement>(".delivery");
+    const stages = Array.from(track?.querySelectorAll<HTMLElement>(".delivery-stage") ?? []);
+    const desktopMotion = window.matchMedia("(min-width: 64rem) and (min-height: 48rem) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    let frame = 0;
+    const updateProgress = () => {
+      frame = 0;
+      if (!track || !delivery) return;
+      const bounds = track.getBoundingClientRect();
+      const top = parseFloat(getComputedStyle(delivery).top) || 0;
+      const distance = track.offsetHeight - delivery.offsetHeight;
+      const progress = Math.min(1, Math.max(0, (top - bounds.top) / distance));
+      track.style.setProperty("--delivery-progress", String(progress));
+      const current = Math.min(stages.length - 1, Math.floor(progress * stages.length));
+      stages.forEach((stage, index) => {
+        stage.classList.toggle("is-current", index === current);
+        stage.classList.toggle("is-complete", index < current);
+      });
+    };
+    const queueProgress = () => {
+      if (!frame) frame = requestAnimationFrame(updateProgress);
+    };
+    const configureDelivery = () => {
+      window.removeEventListener("scroll", queueProgress);
+      window.removeEventListener("resize", queueProgress);
+      cancelAnimationFrame(frame);
+      frame = 0;
+      track?.classList.toggle("is-scroll-driven", desktopMotion.matches);
+      if (desktopMotion.matches) {
+        window.addEventListener("scroll", queueProgress, { passive: true });
+        window.addEventListener("resize", queueProgress);
+        updateProgress();
+      } else {
+        track?.style.removeProperty("--delivery-progress");
+        stages.forEach((stage) => stage.classList.remove("is-current", "is-complete"));
+      }
+    };
+    desktopMotion.addEventListener("change", configureDelivery);
+    configureDelivery();
+  }
+</script>
+
+<style is:global>
+  .motion-review {
+    position: fixed;
+    z-index: 45;
+    right: 1rem;
+    bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.65rem 0.9rem;
+    background: var(--color-navy-deep);
+    color: var(--color-on-dark);
+    border: 1px solid #688096;
+    font-size: 0.8rem;
+  }
+  .motion-review b { margin-right: 0.35rem; color: #ff6b61; }
+  .motion-review button,
+  .motion-review a {
+    min-height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 0;
+    border-bottom: 1px solid #688096;
+    padding: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+  }
+  .motion-review :is(a, button):hover { color: #ff8c84; }
+  .motion-review :is(a, button):focus-visible { outline: 2px solid white; outline-offset: 4px; }
+
+  /* A structural reveal, followed by typography and the action in one phrase. */
+  .architectural-motion .hero__image {
+    animation: architectural-image 1150ms var(--ease-build) 80ms both;
+  }
+  .architectural-motion .hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: var(--color-red);
+    clip-path: polygon(62% 0, 62.2% 0, 47.2% 100%, 47% 100%);
+    animation: architectural-edge 1150ms var(--ease-build) 80ms both;
+  }
+  .architectural-motion .hero__wash {
+    background: linear-gradient(90deg, var(--color-ground) 0% 30%, color-mix(in srgb, var(--color-ground) 96%, transparent) 39%, color-mix(in srgb, var(--color-ground) 60%, transparent) 50%, transparent 67%);
+  }
+  .architectural-motion .hero__measure { animation: architectural-rule 600ms var(--ease-build) both; }
+  .architectural-motion .hero__eyebrow { animation: architectural-copy 500ms var(--ease-build) 100ms both; }
+  .architectural-motion .hero__line > span {
+    animation: architectural-heading 720ms var(--ease-build) calc(160ms + var(--line-index) * 95ms) both;
+  }
+  .architectural-motion .hero__line b { animation: none; }
+  .architectural-motion .hero__rule { animation: architectural-rule 450ms var(--ease-build) 480ms both; }
+  .architectural-motion .hero__copy { animation: architectural-copy 540ms var(--ease-build) 480ms both; }
+  .architectural-motion .hero__button { animation: architectural-copy 540ms var(--ease-build) 610ms both; }
+
+  @keyframes architectural-image {
+    from { clip-path: polygon(114% 0, 114% 0, 100% 100%, 100% 100%); transform: scale(1.035); }
+    to { clip-path: polygon(0 0, 114% 0, 100% 100%, -14% 100%); transform: scale(1); }
+  }
+  @keyframes architectural-edge {
+    0% { transform: translateX(52%); opacity: 0; }
+    15% { opacity: 1; }
+    72% { opacity: 0.8; }
+    100% { transform: translateX(-12%); opacity: 0; }
+  }
+  @keyframes architectural-heading {
+    from { transform: translateY(104%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes architectural-rule {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes architectural-copy {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .architectural-motion .services__media { isolation: isolate; }
+  .architectural-motion .service-sweep { position: absolute; z-index: 3; inset: 0; opacity: 0; pointer-events: none; background: var(--color-red); clip-path: polygon(14% 0, 14.4% 0, 0.4% 100%, 0 100%); }
+  .architectural-motion .service-project { position: absolute; inset: 0; margin: 0; background: var(--color-navy-deep); }
+  .architectural-motion .service-project img { position: absolute; inset: 0; width: 100%; height: 100%; transition: none; }
+  .architectural-motion .service-project figcaption {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 3rem 2rem 1.6rem 18%;
+    background: linear-gradient(transparent, rgb(3 32 63 / 95%));
+    color: white;
+    display: grid;
+    gap: 0.25rem;
+  }
+  .architectural-motion .service-project figcaption span { font-size: 0.85rem; }
+  .architectural-motion .service-project figcaption strong { font-family: var(--font-display); font-size: clamp(1.5rem, 2vw, 2rem); line-height: 1.1; font-weight: 500; }
+  .architectural-motion .service-tab { position: relative; transition: background 240ms var(--ease-build); }
+  .architectural-motion .service-tab.is-selected { background: rgb(255 255 255 / 4%); }
+  .architectural-motion .service-tab__rule { transform-origin: left; transition: transform 420ms var(--ease-build); }
+  .architectural-motion .service-tab:not(.is-selected) .service-tab__rule { transform: scaleX(0.22); }
+
+  /* The page continues to scroll normally while this short process holds position. */
+  .architectural-motion .delivery-scroll { background: var(--color-navy-deep); }
+  .architectural-motion .delivery-scroll .delivery-stage__content { opacity: 1 !important; transform: none !important; }
+  .architectural-motion .delivery-scroll.is-scroll-driven { padding-bottom: 0; height: 190dvh; }
+  .architectural-motion .is-scroll-driven .delivery {
+    position: sticky;
+    top: var(--header-height-compact);
+    min-height: 0;
+    overflow: clip;
+  }
+  .architectural-motion .is-scroll-driven .delivery__inner {
+    height: calc(100dvh - var(--header-height-compact));
+    min-height: 0;
+    justify-content: center;
+    padding-block: 2rem;
+  }
+  .architectural-motion .is-scroll-driven .delivery__sequence { --media-height: clamp(14rem, 31vh, 21rem); }
+  .architectural-motion .is-scroll-driven .delivery__sequence::before {
+    transform: scaleX(var(--delivery-progress, 0)) !important;
+    transition: none;
+    z-index: 1;
+  }
+  .architectural-motion .is-scroll-driven .delivery__sequence::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--media-height) + 1.15rem);
+    left: 2rem;
+    right: 2rem;
+    height: 2px;
+    background: #5b6d80;
+  }
+  .architectural-motion .is-scroll-driven .delivery-stage__media { transition: opacity 400ms var(--ease-build); }
+  .architectural-motion .is-scroll-driven .delivery-stage:not(.is-current):not(.is-complete) .delivery-stage__media { opacity: 0.45; }
+  .architectural-motion .is-scroll-driven .delivery-stage__media img { transition: transform 650ms var(--ease-build); transition-delay: 0ms; }
+  .architectural-motion .is-scroll-driven .delivery-stage.is-current .delivery-stage__media img { transform: scale(1.025); }
+  .architectural-motion .is-scroll-driven .delivery-stage__marker { background: var(--color-navy-deep); border: 1px solid #738597; transition: background 250ms, border-color 250ms; }
+  .architectural-motion .is-scroll-driven :is(.is-current, .is-complete) .delivery-stage__marker { background: #e32017; border-color: #ff6b61; }
+  .architectural-motion .is-scroll-driven .is-current .delivery-stage__body h3 { color: #ff8c84; }
+
+  @media (max-width: 47.99rem) {
+    .motion-review { right: 0.5rem; bottom: 0.5rem; gap: 0.7rem; padding: 0.45rem 0.65rem; font-size: 0.72rem; }
+    .architectural-motion .hero::after { display: none; }
+    .architectural-motion .hero__image { animation: architectural-copy 550ms var(--ease-build) both; }
+    .architectural-motion .hero__line > span { animation-duration: 500ms; animation-delay: calc(var(--line-index) * 65ms); }
+    .architectural-motion .hero__copy,
+    .architectural-motion .hero__button { animation-delay: 180ms; animation-duration: 450ms; }
+    .architectural-motion .service-project figcaption { padding: 2rem 1.25rem 1rem; }
+    .architectural-motion .services__media { min-height: 19rem; }
+    .architectural-motion .site-footer { padding-bottom: 4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .architectural-motion .hero::after { display: none; }
+    .architectural-motion .hero,
+    .architectural-motion .hero *,
+    .architectural-motion .hero *::after { animation: none !important; }
+    .architectural-motion .service-tab,
+    .architectural-motion .service-tab__rule { transition: none; }
+  }
+</style>

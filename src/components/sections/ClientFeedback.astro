@@ -1,0 +1,119 @@
+---
+import { clientFeedback } from "../../data/clientFeedback";
+import { withBasePath } from "../../utils/withBasePath";
+
+const feedback = clientFeedback.length ? clientFeedback : [{
+  id: "awaiting-approval",
+  quote: "Client-approved feedback will appear here.",
+  name: "Client name · Role · Organisation",
+  attribution: "To be confirmed",
+}];
+---
+
+<section id="client-feedback" class="client-feedback" aria-labelledby="client-feedback-title">
+  <div class="client-feedback__photo">
+    <img src={withBasePath("/assets/site/client-feedback-lounge.png")} alt="Illustrative lounge interior with harbour views, marble finishes and cream seating" width="1024" height="1536" loading="lazy" />
+  </div>
+  <div class="client-feedback__divider" aria-hidden="true"></div>
+  <img class="client-feedback__blueprint" src={withBasePath("/assets/site/client-feedback-blueprint.png")} alt="" aria-hidden="true" loading="lazy" />
+  <div class="client-feedback__content">
+    <p class="client-feedback__label">Client feedback<span aria-hidden="true"></span></p>
+    <h2 id="client-feedback-title"><span>Trust earned</span><span>in the work<b aria-hidden="true">.</b></span></h2>
+    <div class="client-feedback__slides" aria-live="polite" aria-atomic="true">
+      {feedback.map((item, index) => (
+        <figure class="client-feedback__quote" data-feedback-slide hidden={index !== 0}>
+          <span class="client-feedback__quote-mark" aria-hidden="true">“</span>
+          <blockquote><p>{item.quote}</p></blockquote>
+          <figcaption><strong>{item.name}</strong><span>{item.attribution}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="client-feedback__controls" aria-label="Client feedback navigation">
+      <button type="button" data-feedback-previous aria-label="Previous client feedback" disabled={feedback.length < 2}><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+      <span aria-hidden="true"></span>
+      <button type="button" data-feedback-next aria-label="Next client feedback" disabled={feedback.length < 2}><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>("#client-feedback");
+  const slides = Array.from(root?.querySelectorAll<HTMLElement>("[data-feedback-slide]") ?? []);
+  let active = 0;
+  const showFeedback = (direction: number) => {
+    slides[active].getAnimations().forEach((animation) => animation.cancel());
+    slides[active].hidden = true;
+    active = (active + direction + slides.length) % slides.length;
+    slides[active].hidden = false;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      slides[active].animate([
+        { opacity: 0, transform: `translateX(${direction * 14}px)` },
+        { opacity: 1, transform: "translateX(0)" },
+      ], { duration: 340, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+    }
+  };
+  if (slides.length > 1) {
+    root?.querySelector("[data-feedback-previous]")?.addEventListener("click", () => showFeedback(-1));
+    root?.querySelector("[data-feedback-next]")?.addEventListener("click", () => showFeedback(1));
+  }
+</script>
+
+<style>
+  .client-feedback { position: relative; isolation: isolate; min-height: clamp(48rem, 51vw, 56rem); background: #03234a; color: #f7f7f8; overflow: clip; }
+  .client-feedback__photo { position: absolute; inset: 0 auto 0 0; width: 49.3%; clip-path: polygon(0 0, 100% 0, 52% 100%, 0 100%); }
+  .client-feedback__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 45% center; }
+  .client-feedback__divider { position: absolute; inset: 0; background: #f21b16; clip-path: polygon(48.9% 0, 49.4% 0, 26.1% 100%, 25.6% 100%); pointer-events: none; }
+  .client-feedback__blueprint { position: absolute; z-index: -1; top: 0; right: 0; width: 26%; height: 70%; object-fit: cover; opacity: 0.65; mask-image: linear-gradient(to right, transparent, black 35%); }
+  .client-feedback__content { position: relative; margin-left: 50%; padding: clamp(4.5rem, 6.7vw, 7rem) clamp(2rem, 4vw, 4rem) 5.5rem 0; }
+  .client-feedback__label { display: flex; align-items: center; gap: 1.2rem; margin: 0 0 1.2rem; color: #ff382e; font-family: var(--font-display); font-size: clamp(1.1rem, 1.45vw, 1.5rem); font-weight: 500; text-transform: uppercase; }
+  .client-feedback__label > span { width: 12rem; max-width: 30%; height: 2px; background: #f21b16; }
+  .client-feedback h2 { margin: 0 0 2.8rem; font-family: var(--font-display); font-size: clamp(4rem, 5.7vw, 6rem); line-height: 1; letter-spacing: -0.025em; font-weight: 700; text-transform: uppercase; }
+  .client-feedback h2 > span { display: block; }
+  .client-feedback h2 b { color: #f21b16; font-weight: inherit; }
+  .client-feedback__quote { margin: 0; }
+  .client-feedback__quote[hidden] { display: none; }
+  .client-feedback__quote-mark { display: block; height: 6rem; overflow: hidden; color: #f21b16; font-family: Arial, sans-serif; font-size: 16rem; line-height: 1; font-weight: 700; transform: translateX(-0.55rem); }
+  .client-feedback blockquote { margin: 1.05rem 0 2rem; padding: 0; }
+  .client-feedback blockquote p { max-width: 24ch; margin: 0; font-family: var(--font-display); font-size: clamp(2.2rem, 3.2vw, 3.5rem); line-height: 1.17; letter-spacing: -0.01em; font-weight: 600; text-transform: uppercase; text-wrap: pretty; }
+  .client-feedback figcaption { display: grid; gap: 0.3rem; padding-right: 9rem; font-size: 1rem; line-height: 1.5; letter-spacing: 0.12em; text-transform: uppercase; }
+  .client-feedback figcaption::before { content: ""; width: 3.2rem; height: 2px; margin-bottom: 1.3rem; background: #f21b16; }
+  .client-feedback figcaption strong { font-weight: 500; }
+  .client-feedback figcaption > span { color: #c9d4e5; font-weight: 400; }
+  .client-feedback__controls { display: flex; gap: 1.15rem; align-items: center; justify-content: flex-end; margin-top: -3.25rem; }
+  .client-feedback__controls button { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border: 0; padding: 0; background: transparent; color: #f7f7f8; cursor: pointer; }
+  .client-feedback__controls button:last-child { color: #ff382e; }
+  .client-feedback__controls button:disabled { cursor: default; }
+  .client-feedback__controls i { font-size: 2.6rem; transition: transform 180ms var(--ease-build); }
+  .client-feedback__controls button:not(:disabled):hover i { transform: translateX(-4px); }
+  .client-feedback__controls button:last-child:not(:disabled):hover i { transform: translateX(4px); }
+  .client-feedback__controls button:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+  .client-feedback__controls > span { width: 1px; height: 2.7rem; background: #899aaf; }
+  @media (min-width: 48rem) and (max-width: 74.99rem) {
+    .client-feedback { min-height: 43rem; }
+    .client-feedback__photo { width: 43%; clip-path: polygon(0 0, 100% 0, 57% 100%, 0 100%); }
+    .client-feedback__divider { clip-path: polygon(42.5% 0, 43.1% 0, 24.7% 100%, 24.1% 100%); }
+    .client-feedback__content { margin-left: 44%; padding: 3.5rem 1.75rem 3.5rem 0; }
+    .client-feedback h2 { font-size: clamp(3.2rem, 5.7vw, 4.3rem); margin-bottom: 2rem; }
+    .client-feedback__quote-mark { font-size: 12rem; height: 4.5rem; }
+    .client-feedback blockquote p { font-size: clamp(1.9rem, 3.5vw, 2.65rem); }
+    .client-feedback figcaption { padding-right: 0; font-size: 0.85rem; letter-spacing: 0.07em; }
+    .client-feedback__controls { margin-top: 1.2rem; justify-content: flex-start; }
+  }
+  @media (max-width: 47.99rem) {
+    .client-feedback { display: flex; flex-direction: column; min-height: 0; }
+    .client-feedback__photo { position: relative; width: 100%; height: clamp(16rem, 62vw, 24rem); clip-path: none; border-bottom: 4px solid #f21b16; }
+    .client-feedback__photo img { object-position: 45% 58%; }
+    .client-feedback__divider { display: none; }
+    .client-feedback__blueprint { top: 17rem; width: 52%; height: 30rem; opacity: 0.32; }
+    .client-feedback__content { margin: 0; padding: 2.5rem var(--page-gutter) 3rem; }
+    .client-feedback__label { margin-bottom: 1rem; font-size: 1.15rem; }
+    .client-feedback h2 { font-size: clamp(2.9rem, 11.5vw, 4.5rem); margin-bottom: 1.7rem; }
+    .client-feedback__quote-mark { font-size: 11rem; height: 4rem; }
+    .client-feedback blockquote { margin-top: 0.75rem; margin-bottom: 1.4rem; }
+    .client-feedback blockquote p { font-size: clamp(1.9rem, 7.2vw, 2.65rem); }
+    .client-feedback figcaption { padding-right: 0; font-size: 0.8rem; letter-spacing: 0.09em; }
+    .client-feedback figcaption::before { margin-bottom: 0.8rem; }
+    .client-feedback__controls { margin-top: 1.5rem; justify-content: flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce) { .client-feedback__controls i { transition: none; } }
+</style>

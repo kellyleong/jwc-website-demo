@@ -1,16 +1,18 @@
 ---
 import { casesById, services } from "../../data/site";
 
+interface Props { architecturalMotion?: boolean; }
+const { architecturalMotion = false } = Astro.props;
 const serviceIcons = ["ph-blueprint", "ph-gauge", "ph-wrench"];
 const servicePayload = services.map((service) => {
   const highlightedCase = casesById.get(service.highlightedCaseId);
   if (!highlightedCase) throw new Error(`Missing highlighted case for ${service.id}`);
-  return { id: service.id, case: { image: highlightedCase.image } };
+  return { id: service.id, case: { image: highlightedCase.image, name: highlightedCase.name, location: highlightedCase.location, year: highlightedCase.year } };
 });
 const initialService = servicePayload[0];
 ---
 
-<section id="services" class="services" aria-labelledby="services-title" data-services>
+<section id="services" class="services" aria-labelledby="services-title" data-services data-architectural-motion={architecturalMotion || undefined}>
   <div class="services__upper">
     <div class="services__intro" data-reveal>
       <p class="section-label">What We Do</p>
@@ -29,12 +31,18 @@ const initialService = servicePayload[0];
       data-service-media
       data-reveal
     >
-      <img
+      {architecturalMotion ? servicePayload.map((service, index) => (
+        <figure class="service-project" data-service-project={service.id} aria-hidden={index !== 0 ? "true" : "false"} style={`z-index: ${index === 0 ? 1 : 0}`}>
+          <img src={service.case.image.src} alt={service.case.image.alt} loading="lazy" />
+          <figcaption><span>{service.case.location} · {service.case.year}</span><strong>{service.case.name}</strong></figcaption>
+        </figure>
+      )) : <img
         src={initialService.case.image.src}
         alt={initialService.case.image.alt}
         loading="lazy"
         data-service-image
-      />
+      />}
+      {architecturalMotion && <span class="service-sweep" data-service-sweep aria-hidden="true"></span>}
     </div>
   </div>
 
@@ -86,6 +94,10 @@ const initialService = servicePayload[0];
   const panel = servicesRoot?.querySelector<HTMLElement>("[role='tabpanel']");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let transitionTimer: number | undefined;
+  const projects = Array.from(servicesRoot?.querySelectorAll<HTMLElement>("[data-service-project]") ?? []);
+  let selectedIndex = 0;
+  let projectAnimation: Animation | undefined;
+  let sweepAnimation: Animation | undefined;
 
   for (const service of serviceData) {
     const preload = new Image();
@@ -95,7 +107,44 @@ const initialService = servicePayload[0];
   const selectService = (nextIndex: number, shouldFocus = true) => {
     const nextTab = tabs[nextIndex];
     const service = serviceData.find((item) => item.id === nextTab?.dataset.serviceId);
-    if (!nextTab || !service || !image) return;
+    if (!nextTab || !service || (!image && !projects.length)) return;
+
+    if (projects.length) {
+      if (nextIndex === selectedIndex) return;
+      projectAnimation?.cancel();
+      sweepAnimation?.cancel();
+      projects.forEach((project, index) => {
+        project.style.zIndex = index === nextIndex ? "2" : index === selectedIndex ? "1" : "0";
+        project.setAttribute("aria-hidden", String(index !== nextIndex));
+      });
+      tabs.forEach((tab, index) => {
+        tab.classList.toggle("is-selected", index === nextIndex);
+        tab.setAttribute("aria-selected", String(index === nextIndex));
+        tab.tabIndex = index === nextIndex ? 0 : -1;
+      });
+      panel?.setAttribute("aria-labelledby", nextTab.id);
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const from = nextIndex > selectedIndex
+          ? "polygon(0 0, 0 0, -14% 100%, 0 100%)"
+          : "polygon(114% 0, 100% 0, 100% 100%, 100% 100%)";
+        projectAnimation = projects[nextIndex].animate([
+          { clipPath: from, transform: "translateX(0)" },
+          { clipPath: nextIndex > selectedIndex ? "polygon(0 0, 114% 0, 100% 100%, 0 100%)" : "polygon(0 0, 100% 0, 100% 100%, -14% 100%)", transform: "translateX(0)" },
+        ], { duration: 620, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+        sweepAnimation = media?.querySelector("[data-service-sweep]")?.animate([
+          { transform: "translateX(-14%)", opacity: 1 },
+          { transform: "translateX(100%)", opacity: 1 },
+        ], { duration: 620, direction: nextIndex > selectedIndex ? "normal" : "reverse", easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+        projects[nextIndex].querySelector("figcaption")?.animate([
+          { opacity: 0, transform: "translateY(12px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ], { duration: 380, delay: 160, fill: "backwards", easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+      }
+      selectedIndex = nextIndex;
+      if (shouldFocus) nextTab.focus();
+      return;
+    }
+    if (!image) return;
 
     tabs.forEach((tab, index) => {
       const isSelected = index === nextIndex;
