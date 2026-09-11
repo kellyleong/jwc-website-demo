@@ -29,9 +29,9 @@ const feedback = clientFeedback.length ? clientFeedback : [{
       ))}
     </div>
     <div class="client-feedback__controls" aria-label="Client feedback navigation">
-      <button type="button" data-feedback-previous aria-label="Previous client feedback" disabled={feedback.length < 2}><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" data-feedback-previous aria-label="Previous client feedback" ><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
       <span aria-hidden="true"></span>
-      <button type="button" data-feedback-next aria-label="Next client feedback" disabled={feedback.length < 2}><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+      <button type="button" data-feedback-next aria-label="Next client feedback" ><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
     </div>
   </div>
 </section>
@@ -82,7 +82,6 @@ const feedback = clientFeedback.length ? clientFeedback : [{
   .client-feedback__controls { display: flex; gap: 1.15rem; align-items: center; justify-content: flex-end; margin-top: -3.25rem; }
   .client-feedback__controls button { display: grid; place-items: center; width: 3.4rem; height: 3.4rem; border: 0; padding: 0; background: transparent; color: #f7f7f8; cursor: pointer; }
   .client-feedback__controls button:last-child { color: #ff382e; }
-  .client-feedback__controls button:disabled { cursor: default; }
   .client-feedback__controls i { font-size: 2.6rem; transition: transform 180ms var(--ease-build); }
   .client-feedback__controls button:not(:disabled):hover i { transform: translateX(-4px); }
   .client-feedback__controls button:last-child:not(:disabled):hover i { transform: translateX(4px); }

@@ -47,7 +47,7 @@ const initialService = servicePayload[0];
         type="button"
         role="tab"
         aria-selected={index === 0 ? "true" : "false"}
-        aria-controls="service-highlight-panel"
+        aria-controls="service-highlight-panel service-detail-panel"
         aria-label={service.name}
         tabindex={index === 0 ? 0 : -1}
         data-service-id={service.id}
@@ -65,6 +65,14 @@ const initialService = servicePayload[0];
           </span>
         </span>
       </button>
+    ))}
+  </div>
+  <div id="service-detail-panel" class="services__details" role="tabpanel" aria-labelledby={`service-tab-${initialService.id}`} data-service-details>
+    {services.map((service, index) => (
+      <div data-service-detail={service.id} hidden={index !== 0}>
+        <p>{service.description}</p>
+        <ul>{service.capabilities.map((capability) => <li>{capability}</li>)}</ul>
+      </div>
     ))}
   </div>
   <script type="application/json" data-services-json set:html={JSON.stringify(servicePayload)}></script>
@@ -85,6 +93,8 @@ const initialService = servicePayload[0];
   const media = servicesRoot?.querySelector<HTMLElement>("[data-service-media]");
   const panel = servicesRoot?.querySelector<HTMLElement>("[role='tabpanel']");
   const projects = Array.from(servicesRoot?.querySelectorAll<HTMLElement>("[data-service-project]") ?? []);
+  const details = servicesRoot?.querySelector<HTMLElement>("[data-service-details]");
+  const serviceDetails = Array.from(servicesRoot?.querySelectorAll<HTMLElement>("[data-service-detail]") ?? []);
   let selectedIndex = 0;
   let projectAnimation: Animation | undefined;
   let sweepAnimation: Animation | undefined;
@@ -112,6 +122,8 @@ const initialService = servicePayload[0];
       tab.tabIndex = index === nextIndex ? 0 : -1;
     });
     panel?.setAttribute("aria-labelledby", nextTab.id);
+    details?.setAttribute("aria-labelledby", nextTab.id);
+    serviceDetails.forEach((detail, index) => { detail.hidden = index !== nextIndex; });
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       const from = nextIndex > selectedIndex
         ? "polygon(0 0, 0 0, -14% 100%, 0 100%)"
@@ -351,6 +363,8 @@ const initialService = servicePayload[0];
     color: #ff4138;
   }
 
+  .services__details { display: none; }
+
   @media (max-width: 70rem) {
     .service-tab { padding-inline: 1.5rem; }
     .service-tab__body { grid-template-columns: 4rem 1fr; }
@@ -362,36 +376,39 @@ const initialService = servicePayload[0];
     .services { height: auto; min-height: 0; display: block; }
     .services__upper { display: flex; flex-direction: column; }
     .services__intro { min-height: 0; padding-block: 3.5rem 2.5rem; }
-    .services__heading { font-size: clamp(2.9rem, 12.8vw, 4rem); line-height: 0.94; }
+    .services__heading { font-size: clamp(2.5rem, 10.5vw, 3.5rem); line-height: 0.94; }
     .services__heading > span { white-space: normal; }
     .services__measure { display: none; }
     .services__media { min-height: clamp(15rem, 66vw, 20rem); clip-path: none; }
     .services__media img { min-height: clamp(15rem, 66vw, 20rem); }
-    .services__tabs {
-      min-height: 0;
-      padding: 1.5rem var(--page-gutter) 1.75rem;
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-padding-inline: var(--page-gutter);
-      scrollbar-width: none;
-    }
-    .services__tabs::-webkit-scrollbar { display: none; }
-    .service-tab {
-      flex: 0 0 min(82vw, 22rem);
-      min-height: 13rem;
-      padding: 0.75rem 1rem 0.75rem 0;
+    .services__tabs { padding: 1rem var(--page-gutter) 0; gap: 0; }
+    .service-tab,
+    .service-tab:first-child,
+    .service-tab:last-child {
+      min-height: 4rem;
+      padding: 0.65rem 0.5rem;
       border-right: 0;
-      border-bottom: 1px solid color-mix(in srgb, white 25%, transparent);
-      scroll-snap-align: start;
+      border-bottom: 2px solid color-mix(in srgb, white 25%, transparent);
+      text-align: center;
     }
-    .service-tab:first-child { padding-left: 0; }
-    .service-tab:last-child { padding-right: 0; }
-    .service-tab__body { margin-top: 1rem; grid-template-columns: 3.5rem 1fr; gap: 1rem; }
-    .service-tab__body > i { font-size: 3.25rem; }
-    .service-tab__body strong { font-size: 1.45rem; }
-    .service-tab__description { font-size: 0.88rem; }
-    .service-tab__capabilities { display: flex; }
+    .service-tab.is-selected { border-bottom-color: var(--color-red); }
+    .service-tab__number,
+    .service-tab__rule,
+    .service-tab__body > i,
+    .service-tab__description,
+    .service-tab__capabilities { display: none; }
+    .service-tab__body { display: block; margin: 0; }
+    .service-tab__body strong { margin: 0; font-size: 1.05rem; line-height: 1.2; }
+    .services__details {
+      display: block;
+      padding: 1.25rem var(--page-gutter) 1.75rem;
+      background: var(--color-navy);
+      color: white;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .services__details p { margin: 0 0 0.75rem; }
+    .services__details ul { margin: 0; padding-left: 1.15rem; color: #dbe3ec; }
+    .services__details li::marker { color: #ff4138; }
   }
 </style>

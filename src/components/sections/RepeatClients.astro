@@ -444,21 +444,6 @@ const supportingLines = supportingBreakAt > 0
     }
   }
 
-  @media (max-width: 39rem) {
-    .repeat-clients__copy { padding-block: 3.5rem 2.75rem; }
-    .repeat-clients__heading { font-size: clamp(2.7rem, 11.7vw, 3.45rem); }
-    .repeat-clients__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
-    .repeat-clients__grid .repeat-client:nth-child(n) { border-top: 0; }
-    .repeat-clients__grid .repeat-client:nth-child(n + 4) { border-top: 1px solid color-mix(in srgb, white 22%, transparent); }
-    .repeat-clients__grid .repeat-client:nth-child(n)::before { display: none; }
-    .repeat-clients__grid .repeat-client:not(:nth-child(3n + 1))::before { display: block; }
-    .repeat-client__wordmark-text { font-size: clamp(1.2rem, 5.7vw, 1.9rem); }
-    .repeat-client__wordmark-text--huawei,
-    .repeat-client__wordmark-text--macau-pass { font-size: clamp(0.72rem, 3.2vw, 1rem); }
-    .repeat-client h3 { font-size: 0.66rem; }
-    .repeat-client p { font-size: 0.78rem; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .repeat-clients__relationships[data-reveal] {
       transition-delay: 0ms;
