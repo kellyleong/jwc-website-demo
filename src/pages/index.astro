@@ -7,21 +7,25 @@ import HighlightedCases from "../components/sections/HighlightedCases.astro";
 import SelectedClients from "../components/sections/SelectedClients.astro";
 import DeliverySection from "../components/sections/DeliverySection.astro";
 import RepeatClients from "../components/sections/RepeatClients.astro";
+import ClientFeedback from "../components/sections/ClientFeedback.astro";
 import JoinUsCta from "../components/sections/JoinUsCta.astro";
+import ArchitecturalMotion from "../components/ArchitecturalMotion.astro";
 ---
 
 <BaseLayout
   title="Joint Win Construction & Engineering Company Limited"
   description="JWC delivers fit-out, renovation, E&M engineering and maintenance works across Macau, Hong Kong and Zhuhai."
   activeNav="main"
-  bodyClass="home-page"
+  bodyClass="home-page architectural-motion"
 >
   <HeroSection />
   <CompanyIntroduction />
   <ServicesSection />
   <HighlightedCases />
   <SelectedClients />
-  <DeliverySection />
+  <div class="delivery-scroll"><DeliverySection /></div>
   <RepeatClients />
+  <ClientFeedback />
   <JoinUsCta />
+  <ArchitecturalMotion />
 </BaseLayout>
