@@ -1,0 +1,76 @@
+{
+  "zh-Hant": {
+    "hero.headline": [
+      "了解您的需要，",
+      "做好每一項工程。"
+    ],
+    "companyIntroduction.headline": [
+      "團隊經驗扎實，",
+      "工程全程跟進。"
+    ],
+    "whatWeDo.headline": [
+      "從裝修到機電，",
+      "提供全面工程服務。"
+    ],
+    "casesSection.headline": [
+      "不同行業的工程案例"
+    ],
+    "delivery.headline": [
+      "由前期規劃到施工交付"
+    ],
+    "repeatClients.headline": [
+      "從一次合作，",
+      "走向長期夥伴關係。"
+    ],
+    "clientFeedback.headline": [
+      "客戶的信任，",
+      "來自每一次用心交付。"
+    ],
+    "joinUsCta.headline": [
+      "下一個項目，",
+      "讓我們一起開始。"
+    ],
+    "joinUs.headline": [
+      "加入我們，發揮所長，",
+      "一起做好工程。"
+    ]
+  },
+  "zh-Hans": {
+    "hero.headline": [
+      "了解您的需要，",
+      "做好每一项工程。"
+    ],
+    "companyIntroduction.headline": [
+      "团队经验扎实，",
+      "工程全程跟进。"
+    ],
+    "whatWeDo.headline": [
+      "从装修到机电，",
+      "提供全面工程服务。"
+    ],
+    "casesSection.headline": [
+      "不同领域的",
+      "代表项目。"
+    ],
+    "delivery.headline": [
+      "从明确需求，",
+      "到项目交付。"
+    ],
+    "repeatClients.headline": [
+      "一次交付，",
+      "带来持续合作。"
+    ],
+    "clientFeedback.headline": [
+      "客户的信任，",
+      "来自每一次用心交付。"
+    ],
+    "joinUsCta.headline": [
+      "下一个项目，",
+      "让我们一起开始。"
+    ],
+    "joinUs.headline": [
+      "加入我们，发挥所长，",
+      "一起做好工程。"
+    ]
+  }
+}

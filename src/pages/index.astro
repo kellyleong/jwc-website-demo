@@ -10,22 +10,28 @@ import RepeatClients from "../components/sections/RepeatClients.astro";
 import ClientFeedback from "../components/sections/ClientFeedback.astro";
 import JoinUsCta from "../components/sections/JoinUsCta.astro";
 import ArchitecturalMotion from "../components/ArchitecturalMotion.astro";
+import { translate, type Locale } from "../i18n";
+
+interface Props { locale?: Locale }
+const { locale = "en" } = Astro.props;
 ---
 
 <BaseLayout
-  title="Joint Win Construction & Engineering Company Limited"
-  description="JWC delivers fit-out, renovation, E&M engineering and maintenance works across Macau, Hong Kong and Zhuhai."
+  title={translate(locale, "seo.home.title", "Joint Win Construction & Engineering Company Limited")}
+  description={translate(locale, "seo.home.description", "JWC delivers fit-out, renovation, E&M engineering and maintenance works across Macau, Hong Kong and Zhuhai.")}
   activeNav="main"
   bodyClass="home-page architectural-motion"
+  locale={locale}
+  canonicalPath="/"
 >
-  <HeroSection />
-  <CompanyIntroduction />
-  <ServicesSection />
-  <HighlightedCases />
-  <SelectedClients />
-  <div class="delivery-scroll"><DeliverySection /></div>
-  <RepeatClients />
-  <ClientFeedback />
-  <JoinUsCta />
+  <HeroSection locale={locale} />
+  <CompanyIntroduction locale={locale} />
+  <ServicesSection locale={locale} />
+  <HighlightedCases locale={locale} />
+  <SelectedClients locale={locale} />
+  <div class="delivery-scroll"><DeliverySection locale={locale} /></div>
+  <RepeatClients locale={locale} />
+  <ClientFeedback locale={locale} />
+  <JoinUsCta locale={locale} />
   <ArchitecturalMotion />
 </BaseLayout>

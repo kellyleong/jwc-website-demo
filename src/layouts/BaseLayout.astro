@@ -3,12 +3,15 @@ import "../styles/global.css";
 import SiteHeader from "../components/layout/SiteHeader.astro";
 import SiteFooter from "../components/layout/SiteFooter.astro";
 import { withBasePath } from "../utils/withBasePath";
+import { localizedPath, translate, type Locale } from "../i18n";
 
 interface Props {
   title: string;
   description: string;
   activeNav?: "main" | "cases" | "contact";
   bodyClass?: string;
+  locale?: Locale;
+  canonicalPath?: string;
 }
 
 const {
@@ -16,26 +19,35 @@ const {
   description,
   activeNav,
   bodyClass = "",
+  locale = "en",
+  canonicalPath = "/",
 } = Astro.props;
+const siteUrl = Astro.site ?? new URL("https://kellyleong.github.io");
+const absoluteUrl = (targetLocale: Locale) => new URL(localizedPath(targetLocale, canonicalPath), siteUrl);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#eae6e3" />
+    <link rel="canonical" href={absoluteUrl(locale)} />
+    <link rel="alternate" hreflang="en" href={absoluteUrl("en")} />
+    <link rel="alternate" hreflang="zh-Hant" href={absoluteUrl("zh-Hant")} />
+    <link rel="alternate" hreflang="zh-Hans" href={absoluteUrl("zh-Hans")} />
+    <link rel="alternate" hreflang="x-default" href={absoluteUrl("en")} />
     <link rel="icon" href={withBasePath("/favicon.svg")} type="image/svg+xml" />
     <title>{title}</title>
   </head>
-  <body id="top" class={bodyClass}>
-    <a class="skip-link" href="#main-content">Skip to main content</a>
-    <SiteHeader activeNav={activeNav} />
+  <body id="top" class:list={[bodyClass, { "is-chinese": locale !== "en" }]}>
+    <a class="skip-link" href="#main-content">{translate(locale, "accessibility.skipToMain", "Skip to main content")}</a>
+    <SiteHeader activeNav={activeNav} locale={locale} canonicalPath={canonicalPath} />
     <main id="main-content">
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter locale={locale} canonicalPath={canonicalPath} />
     <script is:inline>
       (() => {
         const root = document.documentElement;

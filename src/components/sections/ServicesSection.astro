@@ -1,6 +1,9 @@
 ---
-import { casesById, services } from "../../data/site";
+import { getLocalizedContent, translate, type Locale } from "../../i18n";
 
+interface Props { locale?: Locale }
+const { locale = "en" } = Astro.props;
+const { casesById, services, whatWeDo } = getLocalizedContent(locale);
 const serviceIcons = ["ph-blueprint", "ph-gauge", "ph-wrench"];
 const servicePayload = services.map((service) => {
   const highlightedCase = casesById.get(service.highlightedCaseId);
@@ -13,10 +16,9 @@ const initialService = servicePayload[0];
 <section id="services" class="services" aria-labelledby="services-title" data-services>
   <div class="services__upper">
     <div class="services__intro" data-reveal>
-      <p class="section-label">What We Do</p>
+      <p class="section-label">{whatWeDo.eyebrow}</p>
       <h2 id="services-title" class="display-heading services__heading">
-        <span>Integrated services<b aria-hidden="true">.</b></span>
-        <span>Specialist capabilities<b aria-hidden="true">.</b></span>
+        {whatWeDo.headlineLines.map((line) => <span>{line}</span>)}
       </h2>
       <span class="services__measure" aria-hidden="true"></span>
     </div>
@@ -39,7 +41,7 @@ const initialService = servicePayload[0];
     </div>
   </div>
 
-  <div class="services__tabs" role="tablist" aria-label="Services">
+  <div class="services__tabs" role="tablist" aria-label={translate(locale, "footer.services", "Services")}>
     {services.map((service, index) => (
       <button
         class:list={["service-tab", { "is-selected": index === 0 }]}

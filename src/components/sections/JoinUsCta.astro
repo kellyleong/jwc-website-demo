@@ -1,5 +1,10 @@
 ---
+import { localizedHeadline, localizedPath, translate, type Locale } from "../../i18n";
 import { withBasePath } from "../../utils/withBasePath";
+
+interface Props { locale?: Locale }
+const { locale = "en" } = Astro.props;
+const t = (key: Parameters<typeof translate>[1], english: string) => translate(locale, key, english);
 ---
 
 <section class="join-cta" aria-labelledby="join-cta-title">
@@ -10,21 +15,19 @@ import { withBasePath } from "../../utils/withBasePath";
 
   <div class="join-cta__content" data-reveal>
     <div class="join-cta__measure" aria-hidden="true"><span>+</span></div>
-    <p class="join-cta__eyebrow">Work with JWC</p>
+    <p class="join-cta__eyebrow">{t("joinUsCta.eyebrow", "Work with JWC")}</p>
     <h2 id="join-cta-title">
-      <span>Build what</span>
-      <span>comes next<b aria-hidden="true">.</b></span>
+      {localizedHeadline(locale, "joinUsCta.headline", ["Build what", "comes next."]).map((line) => <span>{line}</span>)}
     </h2>
     <p class="join-cta__copy">
-      Speak with us about your next project or ongoing requirement,<br />
-      or explore opportunities to join our team.
+      {t("joinUsCta.supportingCopy", "Speak with us about your next project or ongoing requirement, or explore opportunities to join our team.")}
     </p>
     <div class="join-cta__actions">
-      <a class="join-cta__button join-cta__button--primary" href={withBasePath("/contact")}>
-        <span>Contact Us</span><i class="ph ph-arrow-right" aria-hidden="true"></i>
+      <a class="join-cta__button join-cta__button--primary" href={localizedPath(locale, "/contact")}>
+        <span>{t("joinUsCta.contactAction", "Contact Us")}</span><i class="ph ph-arrow-right" aria-hidden="true"></i>
       </a>
-      <a class="join-cta__button join-cta__button--secondary" href={withBasePath("/join-us")}>
-        <span>Join Us</span><i class="ph ph-arrow-right" aria-hidden="true"></i>
+      <a class="join-cta__button join-cta__button--secondary" href={localizedPath(locale, "/join-us")}>
+        <span>{t("joinUsCta.joinAction", "Join Us")}</span><i class="ph ph-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>
@@ -34,7 +37,7 @@ import { withBasePath } from "../../utils/withBasePath";
       <source media="(min-width: 56rem)" srcset={withBasePath("/assets/reference/join-us-cta.png")} />
       <img
         src={withBasePath("/assets/process/build-install.png")}
-        alt="JWC construction team working on an active project site"
+        alt={t("images.joinCta.alt", "JWC construction team working on an active project site")}
         loading="lazy"
       />
     </picture>

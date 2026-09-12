@@ -1,7 +1,10 @@
 ---
 import CaseCard from "../cases/CaseCard.astro";
-import { caseCategories, cases, casesSection } from "../../data/site";
+import { formatMessage, getLocalizedContent, translate, type Locale } from "../../i18n";
 
+interface Props { locale?: Locale }
+const { locale = "en" } = Astro.props;
+const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
 const featuredCases = cases.filter((caseRecord) => caseRecord.featured).slice(0, 4);
 const featuredCaseCount = featuredCases.length;
 ---
@@ -10,26 +13,25 @@ const featuredCaseCount = featuredCases.length;
   <div class="section-shell" data-reveal>
     <p class="case-showcase__label"><span aria-hidden="true"></span>{casesSection.eyebrow}</p>
     <h2 id="case-showcase-title" class="display-heading case-showcase__heading">
-      <span>Highlighted cases</span>
-      <span>across sectors<b aria-hidden="true">.</b></span>
+      {casesSection.headlineLines.map((line) => <span>{line}</span>)}
     </h2>
 
-    <div class="case-showcase__filters" role="group" aria-label="Filter highlighted cases by sector">
+    <div class="case-showcase__filters" role="group" aria-label={translate(locale, "accessibility.filterBySector", "Filter highlighted cases by sector")}>
       {caseCategories.map((category, index) => (
         <button
           class:list={["case-showcase__filter", { "is-active": index === 0 }]}
           type="button"
-          data-highlighted-case-filter-control={category}
+          data-highlighted-case-filter-control={category.id}
           aria-controls="case-showcase-grid"
           aria-pressed={index === 0 ? "true" : "false"}
         >
-          {category}
+          {category.label}
         </button>
       ))}
     </div>
 
     <p class="visually-hidden" role="status" aria-live="polite" data-highlighted-filter-status>
-      {featuredCaseCount} highlighted cases shown.
+      {formatMessage(translate(locale, "accessibility.casesShown", "{count} cases shown."), { count: featuredCaseCount })}
     </p>
 
     <div id="case-showcase-grid" class="case-showcase__grid">
@@ -40,6 +42,7 @@ const featuredCaseCount = featuredCases.length;
           headingLevel="h3"
           hidden={!featuredCases.includes(caseRecord)}
           featured={featuredCases.includes(caseRecord)}
+          locale={locale}
         />
       ))}
     </div>
@@ -53,6 +56,12 @@ const featuredCaseCount = featuredCases.length;
   </div>
 </section>
 
+<script type="application/json" data-highlighted-filter-messages set:html={JSON.stringify({
+  all: caseCategories[0].id,
+  allLabel: caseCategories[0].label,
+  template: translate(locale, "accessibility.filteredCasesShown", "{count} cases shown for {sector}.")
+})}></script>
+
 <script>
   document.querySelectorAll<HTMLElement>("[data-highlighted-case-filter]").forEach((showcase) => {
     const controls = Array.from(
@@ -61,9 +70,11 @@ const featuredCaseCount = featuredCases.length;
     const cards = Array.from(showcase.querySelectorAll<HTMLElement>("[data-case-category]"));
     const status = showcase.querySelector<HTMLElement>("[data-highlighted-filter-status]");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const messagesNode = document.querySelector<HTMLScriptElement>("[data-highlighted-filter-messages]");
+    const messages = messagesNode?.textContent ? JSON.parse(messagesNode.textContent) : { all: "All", allLabel: "all sectors", template: "{count} cases shown for {sector}." };
 
     const selectFilter = (selectedControl: HTMLButtonElement) => {
-      const category = selectedControl.dataset.highlightedCaseFilterControl ?? "All";
+      const category = selectedControl.dataset.highlightedCaseFilterControl ?? messages.all;
       const previousPositions = new Map(
         cards.filter((card) => !card.hidden).map((card) => [card, card.getBoundingClientRect()]),
       );
@@ -75,7 +86,7 @@ const featuredCaseCount = featuredCases.length;
       });
 
       cards.forEach((card) => {
-        card.hidden = category === "All"
+        card.hidden = category === messages.all
           ? card.dataset.caseFeatured !== "true"
           : card.dataset.caseCategory !== category;
       });
@@ -112,8 +123,8 @@ const featuredCaseCount = featuredCases.length;
       }
 
       if (status) {
-        const sectorLabel = category === "All" ? "highlighted sectors" : category;
-        status.textContent = `${visibleCards.length} ${visibleCards.length === 1 ? "case" : "cases"} shown for ${sectorLabel}.`;
+        const label = selectedControl.textContent?.trim() || messages.allLabel;
+        status.textContent = messages.template.replace("{count}", String(visibleCards.length)).replace("{sector}", label);
       }
     };
 

@@ -1,47 +1,55 @@
 ---
-import { withBasePath } from "../../utils/withBasePath";
+import { formatMessage, localeRoute, localizedPath, translate, type Locale } from "../../i18n";
+
+interface Props { locale?: Locale; canonicalPath?: string }
+const { locale = "en", canonicalPath = "/" } = Astro.props;
+const t = (key: Parameters<typeof translate>[1], english: string) => translate(locale, key, english);
+const companyName = t("siteIdentity.companyName", "Joint Win Construction & Engineering Company Limited");
+const languages = [
+  { code: "en", label: "EN", aria: t("accessibility.english", "English") },
+  { code: "zh-Hant", label: "繁", aria: t("accessibility.traditionalChinese", "Traditional Chinese") },
+  { code: "zh-Hans", label: "简", aria: t("accessibility.simplifiedChinese", "Simplified Chinese") },
+] as const;
 ---
 
 <footer class="site-footer">
   <div class="footer-frame">
     <div class="footer-main">
       <section class="footer-brand-panel" aria-labelledby="footer-company-name">
-        <a class="footer-brand" href={withBasePath("/")} aria-label="Joint Win Construction and Engineering Company Limited, home">
+        <a class="footer-brand" href={localizedPath(locale, "/")} aria-label={t("accessibility.homeLink", "Joint Win Construction and Engineering Company Limited, home")}>
           <span class="footer-brand__mark" aria-hidden="true"><b>J</b><b>W</b></span>
-          <strong id="footer-company-name">
-            Joint Win Construction &amp;<br />Engineering Company Limited
-          </strong>
+          <strong id="footer-company-name">{companyName}</strong>
         </a>
         <span class="footer-brand__rule" aria-hidden="true"></span>
-        <p>Construction and engineering,<br />delivered with experience.</p>
+        <p>{t("footer.tagline", "Construction and engineering, delivered with experience.")}</p>
       </section>
 
       <div class="footer-directory">
         <div class="footer-directory__columns">
           <nav class="footer-column" aria-labelledby="footer-explore-title">
-            <h2 id="footer-explore-title">Explore</h2>
+            <h2 id="footer-explore-title">{t("footer.explore", "Explore")}</h2>
             <span class="footer-column__rule" aria-hidden="true"></span>
             <ul>
-              <li><a href={withBasePath("/#who-we-are")}>About Us</a></li>
-              <li><a href={withBasePath("/cases")}>Cases</a></li>
-              <li><a href={withBasePath("/#selected-clients")}>Clients</a></li>
-              <li><a href={withBasePath("/join-us")}>Join Us</a></li>
-              <li><a href={withBasePath("/contact")}>Contact</a></li>
+              <li><a href={localizedPath(locale, "/#who-we-are")}>{t("navigation.about", "About Us")}</a></li>
+              <li><a href={localizedPath(locale, "/cases")}>{t("navigation.cases", "Cases")}</a></li>
+              <li><a href={localizedPath(locale, "/#selected-clients")}>{t("navigation.clients", "Clients")}</a></li>
+              <li><a href={localizedPath(locale, "/join-us")}>{t("navigation.joinUs", "Join Us")}</a></li>
+              <li><a href={localizedPath(locale, "/contact")}>{t("navigation.contact", "Contact")}</a></li>
             </ul>
           </nav>
 
           <nav class="footer-column" aria-labelledby="footer-services-title">
-            <h2 id="footer-services-title">Services</h2>
+            <h2 id="footer-services-title">{t("footer.services", "Services")}</h2>
             <span class="footer-column__rule" aria-hidden="true"></span>
             <ul>
-              <li><a href={withBasePath("/#services")}>Fit-out &amp; Renovation</a></li>
-              <li><a href={withBasePath("/#services")}>E&amp;M Engineering</a></li>
-              <li><a href={withBasePath("/#services")}>Maintenance</a></li>
+              <li><a href={localizedPath(locale, "/#services")}>{t("services.fit-out-renovation.name", "Fit-out & Renovation")}</a></li>
+              <li><a href={localizedPath(locale, "/#services")}>{t("services.em-engineering.name", "E&M Engineering")}</a></li>
+              <li><a href={localizedPath(locale, "/#services")}>{t("services.maintenance.name", "Maintenance")}</a></li>
             </ul>
           </nav>
 
           <section class="footer-column footer-contact" aria-labelledby="footer-contact-title">
-            <h2 id="footer-contact-title">Contact</h2>
+            <h2 id="footer-contact-title">{t("footer.contact", "Contact")}</h2>
             <span class="footer-column__rule" aria-hidden="true"></span>
             <address>
               <a href="tel:+85328822992">
@@ -54,28 +62,21 @@ import { withBasePath } from "../../utils/withBasePath";
               </a>
               <p>
                 <i class="ph ph-map-pin" aria-hidden="true"></i>
-                <span>Macau</span>
+                <span>{t("regions.macau", "Macau")}</span>
               </p>
             </address>
           </section>
         </div>
 
-        <div
-          class="footer-languages"
-          aria-label="Language availability: English is current. Traditional Chinese and Simplified Chinese translations are not yet available."
-        >
-          <span class="is-current" aria-hidden="true">EN</span>
-          <i aria-hidden="true"></i>
-          <span lang="zh-Hant" aria-hidden="true">繁</span>
-          <i aria-hidden="true"></i>
-          <span lang="zh-Hans" aria-hidden="true">简</span>
+        <div class="footer-languages" aria-label={t("accessibility.languageOptions", "Language options")}>
+          {languages.map((option, index) => <>{index > 0 && <i aria-hidden="true"></i>}<a class:list={{ "is-current": locale === option.code }} href={localeRoute(option.code, canonicalPath)} lang={option.code} hreflang={option.code} aria-label={option.aria} aria-current={locale === option.code ? "page" : undefined}>{option.label}</a></>)}
         </div>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2026 Joint Win Construction &amp; Engineering Company Limited. All rights reserved.</p>
-      <a href="#top">Back to top <i class="ph ph-arrow-up" aria-hidden="true"></i></a>
+      <p>{formatMessage(t("footer.copyright", "© {year} Joint Win Construction & Engineering Company Limited. All rights reserved."), { year: new Date().getFullYear() })}</p>
+      <a href="#top">{t("footer.backToTop", "Back to top")} <i class="ph ph-arrow-up" aria-hidden="true"></i></a>
     </div>
   </div>
 </footer>
@@ -312,7 +313,7 @@ import { withBasePath } from "../../utils/withBasePath";
     font-weight: 500;
   }
 
-  .footer-languages span {
+  .footer-languages :is(a, span) {
     min-width: 2.75rem;
     min-height: 2.75rem;
     display: inline-grid;
@@ -369,6 +370,13 @@ import { withBasePath } from "../../utils/withBasePath";
 
   .footer-bottom a:hover i {
     transform: translateY(-0.25rem);
+  }
+
+  :global(body.is-chinese) .footer-brand strong,
+  :global(body.is-chinese) .footer-column :is(h2, a),
+  :global(body.is-chinese) .footer-bottom a {
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   @media (max-width: 80rem) {

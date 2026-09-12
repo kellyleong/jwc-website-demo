@@ -1,10 +1,10 @@
 ---
 import type { ClientRecord } from "../../data/site";
-import {
-  clientGroups,
-  clientsById,
-  selectedClients,
-} from "../../data/site";
+import { getLocalizedContent, type Locale } from "../../i18n";
+
+interface Props { locale?: Locale }
+const { locale = "en" } = Astro.props;
+const { clientGroups, clientsById, selectedClients, t } = getLocalizedContent(locale);
 
 const groupIconById = {
   "aviation-facilities": "ph-airplane-tilt",
@@ -30,12 +30,7 @@ const groupedClients = clientGroups.map((group) => ({
     })),
 }));
 
-const headlineWords = selectedClients.headline.replace(/\.$/, "").split(" ");
-const headlineLines = [
-  headlineWords.slice(0, 2).join(" "),
-  headlineWords[2],
-  headlineWords.slice(3).join(" "),
-];
+const headlineLines = selectedClients.headlineLines;
 ---
 
 <section
@@ -58,7 +53,7 @@ const headlineLines = [
       <h2 id="selected-clients-title" class="selected-clients__heading">
         {headlineLines.map((line, index) => (
           <span>
-            {line}{index === headlineLines.length - 1 && (
+            {line}{locale === "en" && index === headlineLines.length - 1 && (
               <b aria-hidden="true">.</b>
             )}
           </span>
@@ -67,7 +62,7 @@ const headlineLines = [
       <p class="selected-clients__copy">{selectedClients.supportingCopy}</p>
     </header>
 
-    <div class="selected-clients__groups" aria-label="Client sectors" data-reveal>
+    <div class="selected-clients__groups" aria-label={t("accessibility.clientSectors", "Client sectors")} data-reveal>
       {groupedClients.map((group) => (
         <section
           class={`client-group client-group--${group.id}`}
@@ -94,7 +89,7 @@ const headlineLines = [
                   data-client-id={client.id}
                   data-logo-record="replaceable"
                   role="img"
-                  aria-label={`${client.name}; replaceable client logo treatment`}
+                  aria-label={client.name}
                 >
                   <span class="client-wordmark__initials" aria-hidden="true">{client.initials}</span>
                   <span class="client-wordmark__name" aria-hidden="true">{client.name}</span>
@@ -106,7 +101,7 @@ const headlineLines = [
       ))}
     </div>
 
-    <aside class="selected-clients__rail" aria-label="Client summary and links" data-reveal>
+    <aside class="selected-clients__rail" aria-label={selectedClients.supportingCopy} data-reveal>
       <div class="selected-clients__metric">
         <strong>{selectedClients.directClientCount}</strong>
         <span>{selectedClients.directClientLabel}</span>

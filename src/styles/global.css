@@ -72,6 +72,73 @@ body {
   line-height: 1.55;
 }
 
+html:lang(zh-Hant) body {
+  --font-display: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
+}
+
+html:lang(zh-Hans) body {
+  --font-display: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Heiti SC", sans-serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Heiti SC", sans-serif;
+}
+
+body.is-chinese {
+  letter-spacing: 0;
+  line-height: 1.7;
+}
+
+body.is-chinese :is(.primary-nav__link, .section-label, .button, .menu-toggle__label) {
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+body.is-chinese :is(
+  .display-heading,
+  .hero__title,
+  .company__headline,
+  .services__heading,
+  .case-showcase__heading,
+  .selected-clients__heading,
+  .delivery__heading,
+  .repeat-clients__heading,
+  .client-feedback h2,
+  .join-cta h2,
+  .case-library h1,
+  .case-detail h1,
+  .contact-stage__copy > h1,
+  .contact-stage__copy > h2,
+  .join-hero h1
+) {
+  max-width: 18em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.16;
+  text-transform: none;
+}
+
+body.is-chinese :is(.hero__line > span, .case-library h1 > span, .join-hero h1 span, .join-cta h2 span) {
+  white-space: normal !important;
+}
+
+body.is-chinese .hero__title {
+  max-width: 12em;
+  font-size: clamp(3.15rem, 5.5vw, 6rem);
+}
+
+body.is-chinese :is(.display-heading, .client-feedback h2, .join-cta h2) {
+  font-size: clamp(2.75rem, 4.6vw, 5rem);
+}
+
+body.is-chinese :is(.body-copy, .hero__copy, .company__text p, .service-tab__description) {
+  line-height: 1.75;
+}
+
+body.is-chinese :is(.button, .join-cta__button) {
+  min-width: 10rem;
+  padding-inline: 1.75rem;
+  line-height: 1.35;
+}
+
 @media (max-width: 22rem) {
   .brand-lockup__type span {
     max-width: 9.5rem;
@@ -317,7 +384,7 @@ p {
   font-weight: 500;
 }
 
-.language-switcher > span:not([aria-hidden]) {
+.language-switcher > :is(a, span):not([aria-hidden]) {
   min-width: 2rem;
   min-height: 2.75rem;
   display: inline-grid;
@@ -624,6 +691,19 @@ p {
 }
 
 @media (max-width: 39rem) {
+  body.is-chinese .hero__title,
+  body.is-chinese :is(.display-heading, .client-feedback h2, .join-cta h2, .join-hero h1) {
+    max-width: none;
+    font-size: clamp(2.45rem, 10vw, 3.45rem);
+    line-height: 1.2;
+  }
+
+  body.is-chinese .section-label {
+    margin-bottom: 1.1rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
   .brand-lockup {
     gap: 0.55rem;
   }
@@ -659,7 +739,7 @@ p {
 
 @media (pointer: coarse) {
   .primary-nav__link,
-  .language-switcher > span:not([aria-hidden]),
+  .language-switcher > :is(a, span):not([aria-hidden]),
   .menu-toggle,
   .button {
     min-height: 3rem;
