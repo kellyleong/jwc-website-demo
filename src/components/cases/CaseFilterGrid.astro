@@ -1,10 +1,9 @@
 ---
 import CaseCard from "./CaseCard.astro";
-import { formatMessage, getLocalizedContent, translate, type Locale } from "../../i18n";
+import { caseCategories, cases, casesSection } from "../../data/site";
 
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
+const titleWithoutPunctuation = casesSection.headline.replace(/\.$/, "");
+const [titleLead, titleTail = ""] = titleWithoutPunctuation.split(" Across ");
 ---
 
 <section class="case-library" aria-labelledby="cases-title" data-case-filter-grid>
@@ -12,39 +11,38 @@ const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
     <header class="case-library__header" data-reveal>
       <p class="case-library__label">{casesSection.eyebrow}</p>
       <h1 id="cases-title">
-        {casesSection.headlineLines.map((line) => <span>{line}</span>)}
+        <span>{titleLead}</span>
+        <span>Across {titleTail}<b aria-hidden="true">.</b></span>
       </h1>
     </header>
 
     <div class="case-library__filter-scroll">
-      <div class="case-library__filters" role="group" aria-label={translate(locale, "accessibility.filterBySector", "Filter cases by sector")}>
+      <div class="case-library__filters" role="group" aria-label="Filter cases by sector">
         {caseCategories.map((category, index) => (
           <button
             class:list={["case-library__filter", { "is-active": index === 0 }]}
             type="button"
-            data-case-filter={category.id}
+            data-case-filter={category}
             aria-controls="case-library-grid"
             aria-pressed={index === 0 ? "true" : "false"}
           >
-            {category.label}
+            {category}
           </button>
         ))}
       </div>
     </div>
 
     <p class="visually-hidden" role="status" aria-live="polite" data-filter-status>
-      {formatMessage(translate(locale, "accessibility.casesShown", "{count} cases shown."), { count: cases.length })}
+      {cases.length} cases shown.
     </p>
 
     <div id="case-library-grid" class="case-library__grid" data-reveal>
       {cases.map((caseRecord, index) => (
-        <CaseCard caseRecord={caseRecord} eager={index < 4} headingLevel="h2" locale={locale} />
+        <CaseCard caseRecord={caseRecord} eager={index < 4} headingLevel="h2" />
       ))}
     </div>
   </div>
 </section>
-
-<script type="application/json" data-case-filter-messages set:html={JSON.stringify({ all: caseCategories[0].id, allLabel: caseCategories[0].label, template: translate(locale, "accessibility.filteredCasesShown", "{count} cases shown for {sector}.") })}></script>
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-case-filter-grid]").forEach((library) => {
@@ -54,11 +52,9 @@ const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
     const cards = Array.from(library.querySelectorAll<HTMLElement>("[data-case-category]"));
     const status = library.querySelector<HTMLElement>("[data-filter-status]");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const messagesNode = document.querySelector<HTMLScriptElement>("[data-case-filter-messages]");
-    const messages = messagesNode?.textContent ? JSON.parse(messagesNode.textContent) : { all: "All", allLabel: "all sectors", template: "{count} cases shown for {sector}." };
 
     const selectFilter = (selectedControl: HTMLButtonElement) => {
-      const category = selectedControl.dataset.caseFilter ?? messages.all;
+      const category = selectedControl.dataset.caseFilter ?? "All";
       const previousPositions = new Map(
         cards.filter((card) => !card.hidden).map((card) => [card, card.getBoundingClientRect()]),
       );
@@ -70,7 +66,7 @@ const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
       });
 
       cards.forEach((card) => {
-        card.hidden = category !== messages.all && card.dataset.caseCategory !== category;
+        card.hidden = category !== "All" && card.dataset.caseCategory !== category;
       });
 
       const visibleCards = cards.filter((card) => !card.hidden);
@@ -112,8 +108,8 @@ const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
       }
 
       if (status) {
-        const label = selectedControl.textContent?.trim() || messages.allLabel;
-        status.textContent = messages.template.replace("{count}", String(visibleCards.length)).replace("{sector}", label);
+        const sectorLabel = category === "All" ? "all sectors" : category;
+        status.textContent = `${visibleCards.length} ${visibleCards.length === 1 ? "case" : "cases"} shown for ${sectorLabel}.`;
       }
     };
 

@@ -1,10 +1,10 @@
 ---
 import type { ClientRecord } from "../../data/site";
-import { getLocalizedContent, type Locale } from "../../i18n";
-
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { clientGroups, clientsById, selectedClients, t } = getLocalizedContent(locale);
+import {
+  clientGroups,
+  clientsById,
+  selectedClients,
+} from "../../data/site";
 
 const groupIconById = {
   "aviation-facilities": "ph-airplane-tilt",
@@ -30,7 +30,12 @@ const groupedClients = clientGroups.map((group) => ({
     })),
 }));
 
-const headlineLines = selectedClients.headlineLines;
+const headlineWords = selectedClients.headline.replace(/\.$/, "").split(" ");
+const headlineLines = [
+  headlineWords.slice(0, 2).join(" "),
+  headlineWords[2],
+  headlineWords.slice(3).join(" "),
+];
 ---
 
 <section
@@ -62,7 +67,7 @@ const headlineLines = selectedClients.headlineLines;
       <p class="selected-clients__copy">{selectedClients.supportingCopy}</p>
     </header>
 
-    <div class="selected-clients__groups" aria-label={t("selectedClients.eyebrow", "Client sectors")} data-reveal>
+    <div class="selected-clients__groups" aria-label="Client sectors" data-reveal>
       {groupedClients.map((group) => (
         <section
           class={`client-group client-group--${group.id}`}
@@ -89,7 +94,7 @@ const headlineLines = selectedClients.headlineLines;
                   data-client-id={client.id}
                   data-logo-record="replaceable"
                   role="img"
-                  aria-label={client.name}
+                  aria-label={`${client.name}; replaceable client logo treatment`}
                 >
                   <span class="client-wordmark__initials" aria-hidden="true">{client.initials}</span>
                   <span class="client-wordmark__name" aria-hidden="true">{client.name}</span>
@@ -101,7 +106,7 @@ const headlineLines = selectedClients.headlineLines;
       ))}
     </div>
 
-    <aside class="selected-clients__rail" aria-label={selectedClients.supportingCopy} data-reveal>
+    <aside class="selected-clients__rail" aria-label="Client summary and links" data-reveal>
       <div class="selected-clients__metric">
         <strong>{selectedClients.directClientCount}</strong>
         <span>{selectedClients.directClientLabel}</span>

@@ -2,7 +2,7 @@
 import type { CaseRecord } from "../../data/site";
 import { cases } from "../../data/site";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { formatMessage, getLocalizedContent, localizedPath, translate, type Locale } from "../../i18n";
+import { withBasePath } from "../../utils/withBasePath";
 
 export function getStaticPaths() {
   return cases.map((caseRecord) => ({
@@ -13,45 +13,39 @@ export function getStaticPaths() {
 
 interface Props {
   caseRecord: CaseRecord;
-  locale?: Locale;
 }
 
-const { caseRecord: sourceCase, locale = "en" } = Astro.props;
-const { cases } = getLocalizedContent(locale);
-const caseRecord = cases.find((record) => record.slug === sourceCase.slug) ?? sourceCase;
-const title = formatMessage(translate(locale, "seo.caseDetail.titleTemplate", "{caseName} | JWC Cases"), { caseName: caseRecord.name });
+const { caseRecord } = Astro.props;
 ---
 
 <BaseLayout
-  title={title}
+  title={`${caseRecord.name} | JWC Cases`}
   description={caseRecord.summary}
   activeNav="cases"
-  locale={locale}
-  canonicalPath={`/cases/${caseRecord.slug}`}
 >
   <article class="case-detail">
     <div class="case-detail__lead section-shell">
       <header class="case-detail__heading" data-reveal>
-        <a class="case-detail__back" href={localizedPath(locale, "/cases")}>
+        <a class="case-detail__back" href={withBasePath("/cases")}>
           <i class="ph ph-arrow-left" aria-hidden="true"></i>
-          {translate(locale, "caseDetail.breadcrumb", "Cases")}
+          Cases
         </a>
-        <p class="case-detail__category">{"categoryLabel" in caseRecord ? caseRecord.categoryLabel : caseRecord.category}</p>
+        <p class="case-detail__category">{caseRecord.category}</p>
         <h1>{caseRecord.name}</h1>
         <p class="case-detail__summary">{caseRecord.summary}</p>
       </header>
 
       <dl class="case-detail__facts" data-reveal>
         <div>
-          <dt>{translate(locale, "caseDetail.location", "Location")}</dt>
+          <dt>Location</dt>
           <dd>{caseRecord.location}</dd>
         </div>
         <div>
-          <dt>{translate(locale, "caseDetail.year", "Year")}</dt>
+          <dt>Year</dt>
           <dd>{caseRecord.year}</dd>
         </div>
         <div>
-          <dt>{translate(locale, "caseDetail.scope", "Scope")}</dt>
+          <dt>Scope</dt>
           <dd>{caseRecord.scope}</dd>
         </div>
       </dl>

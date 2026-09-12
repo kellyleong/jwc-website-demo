@@ -1,9 +1,6 @@
 ---
-import { getLocalizedContent, type Locale } from "../../i18n";
+import { hero } from "../../data/site";
 
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { hero } = getLocalizedContent(locale);
 const headlineLines = hero.headlineLines.map((line) => ({
   text: line.replace(/\.$/, ""),
   hasPeriod: line.endsWith("."),
@@ -24,7 +21,9 @@ const headlineLines = hero.headlineLines.map((line) => ({
       ))}
     </h1>
     <div class="hero__rule" aria-hidden="true"></div>
-    <p class="hero__copy">{hero.supportingCopy}</p>
+    <p class="hero__copy">
+      Since 2006, JWC has delivered <strong>fit-out, renovation, E&amp;M engineering and maintenance works</strong> for demanding commercial and operational environments across <strong>Macau, Hong Kong and Zhuhai.</strong>
+    </p>
     <a class="button hero__button" href={hero.primaryAction.href}>
       {hero.primaryAction.label}<i class="ph ph-arrow-right" aria-hidden="true"></i>
     </a>

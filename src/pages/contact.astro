@@ -1,20 +1,14 @@
 ---
 import ContactSection from "../components/sections/ContactSection.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getLocalizedContent, translate, type Locale } from "../i18n";
-
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { contact } = getLocalizedContent(locale);
+import { contact } from "../data/site";
 ---
 
 <BaseLayout
-  title={translate(locale, "seo.contact.title", "Contact | Joint Win Construction & Engineering")}
-  description={translate(locale, "seo.contact.description", contact.introduction)}
+  title="Contact | Joint Win Construction & Engineering"
+  description={contact.introduction}
   activeNav="contact"
   bodyClass="contact-page"
-  locale={locale}
-  canonicalPath="/contact"
 >
-  <ContactSection locale={locale} />
+  <ContactSection />
 </BaseLayout>

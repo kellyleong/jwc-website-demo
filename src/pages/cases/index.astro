@@ -1,18 +1,12 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CaseFilterGrid from "../../components/cases/CaseFilterGrid.astro";
-import { translate, type Locale } from "../../i18n";
-
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
 ---
 
 <BaseLayout
-  title={translate(locale, "seo.cases.title", "Cases | Joint Win Construction & Engineering")}
-  description={translate(locale, "seo.cases.description", "Explore JWC fit-out, renovation, E&M engineering, maintenance, retail, workplace, airport, exhibition and residential case records.")}
+  title="Cases | Joint Win Construction & Engineering"
+  description="Explore JWC fit-out, renovation, E&M engineering, maintenance, retail, workplace, airport, exhibition and residential case records."
   activeNav="cases"
-  locale={locale}
-  canonicalPath="/cases"
 >
-  <CaseFilterGrid locale={locale} />
+  <CaseFilterGrid />
 </BaseLayout>

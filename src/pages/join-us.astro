@@ -1,26 +1,19 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getLocalizedContent, localizedHeadline, translate, type Locale } from "../i18n";
+import { contact } from "../data/site";
 import { withBasePath } from "../utils/withBasePath";
 
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { contact } = getLocalizedContent(locale);
-const t = (key: Parameters<typeof translate>[1], english: string) => translate(locale, key, english);
 const contributionAreas = [
-  { icon: "ph-buildings", label: t("joinUs.contribution.siteConstruction", "Site & Construction") },
-  { icon: "ph-gauge", label: t("joinUs.contribution.emEngineering", "E&M Engineering") },
-  { icon: "ph-clipboard-text", label: t("joinUs.contribution.projectSupport", "Project Support") },
+  { icon: "ph-buildings", label: "Site & Construction" },
+  { icon: "ph-gauge", label: "E&M Engineering" },
+  { icon: "ph-clipboard-text", label: "Project Support" },
 ] as const;
-const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your career.", "Build with purpose."]);
 ---
 
 <BaseLayout
-  title={t("seo.joinUs.title", "Join Us | Joint Win Construction & Engineering")}
-  description={t("seo.joinUs.description", "Explore career opportunities with Joint Win Construction & Engineering across site construction, E&M engineering and project support.")}
+  title="Join Us | Joint Win Construction & Engineering"
+  description="Explore career opportunities with Joint Win Construction & Engineering across site construction, E&M engineering and project support."
   bodyClass="join-us-page"
-  locale={locale}
-  canonicalPath="/join-us"
 >
   <section class="join-hero" aria-labelledby="join-hero-title">
     <div class="join-hero__stage">
@@ -30,7 +23,7 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
           <img
             class="join-hero__image"
             src={withBasePath("/assets/process/understand-plan.png")}
-            alt={t("images.joinUs.alt", "JWC construction and engineering team reviewing project plans together")}
+            alt="JWC construction and engineering team reviewing project plans together"
             fetchpriority="high"
           />
         </picture>
@@ -39,18 +32,21 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
 
       <div class="join-hero__content section-shell">
         <div class="join-hero__measure" aria-hidden="true"><span>+</span></div>
-        <p class="join-hero__eyebrow">{t("joinUs.eyebrow", "Join Us")}</p>
+        <p class="join-hero__eyebrow">Join Us</p>
         <h1 id="join-hero-title">
-          {headlineLines.map((line) => <span>{line}</span>)}
+          <span>Build your career<b aria-hidden="true">.</b></span>
+          <span>Build with purpose<b aria-hidden="true">.</b></span>
         </h1>
         <p class="join-hero__copy">
-          {t("joinUs.supportingCopy", "Join a practical, accountable team delivering construction and engineering work across Macau, Hong Kong and Zhuhai.")}
+          Join a practical, accountable team delivering<br />
+          construction and engineering work across<br />
+          <strong>Macau, Hong Kong and Zhuhai.</strong>
         </p>
         <div class="join-hero__actions">
           <a class="button" href="#opportunities">
-            {t("joinUs.opportunitiesAction", "View Opportunities")}<i class="ph ph-arrow-right" aria-hidden="true"></i>
+            View Opportunities<i class="ph ph-arrow-right" aria-hidden="true"></i>
           </a>
-          <a class="join-hero__text-link" href="#how-to-apply">{t("joinUs.applicationAction", "How to Apply")}</a>
+          <a class="join-hero__text-link" href="#how-to-apply">How to Apply</a>
         </div>
       </div>
     </div>
@@ -58,7 +54,7 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
     <div class="contribution-band" aria-labelledby="contribution-title">
       <div class="contribution-band__grid section-shell">
         <div class="contribution-band__intro">
-          <p id="contribution-title">{t("joinUs.contribution.eyebrow", "Where you could contribute")}</p>
+          <p id="contribution-title">Where you could contribute</p>
           <span aria-hidden="true"></span>
         </div>
         {contributionAreas.map((area) => (
@@ -74,12 +70,12 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
   <section id="opportunities" class="opportunities" aria-labelledby="opportunities-title">
     <div class="opportunities__shell section-shell">
       <header class="opportunities__header" data-reveal>
-        <p class="section-label">{t("joinUs.opportunities.eyebrow", "Current Opportunities")}</p>
+        <p class="section-label">Current Opportunities</p>
         <h2 id="opportunities-title" class="display-heading">
-          {t("joinUs.opportunities.headline", "Find your place on the team.")}
+          Find your place on the team<span class="punctuation">.</span>
         </h2>
         <p class="body-copy">
-          {t("joinUs.opportunities.supportingCopy", "We publish confirmed vacancies here as they become available.")}
+          We publish confirmed vacancies here as they become available.
         </p>
       </header>
 
@@ -88,15 +84,16 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
         <div class="vacancy-state__content">
           <i class="ph ph-hard-hat" aria-hidden="true"></i>
           <div>
-            <p class="vacancy-state__status">{t("joinUs.vacancy.status", "Recruitment update")}</p>
-            <h3>{t("joinUs.vacancy.title", "No current openings")}</h3>
+            <p class="vacancy-state__status">Recruitment update</p>
+            <h3>No current openings</h3>
             <p>
-              {t("joinUs.vacancy.description", "We are not recruiting for a specific position at the moment. You can still introduce yourself to our team for future consideration.")}
+              We are not recruiting for a specific position at the moment. You can still introduce
+              yourself to our team for future consideration.
             </p>
           </div>
         </div>
-        <a href={`mailto:${contact.company.email}?subject=${encodeURIComponent(t("joinUs.application.emailSubject", "Career enquiry — JWC"))}`}>
-          {t("joinUs.vacancy.action", "Send an introduction")}<i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+        <a href={`mailto:${contact.company.email}?subject=Career%20enquiry%20%E2%80%94%20JWC`}>
+          Send an introduction<i class="ph ph-arrow-up-right" aria-hidden="true"></i>
         </a>
       </article>
     </div>
@@ -106,17 +103,18 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
     <div class="application__blueprint" aria-hidden="true"></div>
     <div class="application__shell section-shell">
       <div class="application__heading" data-reveal>
-        <p class="section-label">{t("joinUs.application.eyebrow", "How to Apply")}</p>
+        <p class="section-label">How to Apply</p>
         <h2 id="application-title" class="display-heading">
-          {t("joinUs.application.headline", "Start with a clear introduction.")}
+          Start with a clear introduction<span class="punctuation">.</span>
         </h2>
       </div>
       <div class="application__body" data-reveal>
         <p>
-          {t("joinUs.application.description", "Tell us which area of the business interests you, the experience you would bring and the kind of work you are looking for. Attach your current CV and any relevant project record.")}
+          Tell us which area of the business interests you, the experience you would bring and the
+          kind of work you are looking for. Attach your current CV and any relevant project record.
         </p>
-        <a class="button button--outline" href={`mailto:${contact.company.email}?subject=${encodeURIComponent(t("joinUs.application.emailSubject", "Career enquiry — JWC"))}`}>
-          {t("joinUs.application.action", "Email Your CV")}<i class="ph ph-arrow-right" aria-hidden="true"></i>
+        <a class="button button--outline" href={`mailto:${contact.company.email}?subject=Career%20enquiry%20%E2%80%94%20JWC`}>
+          Email Your CV<i class="ph ph-arrow-right" aria-hidden="true"></i>
         </a>
         <p class="application__email">{contact.company.email}</p>
       </div>

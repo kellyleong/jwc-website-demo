@@ -1,11 +1,8 @@
 ---
-import { getLocalizedContent, localizedHeadline, translate, type Locale } from "../../i18n";
+import { clientFeedback } from "../../data/clientFeedback";
 import { withBasePath } from "../../utils/withBasePath";
 
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const localized = getLocalizedContent(locale);
-const feedback = localized.clientFeedback.length ? localized.clientFeedback : [{
+const feedback = clientFeedback.length ? clientFeedback : [{
   id: "awaiting-approval",
   quote: "Client-approved feedback will appear here.",
   name: "Client name · Role · Organisation",
@@ -15,13 +12,13 @@ const feedback = localized.clientFeedback.length ? localized.clientFeedback : [{
 
 <section id="client-feedback" class="client-feedback" aria-labelledby="client-feedback-title">
   <div class="client-feedback__photo">
-    <img src={withBasePath("/assets/site/client-feedback-lounge.png")} alt={translate(locale, "images.feedbackLounge.alt", "Illustrative lounge interior with harbour views, marble finishes and cream seating")} width="1024" height="1536" loading="lazy" />
+    <img src={withBasePath("/assets/site/client-feedback-lounge.png")} alt="Illustrative lounge interior with harbour views, marble finishes and cream seating" width="1024" height="1536" loading="lazy" />
   </div>
   <div class="client-feedback__divider" aria-hidden="true"></div>
   <img class="client-feedback__blueprint" src={withBasePath("/assets/site/client-feedback-blueprint.svg")} alt="" aria-hidden="true" loading="lazy" />
   <div class="client-feedback__content">
-    <p class="client-feedback__label">{translate(locale, "clientFeedback.eyebrow", "Client feedback")}<span aria-hidden="true"></span></p>
-    <h2 id="client-feedback-title">{localizedHeadline(locale, "clientFeedback.headline", ["Trust earned", "in the work."]).map((line) => <span>{line}</span>)}</h2>
+    <p class="client-feedback__label">Client feedback<span aria-hidden="true"></span></p>
+    <h2 id="client-feedback-title"><span>Trust earned</span><span>in the work<b aria-hidden="true">.</b></span></h2>
     <div class="client-feedback__slides" aria-live="polite" aria-atomic="true">
       {feedback.map((item, index) => (
         <figure class="client-feedback__quote" data-feedback-slide hidden={index !== 0}>
@@ -31,10 +28,10 @@ const feedback = localized.clientFeedback.length ? localized.clientFeedback : [{
         </figure>
       ))}
     </div>
-    <div class="client-feedback__controls" aria-label={translate(locale, "accessibility.feedbackNavigation", "Client feedback navigation")}>
-      <button type="button" data-feedback-previous aria-label={translate(locale, "accessibility.previousFeedback", "Previous client feedback")} ><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+    <div class="client-feedback__controls" aria-label="Client feedback navigation">
+      <button type="button" data-feedback-previous aria-label="Previous client feedback" ><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
       <span aria-hidden="true"></span>
-      <button type="button" data-feedback-next aria-label={translate(locale, "accessibility.nextFeedback", "Next client feedback")} ><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+      <button type="button" data-feedback-next aria-label="Next client feedback" ><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
     </div>
   </div>
 </section>

@@ -1,9 +1,9 @@
 ---
-import { getLocalizedContent, type Locale } from "../../i18n";
-
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { clientsById, repeatClientRelationships, repeatClients } = getLocalizedContent(locale);
+import {
+  clientsById,
+  repeatClientRelationships,
+  repeatClients,
+} from "../../data/site";
 
 // Interim typographic wordmarks remain replaceable through each client's logo record.
 const interimWordmarks = new Map<string, { label: string; treatment: string }>([
@@ -30,8 +30,21 @@ const relationships = repeatClientRelationships.map((relationship) => {
   };
 });
 
-const headlineLines = repeatClients.headlineLines;
-const supportingLines = [repeatClients.supportingCopy];
+const headlineBreakAt = repeatClients.headline.toLowerCase().indexOf(" the start");
+const headlineLines = headlineBreakAt > 0
+  ? [
+      repeatClients.headline.slice(0, headlineBreakAt),
+      repeatClients.headline.slice(headlineBreakAt + 1),
+    ]
+  : [repeatClients.headline];
+
+const supportingBreakAt = repeatClients.supportingCopy.indexOf("We earn");
+const supportingLines = supportingBreakAt > 0
+  ? [
+      repeatClients.supportingCopy.slice(0, supportingBreakAt).trim(),
+      repeatClients.supportingCopy.slice(supportingBreakAt),
+    ]
+  : [repeatClients.supportingCopy];
 ---
 
 <section id="repeat-clients" class="repeat-clients" aria-labelledby="repeat-clients-title">
@@ -49,7 +62,7 @@ const supportingLines = [repeatClients.supportingCopy];
     </div>
 
     <div class="repeat-clients__relationships" data-reveal>
-      <div class="repeat-clients__grid" role="list" aria-label={repeatClients.eyebrow}>
+      <div class="repeat-clients__grid" role="list" aria-label="Repeat client relationships">
         {relationships.map((relationship) => (
           <article class="repeat-client" role="listitem">
             <div class="repeat-client__wordmark">

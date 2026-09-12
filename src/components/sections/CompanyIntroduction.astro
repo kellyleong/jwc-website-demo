@@ -1,10 +1,7 @@
 ---
-import { getLocalizedContent, translate, type Locale } from "../../i18n";
+import { companyIntroduction } from "../../data/site";
 import { withBasePath } from "../../utils/withBasePath";
 
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { companyIntroduction } = getLocalizedContent(locale);
 const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-users-three"];
 ---
 
@@ -13,7 +10,7 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
     <div class="company__content section-shell" data-reveal>
       <p class="section-label">{companyIntroduction.eyebrow}</p>
       <h2 id="company-title" class="display-heading company__heading">
-        {companyIntroduction.headlineLines.map((line) => <span>{line}<br /></span>)}
+        Experience that delivers<span class="punctuation">.</span><br />People who stay accountable<span class="punctuation">.</span>
       </h2>
       <div class="company__principles">
         {[companyIntroduction.vision, companyIntroduction.mission].map((principle) => (
@@ -32,7 +29,7 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
         />
         <img
           src={companyIntroduction.image.src}
-          alt={translate(locale, "images.companyIntroduction.alt", "China Taiping reception interior overlooking the airport apron")}
+          alt="China Taiping reception interior overlooking the airport apron"
           loading="lazy"
         />
       </picture>
@@ -42,7 +39,7 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
     </div>
   </div>
 
-  <aside class="company__rail" aria-label={translate(locale, "accessibility.companyStatistics", "Company statistics")} data-statistics data-reveal>
+  <aside class="company__rail" aria-label="Company statistics" data-statistics data-reveal>
     <div class="company__stats">
       {companyIntroduction.statistics.map((statistic, index) => (
         <div class:list={["company__stat", { "company__stat--prefix": index === 0 }]}>

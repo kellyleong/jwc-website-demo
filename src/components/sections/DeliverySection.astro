@@ -1,16 +1,13 @@
 ---
-import { getLocalizedContent, translate, type Locale } from "../../i18n";
+import { casesById, delivery, deliverySteps } from "../../data/site";
 import { withBasePath } from "../../utils/withBasePath";
 
-interface Props { locale?: Locale }
-const { locale = "en" } = Astro.props;
-const { casesById, delivery, deliverySteps } = getLocalizedContent(locale);
 const planningImage = deliverySteps.find((step) => step.id === "understand-plan")?.image;
 const installationImage = deliverySteps.find((step) => step.id === "build-install")?.image;
 const handoverImage = casesById.get("case-china-taiping-insurance-macau-2024")?.image;
 const coordinationImage = {
   src: withBasePath("/assets/reference/join-us-page.png"),
-  alt: translate(locale, "images.designCoordinate.alt", "JWC project team coordinating around construction drawings"),
+  alt: "JWC project team coordinating around construction drawings",
 };
 
 if (!planningImage || !installationImage || !handoverImage) {
@@ -25,6 +22,7 @@ const deliveryStages = deliverySteps.map((step) => ({
 }));
 
 const assuranceIcons = ["ph-shield-check", "ph-check-circle", "ph-calendar-check"];
+const deliveryHeadline = delivery.headline.replace(/\.$/, "");
 ---
 
 <section
@@ -37,12 +35,12 @@ const assuranceIcons = ["ph-shield-check", "ph-check-circle", "ph-calendar-check
     <header class="delivery__intro">
       <p class="delivery__label">{delivery.eyebrow}</p>
       <h2 id="delivery-title" class="delivery__heading">
-        {delivery.headlineLines.map((line) => <span>{line}</span>)}
+        {deliveryHeadline}<span aria-hidden="true">.</span>
       </h2>
       <p class="delivery__copy">{delivery.supportingCopy}</p>
     </header>
 
-    <ol class="delivery__sequence" aria-label={delivery.eyebrow}>
+    <ol class="delivery__sequence" aria-label="Delivery process">
       {deliveryStages.map((stage, index) => (
         <li class={`delivery-stage delivery-stage--${stage.id}`} style={`--stage-order: ${index}`}>
           <figure class="delivery-stage__media">
@@ -66,7 +64,7 @@ const assuranceIcons = ["ph-shield-check", "ph-check-circle", "ph-calendar-check
       ))}
     </ol>
 
-    <ul class="delivery__assurance" aria-label={delivery.supportingCopy}>
+    <ul class="delivery__assurance" aria-label="Delivery assurances">
       {delivery.assuranceLabels.map((label, index) => (
         <li>
           <i class={`ph ${assuranceIcons[index]}`} aria-hidden="true"></i>
