@@ -74,16 +74,16 @@ components:
 
 Reading this as a multi-page corporate brand site for commercial decision-makers, with a premium construction and architectural-editorial language built in native Astro and CSS. The design is stable, precise, deliberate, and image-led. It should feel like a construction drawing becoming a finished interior: structural grids establish order, diagonal masks create movement, red measurement rules signal precision, and deep navy surfaces anchor credibility.
 
-The original images in `../references/original-demo-images/` are the visual authority. Supplementary renders in `../references/section-reference-renders/` clarify details but never override them. The reference palette is fixed; no generated palette may replace it. Design dials are `DESIGN_VARIANCE: 7`, `MOTION_INTENSITY: 5`, and `VISUAL_DENSITY: 4`: asymmetric but controlled composition, purposeful choreography, and open corporate information density.
+The confirmed implementation and subsequent user-approved changes take precedence over earlier references. The original images in `../references/original-demo-images/` establish the base visual direction. Supplementary renders in `../references/section-reference-renders/` clarify details but never override them. The reference palette is fixed; no generated palette may replace it. Design dials are `DESIGN_VARIANCE: 7`, `MOTION_INTENSITY: 5`, and `VISUAL_DENSITY: 4`: asymmetric but controlled composition, purposeful choreography, and open corporate information density.
 
-The Main page follows this exact visual sequence: Hero, Who We Are, What We Do, Highlighted Cases, Selected Clients, How We Deliver, integrated Repeat Clients, and the final Work With JWC conversion panel. Contact remains a dedicated route. Dedicated Cases, case-detail, Join Us, and Contact routes reuse the same visual language. Desktop authority is 1600×900; review additionally at 1366×768, 1024, 768, and 390 pixels. Each multi-column composition declares a deliberate mobile reading order and no viewport may produce horizontal overflow.
+The Main page follows this exact visual sequence: Hero, Who We Are, What We Do, Highlighted Cases, Selected Clients, How We Deliver, integrated Repeat Clients, Client Feedback, and the Work With JWC conversion panel. The updated design is the canonical Main page; there is no separate version route or floating Motion review control. Contact remains a dedicated route. Dedicated Cases, case-detail, Join Us, and Contact routes reuse the same visual language. Desktop authority is 1600×900; review additionally at 1366×768, 1024, 768, and 390 pixels. Each multi-column composition declares a deliberate mobile reading order and no viewport may produce horizontal overflow.
 
 **Key Characteristics:**
 
 - Warm neutral principal canvas with deep construction navy and one engineering-red accent.
 - Condensed uppercase display typography paired with a readable grotesk body face.
 - Sharp geometry, clipped diagonals, sparse blueprint marks, thin rules, and nearly zero radius.
-- Real supplied raster imagery with controlled crops rather than decorative mockups.
+- Project imagery with controlled crops; the Client Feedback lounge is an illustrative asset, not evidence of a client project.
 - Four motion families only: Build, Measure, Focus, and Progress.
 - Content remains visible and useful before animation; reduced motion removes choreography without hiding information.
 
@@ -156,8 +156,8 @@ The system is flat by default. Depth is communicated with tonal surfaces, image 
 
 ### Chips
 
-- **Style:** Case categories are flat text controls in one horizontal rail, not pills. The selected state uses a red underline and programmatic state.
-- **State:** The mobile rail may scroll horizontally while every option remains keyboard reachable and visibly focused.
+- **Style:** Case categories are flat text controls, not pills. The selected state uses a red underline and programmatic state.
+- **Mobile:** Highlighted-case filters wrap onto multiple rows, with at least 44×44px targets and approximately 15px labels. Keep every option keyboard reachable and visibly focused.
 
 ### Cards / Containers
 
@@ -181,21 +181,24 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 ### Hero
 
 - Desktop composition is approximately 42% copy and 58% photography within the opening viewport including header.
-- Preserve the three fixed headline lines and reveal them by line. The eyebrow rule arrives first; the red punctuation arrives last; supporting copy and CTA follow.
+- Preserve desktop headline grouping and reveal it by line. The measurement rule and eyebrow lead, followed by the headline, supporting copy, and CTA; red punctuation travels with its headline.
 - Reception imagery reveals from the right through a mask, starting near 1.035 scale and settling to 1.0. Never exceed 1.04.
-- Mobile stacks copy above image while retaining headline dominance and CTA visibility.
+- Mobile stacks copy above image while retaining headline dominance and CTA visibility. Let the headline use the available width instead of forcing narrow desktop wraps; use 16px supporting copy with 1.5 line-height. Mobile entrances are shorter and omit the diagonal red sweep.
 
 ### Who We Are
 
 - Desktop composition is approximately 76% editorial content and 24% navy statistics rail, with the commitment label between them.
+- The commitment label keeps the reference's rotated bottom-to-top treatment in English. Traditional and Simplified Chinese use upright `vertical-rl` text that reads naturally from top to bottom; tablet and mobile retain the horizontal label.
 - Four statistics count once only. Red Vision and Mission rules extend as measurement cues. The lower image uses a simple vertical mask.
 - Mobile reading order is content, image, then statistics.
 
 ### Service Selector
 
 - Upper composition is approximately 48% light copy and 52% active-case media with a pronounced diagonal media edge. The lower field is deep navy with three equal service controls.
-- Use an accessible tab pattern: selected state, arrow keys, Home, End, and stable focus. Selecting 01, 02, or 03 updates image, name, category, location, year, scope, and destination without navigation or layout shift.
-- Preload all linked images. Use a layered crossfade or diagonal mask over approximately 520ms with a tiny focus zoom.
+- Use an accessible tab pattern: selected state, arrow keys, Home, End, and stable focus. Selecting a service updates the project image, project name, location, and year without navigation.
+- Preload the linked images. Use a directional diagonal mask and narrow red sweep over 620ms, with a 380ms caption entrance delayed by 160ms. Reduced motion switches content immediately.
+- Below 48rem, stack the intro and project image above three compact, equal-width tabs. All service names remain visible together; do not use a horizontal service rail or swipe-based selection. Tabs are at least 64px high with a red selected underline.
+- On mobile, hide the desktop numbers, icons, and expanded copy inside the controls. Show only the selected service description and capability list in a navy panel below the tabs, using 16px copy and 1.5 line-height. Image and details update together. Tablet and desktop retain the full three-column service controls.
 
 ### Cases
 
@@ -207,16 +210,28 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 - Desktop composition is approximately 28% intro, 54% logo groups, and 18% metric/action rail. Logo groups form a 2×2 matrix; preserve empty space.
 - Official logos are absent. Any interim wordmark treatment is an explicitly replaceable content record, not an official mark. Do not convert logos into cards, a marquee, or individually animated tiles.
 - The secondary action is `Contact Us` and routes to the Contact page.
+- On narrow phones (below 39rem), stack the sector groups vertically with compact logo grids; do not require horizontal swiping to discover another sector.
 
 ### Delivery Process
 
 - Use four adjacent clipped media panels, a horizontal red process line, numbered circles, four captions, and one assurance row on desktop. Mobile becomes a vertical process with media beside each step.
-- The line progresses once in content order. Entrances use a short stagger and never hijack scroll.
+- On viewports at least 64rem wide and 48rem high with a fine pointer, hover, and no reduced-motion preference, the process holds beneath the sticky header within a 190dvh track. Native scroll position advances the line and active/completed stages; no wheel or touch scrolling is intercepted.
+- Phones, touch tablets, shorter viewports, and reduced-motion users receive the normal document flow. Keep all stage copy visible.
 
 ### Repeat Clients
 
 - This interface is visually locked: introductory copy left and an integrated blueprint-style navy panel right containing the exact 3×2 relationship grid with literal periods and thin dividers. Do not add a separate lower relationship band.
+- Preserve the desktop 3×2 relationship grid. On phones, reflow into two columns and three rows with approximately 14px names and 16px periods; retain the literal dates and structural dividers.
 - Only subtle entrance motion is allowed. No timeline, duration calculation, hover card, modal, filter, controls, extra metadata, or additional sections.
+
+### Client Feedback
+
+- Place this section after Repeat Clients and before Work With JWC. Its visual reference is `C:/Users/JW_IT/Documents/ChatGPT/Company-Website/design-demo/handoff/website-image-demo/redesign/client-feedback.png`.
+- Desktop uses a lounge photograph on the left, a narrow diagonal red divider, and navy copy space on the right with subtle blueprint detail. Keep the heading “Trust earned in the work.”, quotation, attribution, and controls as editable HTML.
+- Assets are `public/assets/site/client-feedback-lounge.png` and `public/assets/site/client-feedback-blueprint.svg`. The lounge is explicitly illustrative.
+- Tablet preserves the diagonal split with smaller typography and controls below the attribution. Below 48rem, place the full-width photo above the navy content, replace the diagonal with a horizontal red edge, and align navigation below the attribution.
+- Keep both previous and next arrows visible and working on desktop, tablet, and phone. Navigation wraps through the records manually, with a 340ms directional fade; there is no autoplay. Use accessible button names, visible focus, and polite announcements. Reduced motion removes the transition.
+- Content lives in `src/data/clientFeedback.ts`. The review currently contains two distinct, explicitly marked placeholders, Client 1 and Client 2. Replace them with approved quotations and attributions when supplied; never present sample text as authentic client feedback.
 
 ### Contact Route
 
@@ -230,7 +245,7 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 - Measure: red rules extend, crosshairs appear only where meaningful, and line icons draw into place.
 - Focus: media settles from 1.025-1.035 scale to rest while supporting copy fades in.
 - Progress: statistics count once and process lines extend in sequence.
-- Timing tokens are 180ms hover, 280ms control, 520ms content replacement, and 720ms section entrance. The primary ease is `cubic-bezier(.22, 1, .36, 1)`; exit ease is `cubic-bezier(.4, 0, 1, 1)`.
+- Base timing tokens are 180ms hover, 280ms control, 520ms content replacement, and 720ms section entrance. The homepage overrides these where specified: desktop hero image 1150ms, service replacement 620ms, and feedback transition 340ms. The primary ease is `cubic-bezier(.22, 1, .36, 1)`; exit ease is `cubic-bezier(.4, 0, 1, 1)`.
 - Motion is enhancement only. Initial content remains visible, animations run once where specified, and `prefers-reduced-motion: reduce` removes transforms, counting, and scroll choreography.
 
 ## Do's and Don'ts
@@ -241,7 +256,7 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 - **Do** preserve the fixed background, navy fields, single red signal, sharp geometry, diagonal masks, thin rules, and reference layout ratios.
 - **Do** use Barlow Condensed for display hierarchy and Barlow for readable copy, loaded from self-hosted Fontsource packages with swap-safe rendering.
 - **Do** use the supplied semantic raster paths and descriptive alternative text; reserve dimensions to prevent layout shift.
-- **Do** keep cases, clients, services, relationships, delivery steps, and contact information in the typed content layer.
+- **Do** keep cases, clients, services, relationships, client feedback, delivery steps, and contact information in the typed content layer.
 - **Do** verify desktop, laptop, tablet, and 390px mobile layouts with no horizontal overflow.
 - **Do** preserve full keyboard operation, visible focus, reduced-motion behavior, and required reading order.
 
@@ -255,3 +270,9 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 - **Don't** add a timeline, calculated duration, hover card, modal, filter, controls, or extra metadata to Repeat Clients.
 - **Don't** add a form to Contact or hide any General Manager placeholder.
 - **Don't** invent permanent claims, addresses, project dates, client approvals, bilingual copy, or people.
+
+## Responsive Review Record
+
+The mobile changes include wider hero text, compact service tabs with selected details, wrapping highlighted-case filters, single-column case cards, vertically stacked client sectors, and a two-column repeat-client grid. Feedback arrows remain available at every breakpoint.
+
+The service update was reviewed at 390×844, 768×1024, and 1600×900. Phone selection was checked with E&M Engineering and Maintenance, with no horizontal page overflow. The Astro production build passed. These are browser viewport checks, not a claim of testing on physical devices. Further visual review notes are recorded in `design-qa.md`.

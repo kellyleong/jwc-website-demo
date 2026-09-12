@@ -287,6 +287,13 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
     font-size: 1rem;
   }
 
+  @media (min-width: 68.01rem) {
+    :global(body.is-chinese) .company__commitment span {
+      text-orientation: upright;
+      transform: translate(-50%, -50%);
+    }
+  }
+
   .company__rail {
     min-width: 0;
     padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.8rem, 3vw, 3rem);
