@@ -1,0 +1,78 @@
+{
+  "zh-Hant": {
+    "hero.headline": [
+      "以信任為本。",
+      "為您的需求而建。"
+    ],
+    "companyIntroduction.headline": [
+      "以經驗交付成果，",
+      "對每一份託付負責。"
+    ],
+    "whatWeDo.headline": [
+      "整合服務，",
+      "專業到位。"
+    ],
+    "casesSection.headline": [
+      "多元領域，",
+      "精選實績。"
+    ],
+    "delivery.headline": [
+      "從了解需求，",
+      "到完成交付。"
+    ],
+    "repeatClients.headline": [
+      "交付一個項目，",
+      "延續一份信任。"
+    ],
+    "clientFeedback.headline": [
+      "以實際表現，",
+      "贏得客戶信任。"
+    ],
+    "joinUsCta.headline": [
+      "下一個項目，",
+      "一起實現。"
+    ],
+    "joinUs.headline": [
+      "在實幹中成長，",
+      "用專業創造價值。"
+    ]
+  },
+  "zh-Hans": {
+    "hero.headline": [
+      "以信任为本。",
+      "为您的需求而建。"
+    ],
+    "companyIntroduction.headline": [
+      "以经验交付成果，",
+      "对每一份托付负责。"
+    ],
+    "whatWeDo.headline": [
+      "一体化服务，",
+      "专业到位。"
+    ],
+    "casesSection.headline": [
+      "多元领域，",
+      "精选案例。"
+    ],
+    "delivery.headline": [
+      "从了解需求，",
+      "到完成交付。"
+    ],
+    "repeatClients.headline": [
+      "交付一个项目，",
+      "延续一份信任。"
+    ],
+    "clientFeedback.headline": [
+      "以实际表现，",
+      "赢得客户信任。"
+    ],
+    "joinUsCta.headline": [
+      "下一个项目，",
+      "一起实现。"
+    ],
+    "joinUs.headline": [
+      "在实干中成长，",
+      "用专业创造价值。"
+    ]
+  }
+}

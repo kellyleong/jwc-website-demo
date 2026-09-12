@@ -72,6 +72,21 @@ body {
   line-height: 1.55;
 }
 
+body.is-chinese {
+  --font-display: "Noto Sans TC", "Noto Sans SC", "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif;
+  --font-body: "Noto Sans TC", "Noto Sans SC", "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", sans-serif;
+  letter-spacing: 0;
+}
+
+body.is-chinese :is(.primary-nav__link, .section-label, .display-heading, .button, .menu-toggle__label) {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+body.is-chinese :is(.hero__line > span, .case-library h1 > span, .join-hero h1 span) {
+  white-space: normal;
+}
+
 @media (max-width: 22rem) {
   .brand-lockup__type span {
     max-width: 9.5rem;
@@ -317,7 +332,7 @@ p {
   font-weight: 500;
 }
 
-.language-switcher > span:not([aria-hidden]) {
+.language-switcher > :is(a, span):not([aria-hidden]) {
   min-width: 2rem;
   min-height: 2.75rem;
   display: inline-grid;
@@ -659,7 +674,7 @@ p {
 
 @media (pointer: coarse) {
   .primary-nav__link,
-  .language-switcher > span:not([aria-hidden]),
+  .language-switcher > :is(a, span):not([aria-hidden]),
   .menu-toggle,
   .button {
     min-height: 3rem;

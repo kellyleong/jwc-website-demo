@@ -1,14 +1,14 @@
 ---
-import { contact } from "../../data/site";
+import { getLocalizedContent, type Locale } from "../../i18n";
 
 interface Props {
   embedded?: boolean;
+  locale?: Locale;
 }
 
-const { embedded = false } = Astro.props;
+const { embedded = false, locale = "en" } = Astro.props;
+const { contact } = getLocalizedContent(locale);
 const RecordHeading = embedded ? "h3" : "h2";
-const headlineWithoutPunctuation = contact.headline.replace(/\.$/, "");
-const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" when ");
 ---
 
 <section
@@ -24,13 +24,11 @@ const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" whe
 
         {embedded ? (
           <h2 id="contact-section-title">
-            <span>{headlineLead}</span>
-            <span>when {headlineTail}<b aria-hidden="true">.</b></span>
+            <span>{contact.headline}</span>
           </h2>
         ) : (
           <h1 id="contact-page-title">
-            <span>{headlineLead}</span>
-            <span>when {headlineTail}<b aria-hidden="true">.</b></span>
+            <span>{contact.headline}</span>
           </h1>
         )}
 
@@ -42,7 +40,7 @@ const [headlineLead, headlineTail = ""] = headlineWithoutPunctuation.split(" whe
             <i class="ph ph-buildings"></i>
           </div>
           <address class="contact-record__body">
-            <RecordHeading>Company Contact</RecordHeading>
+            <RecordHeading>{contact.company.title}</RecordHeading>
             <a href={`tel:${contact.company.phone.replace(/\s/g, "")}`}>
               <i class="ph ph-phone" aria-hidden="true"></i>
               <span>{contact.company.phone}</span>

@@ -1,9 +1,10 @@
 ---
 import type { CaseRecord } from "../../data/site";
-import { withBasePath } from "../../utils/withBasePath";
+import { localizedPath, translate, type Locale } from "../../i18n";
 
 interface Props {
-  caseRecord: CaseRecord;
+  caseRecord: CaseRecord & { categoryLabel?: string };
+  locale?: Locale;
   eager?: boolean;
   headingLevel?: "h2" | "h3";
   hidden?: boolean;
@@ -16,6 +17,7 @@ const {
   headingLevel = "h3",
   hidden = false,
   featured = false,
+  locale = "en",
 } = Astro.props;
 const CardHeading = headingLevel;
 
@@ -36,7 +38,7 @@ const categoryIcons: Record<CaseRecord["category"], string> = {
   data-case-featured={featured ? "true" : "false"}
   hidden={hidden}
 >
-  <a class="case-card__link" href={withBasePath(`/cases/${caseRecord.slug}`)} aria-label={`View ${caseRecord.name} case`}>
+  <a class="case-card__link" href={localizedPath(locale, `/cases/${caseRecord.slug}`)} aria-label={locale === "en" ? `View ${caseRecord.name} case` : `${caseRecord.name}｜${translate(locale, "caseDetail.breadcrumb", "Cases")}`}>
     <span class="case-card__media">
       <img
         src={caseRecord.image.src}
@@ -47,7 +49,7 @@ const categoryIcons: Record<CaseRecord["category"], string> = {
     <span class="case-card__content">
       <span class="case-card__category">
         <i class={`ph ${categoryIcons[caseRecord.category]}`} aria-hidden="true"></i>
-        {caseRecord.category}
+        {caseRecord.categoryLabel ?? caseRecord.category}
       </span>
       <CardHeading>{caseRecord.name}</CardHeading>
       <span class="case-card__meta">{caseRecord.location} <span aria-hidden="true">·</span> {caseRecord.year}</span>
