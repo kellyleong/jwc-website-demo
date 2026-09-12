@@ -204,6 +204,7 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 
 - Cases are four columns at desktop, two at tablet, and one at mobile. The filter order is fixed by the content layer.
 - Media frames preserve aspect ratio and subject placement. Hover may extend one rule and move one arrow; it never changes card proportions.
+- Traditional and Simplified Chinese page and case-detail headlines use natural CJK wrapping and relaxed line height. All sector filters remain visible together on phones instead of requiring horizontal scrolling.
 
 ### Selected Clients
 
@@ -222,6 +223,7 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 
 - This interface is visually locked: introductory copy left and an integrated blueprint-style navy panel right containing the exact 3×2 relationship grid with literal periods and thin dividers. Do not add a separate lower relationship band.
 - Preserve the desktop 3×2 relationship grid. On phones, reflow into two columns and three rows with approximately 14px names and 16px periods; retain the literal dates and structural dividers.
+- The approved relationship headline is “交付一個項目，延續一份信任。” in Traditional Chinese and “交付一个项目，延续一份信任。” in Simplified Chinese.
 - Only subtle entrance motion is allowed. No timeline, duration calculation, hover card, modal, filter, controls, extra metadata, or additional sections.
 
 ### Client Feedback
@@ -237,6 +239,7 @@ The site has no contact form. Do not create input styling or invent fields. Cont
 
 - This standalone route is visually locked: approximately 46% content and 54% reception image with a diagonal red boundary, followed by a full-width navy footer. It is not repeated on the Main page.
 - Company contact and General Manager blocks remain visible. Name, Direct, and Email each display `TO BE CONFIRMED`. No form is permitted.
+- Chinese contact headlines wrap naturally inside the content plane at every supported viewport and must never disappear beneath the diagonal image boundary.
 - Mobile reading order is contact content, image, then footer.
 
 ### Motion

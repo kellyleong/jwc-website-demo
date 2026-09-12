@@ -204,6 +204,21 @@ const RecordHeading = embedded ? "h3" : "h2";
     font-weight: inherit;
   }
 
+  :global(body.is-chinese) .contact-stage__copy > h1,
+  :global(body.is-chinese) .contact-stage__copy > h2 {
+    max-width: 8em;
+    font-size: clamp(2.5rem, 3vw, 3.35rem);
+    line-height: 1.12;
+    letter-spacing: var(--cjk-display-tracking);
+    text-transform: none;
+  }
+
+  :global(body.is-chinese) .contact-stage__copy > h1 span,
+  :global(body.is-chinese) .contact-stage__copy > h2 span {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
   .contact-stage__measure {
     width: 5rem;
     height: 0.125rem;
@@ -444,6 +459,13 @@ const RecordHeading = embedded ? "h3" : "h2";
       max-width: 8.7ch;
       font-size: clamp(2.9rem, 13.4vw, 3.6rem);
       line-height: 0.94;
+    }
+
+    :global(body.is-chinese) .contact-stage__copy > h1,
+    :global(body.is-chinese) .contact-stage__copy > h2 {
+      max-width: none;
+      font-size: clamp(2.15rem, 8.2vw, 2.75rem);
+      line-height: 1.15;
     }
 
     .contact-stage__introduction {

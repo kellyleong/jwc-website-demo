@@ -179,6 +179,19 @@ const headlineLines = casesSection.headlineLines.map(splitHeadlinePunctuation);
     font: inherit;
   }
 
+  :global(body.is-chinese) .case-library h1 {
+    max-width: 13em;
+    font-size: var(--cjk-display-medium);
+    line-height: 1.12;
+    letter-spacing: var(--cjk-display-tracking);
+    text-transform: none;
+  }
+
+  :global(body.is-chinese) .case-library h1 > span {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
   .case-library__filter-scroll {
     max-width: 100%;
     margin-bottom: 1.35rem;
@@ -313,6 +326,27 @@ const headlineLines = casesSection.headlineLines.map(splitHeadlinePunctuation);
     .case-library__grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 1.5rem;
+    }
+
+    :global(body.is-chinese) .case-library h1 {
+      max-width: none;
+      font-size: clamp(2.15rem, 8.2vw, 2.75rem);
+      line-height: 1.15;
+    }
+
+    :global(body.is-chinese) .case-library__filter-scroll {
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+
+    :global(body.is-chinese) .case-library__filters {
+      width: 100%;
+      min-width: 0;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 0.4rem 1.25rem;
+      padding-right: 0;
     }
   }
 

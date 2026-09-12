@@ -142,6 +142,16 @@ const title = formatMessage(translate(locale, "seo.caseDetail.titleTemplate", "{
     overflow-wrap: anywhere;
   }
 
+  :global(body.is-chinese) .case-detail h1 {
+    max-width: 14em;
+    font-size: var(--cjk-display-medium);
+    line-height: 1.12;
+    letter-spacing: var(--cjk-display-tracking);
+    text-transform: none;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
   .case-detail__summary {
     max-width: 60ch;
     margin-bottom: 0;
@@ -237,6 +247,12 @@ const title = formatMessage(translate(locale, "seo.caseDetail.titleTemplate", "{
       max-width: 11ch;
       font-size: clamp(2.95rem, 13.5vw, 4rem);
       line-height: 0.94;
+    }
+
+    :global(body.is-chinese) .case-detail h1 {
+      max-width: none;
+      font-size: clamp(2.15rem, 8.2vw, 2.75rem);
+      line-height: 1.15;
     }
 
     .case-detail__summary {
