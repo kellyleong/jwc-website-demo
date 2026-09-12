@@ -1,10 +1,11 @@
 ---
-import { getLocalizedContent, translate, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 import { withBasePath } from "../../utils/withBasePath";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const { companyIntroduction } = getLocalizedContent(locale);
+const headlineLines = companyIntroduction.headlineLines.map(splitHeadlinePunctuation);
 const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-users-three"];
 ---
 
@@ -13,7 +14,7 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
     <div class="company__content section-shell" data-reveal>
       <p class="section-label">{companyIntroduction.eyebrow}</p>
       <h2 id="company-title" class="display-heading company__heading">
-        {companyIntroduction.headlineLines.map((line) => <span>{line}<br /></span>)}
+        {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b class="punctuation">{line.punctuation}</b>}<br /></span>)}
       </h2>
       <div class="company__principles">
         {[companyIntroduction.vision, companyIntroduction.mission].map((principle) => (
@@ -293,7 +294,7 @@ const statisticIcons = ["ph-calendar-dots", "ph-buildings", "ph-handshake", "ph-
     align-items: stretch;
     background:
       radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--color-blueprint) 48%, transparent), transparent 38%),
-      linear-gradient(135deg, var(--color-navy), var(--color-navy-deep));
+      var(--background-dark-section);
     color: var(--color-on-dark);
   }
 

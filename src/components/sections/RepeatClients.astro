@@ -1,5 +1,5 @@
 ---
-import { getLocalizedContent, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, type Locale } from "../../i18n";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
@@ -30,7 +30,7 @@ const relationships = repeatClientRelationships.map((relationship) => {
   };
 });
 
-const headlineLines = repeatClients.headlineLines;
+const headlineLines = repeatClients.headlineLines.map(splitHeadlinePunctuation);
 const supportingLines = [repeatClients.supportingCopy];
 ---
 
@@ -40,7 +40,7 @@ const supportingLines = [repeatClients.supportingCopy];
       <div class="repeat-clients__copy-inner">
         <p class="repeat-clients__eyebrow">{repeatClients.eyebrow}</p>
         <h2 id="repeat-clients-title" class="repeat-clients__heading">
-          {headlineLines.map((line) => <span>{line}</span>)}
+          {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
         </h2>
         <p class="repeat-clients__supporting">
           {supportingLines.map((line) => <span>{line}</span>)}
@@ -82,7 +82,7 @@ const supportingLines = [repeatClients.supportingCopy];
   .repeat-clients {
     --repeat-gutter: var(--page-gutter);
     overflow: hidden;
-    background: var(--color-navy-deep);
+    background: var(--background-dark-section);
   }
 
   .repeat-clients__upper {
@@ -134,6 +134,11 @@ const supportingLines = [repeatClients.supportingCopy];
   .repeat-clients__heading span,
   .repeat-clients__supporting span {
     display: block;
+  }
+
+  .repeat-clients__heading b {
+    color: var(--color-red);
+    font-weight: inherit;
   }
 
   .repeat-clients__supporting {

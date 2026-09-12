@@ -13,10 +13,10 @@
       "提供全面工程服務。"
     ],
     "casesSection.headline": [
-      "不同行業的工程案例"
+      "不同行業的工程案例。"
     ],
     "delivery.headline": [
-      "由前期規劃到施工交付"
+      "由前期規劃到施工交付。"
     ],
     "repeatClients.headline": [
       "從一次合作，",
@@ -33,6 +33,10 @@
     "joinUs.headline": [
       "加入我們，發揮所長，",
       "一起做好工程。"
+    ],
+    "selectedClients.headline": [
+      "與我們合作的",
+      "客戶。"
     ]
   },
   "zh-Hans": {
@@ -71,6 +75,10 @@
     "joinUs.headline": [
       "加入我们，发挥所长，",
       "一起做好工程。"
+    ],
+    "selectedClients.headline": [
+      "获得众多知名",
+      "机构信任。"
     ]
   }
 }

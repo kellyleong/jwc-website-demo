@@ -44,6 +44,14 @@ export function localizedHeadline(locale: Locale, key: HeadlineKey, englishLines
   return locale === "en" ? englishLines : headlineLayout[locale][key];
 }
 
+export function splitHeadlinePunctuation(line: string): { text: string; punctuation: string } {
+  const punctuation = line.match(/([.!?。！？]+)$/u)?.[1] ?? "";
+  return {
+    text: punctuation ? line.slice(0, -punctuation.length) : line,
+    punctuation,
+  };
+}
+
 export function localizedPath(locale: Locale, path = "/"): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   const prefix = locale === "en" ? "" : `/${locale.toLowerCase()}`;
@@ -175,7 +183,7 @@ export function getLocalizedContent(locale: Locale) {
     selectedClients: {
       ...selectedClients,
       eyebrow: t("selectedClients.eyebrow", selectedClients.eyebrow),
-      headlineLines: locale === "en" ? ["Trusted by", "Leading", "Organisations."] : [t("selectedClients.headline", selectedClients.headline)],
+      headlineLines: locale === "en" ? ["Trusted by", "Leading", "Organisations."] : headlineLayout[locale]["selectedClients.headline"],
       supportingCopy: t("selectedClients.supportingCopy", selectedClients.supportingCopy),
       directClientLabel: t("selectedClients.directClientLabel", selectedClients.directClientLabel),
       returnClientCopy: t("selectedClients.returnClientCopy", selectedClients.returnClientCopy),

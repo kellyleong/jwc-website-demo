@@ -1,13 +1,10 @@
 ---
-import { getLocalizedContent, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, type Locale } from "../../i18n";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const { hero } = getLocalizedContent(locale);
-const headlineLines = hero.headlineLines.map((line) => ({
-  text: line.replace(/\.$/, ""),
-  hasPeriod: line.endsWith("."),
-}));
+const headlineLines = hero.headlineLines.map(splitHeadlinePunctuation);
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -19,7 +16,7 @@ const headlineLines = hero.headlineLines.map((line) => ({
     <h1 id="hero-title" class="hero__title">
       {headlineLines.map((line, index) => (
         <span class="hero__line" style={`--line-index:${index}`}>
-          <span>{line.text}{line.hasPeriod && <b>.</b>}</span>
+          <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>
         </span>
       ))}
     </h1>

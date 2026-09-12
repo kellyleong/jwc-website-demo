@@ -1,9 +1,10 @@
 ---
-import { getLocalizedContent, translate, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const { casesById, services, whatWeDo } = getLocalizedContent(locale);
+const headlineLines = whatWeDo.headlineLines.map(splitHeadlinePunctuation);
 const serviceIcons = ["ph-blueprint", "ph-gauge", "ph-wrench"];
 const servicePayload = services.map((service) => {
   const highlightedCase = casesById.get(service.highlightedCaseId);
@@ -18,7 +19,7 @@ const initialService = servicePayload[0];
     <div class="services__intro" data-reveal>
       <p class="section-label">{whatWeDo.eyebrow}</p>
       <h2 id="services-title" class="display-heading services__heading">
-        {whatWeDo.headlineLines.map((line) => <span>{line}</span>)}
+        {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
       </h2>
       <span class="services__measure" aria-hidden="true"></span>
     </div>
@@ -246,7 +247,7 @@ const initialService = servicePayload[0];
     height: 0.125rem;
     margin-top: 0.9rem;
     display: block;
-    background: var(--color-rule-strong);
+    background: var(--color-rule);
   }
 
   .services__media {
@@ -254,7 +255,7 @@ const initialService = servicePayload[0];
     min-width: 0;
     overflow: hidden;
     clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
-    background: var(--color-navy-deep);
+    background: var(--background-dark-section);
   }
 
   .services__media img {
@@ -275,7 +276,7 @@ const initialService = servicePayload[0];
     padding: 2.5rem var(--page-gutter) 3rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    background: var(--color-navy);
+    background: var(--background-dark-section);
     color: white;
   }
 
@@ -404,7 +405,7 @@ const initialService = servicePayload[0];
     .services__details {
       display: block;
       padding: 1.25rem var(--page-gutter) 1.75rem;
-      background: var(--color-navy);
+      background: var(--background-dark-section);
       color: white;
       font-size: 1rem;
       line-height: 1.5;

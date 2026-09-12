@@ -1,10 +1,11 @@
 ---
-import { localizedHeadline, localizedPath, translate, type Locale } from "../../i18n";
+import { localizedHeadline, localizedPath, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 import { withBasePath } from "../../utils/withBasePath";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const t = (key: Parameters<typeof translate>[1], english: string) => translate(locale, key, english);
+const headlineLines = localizedHeadline(locale, "joinUsCta.headline", ["Build what", "comes next."]).map(splitHeadlinePunctuation);
 ---
 
 <section class="join-cta" aria-labelledby="join-cta-title">
@@ -17,7 +18,7 @@ const t = (key: Parameters<typeof translate>[1], english: string) => translate(l
     <div class="join-cta__measure" aria-hidden="true"><span>+</span></div>
     <p class="join-cta__eyebrow">{t("joinUsCta.eyebrow", "Work with JWC")}</p>
     <h2 id="join-cta-title">
-      {localizedHeadline(locale, "joinUsCta.headline", ["Build what", "comes next."]).map((line) => <span>{line}</span>)}
+      {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
     </h2>
     <p class="join-cta__copy">
       {t("joinUsCta.supportingCopy", "Speak with us about your next project or ongoing requirement, or explore opportunities to join our team.")}
@@ -50,7 +51,7 @@ const t = (key: Parameters<typeof translate>[1], english: string) => translate(l
     min-height: clamp(40rem, 60vw, 54rem);
     overflow: hidden;
     isolation: isolate;
-    background: var(--color-navy-deep);
+    background: var(--background-dark-section);
     color: var(--color-on-dark);
   }
 
@@ -355,6 +356,32 @@ const t = (key: Parameters<typeof translate>[1], english: string) => translate(l
     .join-cta__button { width: 100%; min-height: 3.75rem; }
     .join-cta__media { height: 17rem; }
     .join-cta__blueprint { display: none; }
+  }
+
+  :global(body.is-chinese) .join-cta h2 {
+    max-width: none;
+    font-size: clamp(2.9rem, 4.2vw, 4.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    text-transform: none;
+  }
+
+  @media (min-width: 56rem) {
+    :global(body.is-chinese) .join-cta h2 span {
+      white-space: nowrap !important;
+    }
+  }
+
+  @media (max-width: 39rem) {
+    :global(body.is-chinese) .join-cta h2 {
+      max-width: 10em;
+      font-size: clamp(2.15rem, 7.9vw, 2.75rem);
+      line-height: 1.1;
+    }
+
+    :global(body.is-chinese) .join-cta h2 span {
+      white-space: normal;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

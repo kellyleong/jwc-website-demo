@@ -1,5 +1,5 @@
 ---
-import { getLocalizedContent, localizedHeadline, translate, type Locale } from "../../i18n";
+import { getLocalizedContent, localizedHeadline, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 import { withBasePath } from "../../utils/withBasePath";
 
 interface Props { locale?: Locale }
@@ -11,6 +11,7 @@ const feedback = localized.clientFeedback.length ? localized.clientFeedback : [{
   name: "Client name · Role · Organisation",
   attribution: "To be confirmed",
 }];
+const headlineLines = localizedHeadline(locale, "clientFeedback.headline", ["Trust earned", "in the work."]).map(splitHeadlinePunctuation);
 ---
 
 <section id="client-feedback" class="client-feedback" aria-labelledby="client-feedback-title">
@@ -21,7 +22,7 @@ const feedback = localized.clientFeedback.length ? localized.clientFeedback : [{
   <img class="client-feedback__blueprint" src={withBasePath("/assets/site/client-feedback-blueprint.svg")} alt="" aria-hidden="true" loading="lazy" />
   <div class="client-feedback__content">
     <p class="client-feedback__label">{translate(locale, "clientFeedback.eyebrow", "Client feedback")}<span aria-hidden="true"></span></p>
-    <h2 id="client-feedback-title">{localizedHeadline(locale, "clientFeedback.headline", ["Trust earned", "in the work."]).map((line) => <span>{line}</span>)}</h2>
+    <h2 id="client-feedback-title">{headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}</h2>
     <div class="client-feedback__slides" aria-live="polite" aria-atomic="true">
       {feedback.map((item, index) => (
         <figure class="client-feedback__quote" data-feedback-slide hidden={index !== 0}>
@@ -62,7 +63,7 @@ const feedback = localized.clientFeedback.length ? localized.clientFeedback : [{
 </script>
 
 <style>
-  .client-feedback { position: relative; isolation: isolate; min-height: clamp(48rem, 51vw, 56rem); background: #03234a; color: #f7f7f8; overflow: clip; }
+  .client-feedback { position: relative; isolation: isolate; min-height: clamp(48rem, 51vw, 56rem); background: var(--background-dark-section); color: #f7f7f8; overflow: clip; }
   .client-feedback__photo { position: absolute; inset: 0 auto 0 0; width: 49.3%; clip-path: polygon(0 0, 100% 0, 52% 100%, 0 100%); }
   .client-feedback__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 45% center; }
   .client-feedback__divider { position: absolute; inset: 0; background: #f21b16; clip-path: polygon(48.9% 0, 49.4% 0, 26.1% 100%, 25.6% 100%); pointer-events: none; }

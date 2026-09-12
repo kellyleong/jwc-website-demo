@@ -1,10 +1,11 @@
 ---
-import { getLocalizedContent, translate, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 import { withBasePath } from "../../utils/withBasePath";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const { casesById, delivery, deliverySteps } = getLocalizedContent(locale);
+const headlineLines = delivery.headlineLines.map(splitHeadlinePunctuation);
 const planningImage = deliverySteps.find((step) => step.id === "understand-plan")?.image;
 const installationImage = deliverySteps.find((step) => step.id === "build-install")?.image;
 const handoverImage = casesById.get("case-china-taiping-insurance-macau-2024")?.image;
@@ -37,7 +38,7 @@ const assuranceIcons = ["ph-shield-check", "ph-check-circle", "ph-calendar-check
     <header class="delivery__intro">
       <p class="delivery__label">{delivery.eyebrow}</p>
       <h2 id="delivery-title" class="delivery__heading">
-        {delivery.headlineLines.map((line) => <span>{line}</span>)}
+        {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
       </h2>
       <p class="delivery__copy">{delivery.supportingCopy}</p>
     </header>
@@ -81,7 +82,7 @@ const assuranceIcons = ["ph-shield-check", "ph-check-circle", "ph-calendar-check
   .delivery {
     min-height: min(calc(100dvh - var(--header-height)), 53rem);
     overflow: hidden;
-    background: var(--color-navy-deep);
+    background: var(--background-dark-section);
     color: var(--color-on-dark);
   }
 
@@ -117,8 +118,9 @@ const assuranceIcons = ["ph-shield-check", "ph-check-circle", "ph-calendar-check
     line-height: 1;
   }
 
-  .delivery__heading span {
+  .delivery__heading b {
     color: #ff382e;
+    font-weight: inherit;
   }
 
   .delivery__copy {

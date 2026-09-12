@@ -1,10 +1,11 @@
 ---
 import CaseCard from "./CaseCard.astro";
-import { formatMessage, getLocalizedContent, translate, type Locale } from "../../i18n";
+import { formatMessage, getLocalizedContent, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
+const headlineLines = casesSection.headlineLines.map(splitHeadlinePunctuation);
 ---
 
 <section class="case-library" aria-labelledby="cases-title" data-case-filter-grid>
@@ -12,7 +13,7 @@ const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
     <header class="case-library__header" data-reveal>
       <p class="case-library__label">{casesSection.eyebrow}</p>
       <h1 id="cases-title">
-        {casesSection.headlineLines.map((line) => <span>{line}</span>)}
+        {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
       </h1>
     </header>
 

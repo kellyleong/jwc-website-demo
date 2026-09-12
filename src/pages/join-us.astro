@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getLocalizedContent, localizedHeadline, translate, type Locale } from "../i18n";
+import { getLocalizedContent, localizedHeadline, splitHeadlinePunctuation, translate, type Locale } from "../i18n";
 import { withBasePath } from "../utils/withBasePath";
 
 interface Props { locale?: Locale }
@@ -12,7 +12,9 @@ const contributionAreas = [
   { icon: "ph-gauge", label: t("joinUs.contribution.emEngineering", "E&M Engineering") },
   { icon: "ph-clipboard-text", label: t("joinUs.contribution.projectSupport", "Project Support") },
 ] as const;
-const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your career.", "Build with purpose."]);
+const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your career.", "Build with purpose."]).map(splitHeadlinePunctuation);
+const opportunitiesHeadline = splitHeadlinePunctuation(t("joinUs.opportunities.headline", "Find your place on the team."));
+const applicationHeadline = splitHeadlinePunctuation(t("joinUs.application.headline", "Start with a clear introduction."));
 ---
 
 <BaseLayout
@@ -41,7 +43,7 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
         <div class="join-hero__measure" aria-hidden="true"><span>+</span></div>
         <p class="join-hero__eyebrow">{t("joinUs.eyebrow", "Join Us")}</p>
         <h1 id="join-hero-title">
-          {headlineLines.map((line) => <span>{line}</span>)}
+          {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
         </h1>
         <p class="join-hero__copy">
           {t("joinUs.supportingCopy", "Join a practical, accountable team delivering construction and engineering work across Macau, Hong Kong and Zhuhai.")}
@@ -76,7 +78,7 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
       <header class="opportunities__header" data-reveal>
         <p class="section-label">{t("joinUs.opportunities.eyebrow", "Current Opportunities")}</p>
         <h2 id="opportunities-title" class="display-heading">
-          {t("joinUs.opportunities.headline", "Find your place on the team.")}
+          {opportunitiesHeadline.text}{opportunitiesHeadline.punctuation && <span class="punctuation">{opportunitiesHeadline.punctuation}</span>}
         </h2>
         <p class="body-copy">
           {t("joinUs.opportunities.supportingCopy", "We publish confirmed vacancies here as they become available.")}
@@ -108,7 +110,7 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
       <div class="application__heading" data-reveal>
         <p class="section-label">{t("joinUs.application.eyebrow", "How to Apply")}</p>
         <h2 id="application-title" class="display-heading">
-          {t("joinUs.application.headline", "Start with a clear introduction.")}
+          {applicationHeadline.text}{applicationHeadline.punctuation && <span class="punctuation">{applicationHeadline.punctuation}</span>}
         </h2>
       </div>
       <div class="application__body" data-reveal>
@@ -288,7 +290,7 @@ const headlineLines = localizedHeadline(locale, "joinUs.headline", ["Build your 
     position: relative;
     border-top: 2px solid var(--color-red);
     overflow: hidden;
-    background: var(--color-navy-deep);
+    background: var(--background-dark-section);
     color: white;
   }
 

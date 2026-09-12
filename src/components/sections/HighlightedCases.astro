@@ -1,19 +1,20 @@
 ---
 import CaseCard from "../cases/CaseCard.astro";
-import { formatMessage, getLocalizedContent, translate, type Locale } from "../../i18n";
+import { formatMessage, getLocalizedContent, splitHeadlinePunctuation, translate, type Locale } from "../../i18n";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
 const { caseCategories, cases, casesSection } = getLocalizedContent(locale);
 const featuredCases = cases.filter((caseRecord) => caseRecord.featured).slice(0, 4);
 const featuredCaseCount = featuredCases.length;
+const headlineLines = casesSection.headlineLines.map(splitHeadlinePunctuation);
 ---
 
 <section class="case-showcase" aria-labelledby="case-showcase-title" data-highlighted-case-filter>
   <div class="section-shell" data-reveal>
     <p class="case-showcase__label"><span aria-hidden="true"></span>{casesSection.eyebrow}</p>
     <h2 id="case-showcase-title" class="display-heading case-showcase__heading">
-      {casesSection.headlineLines.map((line) => <span>{line}</span>)}
+      {headlineLines.map((line) => <span>{line.text}{line.punctuation && <b>{line.punctuation}</b>}</span>)}
     </h2>
 
     <div class="case-showcase__filters" role="group" aria-label={translate(locale, "accessibility.filterBySector", "Filter highlighted cases by sector")}>

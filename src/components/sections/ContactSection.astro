@@ -1,5 +1,5 @@
 ---
-import { getLocalizedContent, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, type Locale } from "../../i18n";
 
 interface Props {
   embedded?: boolean;
@@ -8,6 +8,7 @@ interface Props {
 
 const { embedded = false, locale = "en" } = Astro.props;
 const { contact } = getLocalizedContent(locale);
+const headline = splitHeadlinePunctuation(contact.headline);
 const RecordHeading = embedded ? "h3" : "h2";
 ---
 
@@ -24,11 +25,11 @@ const RecordHeading = embedded ? "h3" : "h2";
 
         {embedded ? (
           <h2 id="contact-section-title">
-            <span>{contact.headline}</span>
+            <span>{headline.text}{headline.punctuation && <b>{headline.punctuation}</b>}</span>
           </h2>
         ) : (
           <h1 id="contact-page-title">
-            <span>{contact.headline}</span>
+            <span>{headline.text}{headline.punctuation && <b>{headline.punctuation}</b>}</span>
           </h1>
         )}
 

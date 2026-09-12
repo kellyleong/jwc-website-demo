@@ -1,6 +1,6 @@
 ---
 import type { ClientRecord } from "../../data/site";
-import { getLocalizedContent, type Locale } from "../../i18n";
+import { getLocalizedContent, splitHeadlinePunctuation, type Locale } from "../../i18n";
 
 interface Props { locale?: Locale }
 const { locale = "en" } = Astro.props;
@@ -30,7 +30,7 @@ const groupedClients = clientGroups.map((group) => ({
     })),
 }));
 
-const headlineLines = selectedClients.headlineLines;
+const headlineLines = selectedClients.headlineLines.map(splitHeadlinePunctuation);
 ---
 
 <section
@@ -51,11 +51,9 @@ const headlineLines = selectedClients.headlineLines;
     <header class="selected-clients__intro" data-reveal>
       <p class="selected-clients__label">{selectedClients.eyebrow}</p>
       <h2 id="selected-clients-title" class="selected-clients__heading">
-        {headlineLines.map((line, index) => (
+        {headlineLines.map((line) => (
           <span>
-            {line}{locale === "en" && index === headlineLines.length - 1 && (
-              <b aria-hidden="true">.</b>
-            )}
+            {line.text}{line.punctuation && <b>{line.punctuation}</b>}
           </span>
         ))}
       </h2>
@@ -553,7 +551,7 @@ const headlineLines = selectedClients.headlineLines;
 
   .selected-clients__corner::after {
     clip-path: polygon(0 5%, 96% 81%, 96% 100%, 0 100%);
-    background: var(--color-navy);
+    background: var(--background-dark-section);
   }
 
   @media (max-width: 72rem) {
